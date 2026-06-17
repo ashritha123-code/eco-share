@@ -31,6 +31,9 @@ export function initResources(showToast) {
   
   const detailModal = document.getElementById('detailModal');
   const detailModalClose = document.getElementById('detailModalClose');
+  const userProfileModal = document.getElementById('userProfileModal');
+  const profileModalClose = document.getElementById('profileModalClose');
+  const profileModalCloseBtn = document.getElementById('profileModalCloseBtn');
 
   // File Upload Elements
   const imageUploadZone = document.getElementById('imageUploadZone');
@@ -125,6 +128,18 @@ export function initResources(showToast) {
     detailModal.classList.remove('active');
   });
 
+  if (profileModalClose) {
+    profileModalClose.addEventListener('click', () => {
+      userProfileModal.classList.remove('active');
+    });
+  }
+
+  if (profileModalCloseBtn) {
+    profileModalCloseBtn.addEventListener('click', () => {
+      userProfileModal.classList.remove('active');
+    });
+  }
+
   // Window clicks to close modals
   window.addEventListener('click', (e) => {
     if (e.target === addResourceModal) {
@@ -132,6 +147,9 @@ export function initResources(showToast) {
     }
     if (e.target === detailModal) {
       detailModal.classList.remove('active');
+    }
+    if (e.target === userProfileModal) {
+      userProfileModal.classList.remove('active');
     }
   });
 
@@ -166,6 +184,23 @@ export function initResources(showToast) {
     e.stopPropagation();
     resetImageUpload();
   });
+
+  const resourceImageUrlInput = document.getElementById('resourceImageUrlInput');
+  if (resourceImageUrlInput) {
+    resourceImageUrlInput.addEventListener('input', (e) => {
+      const url = e.target.value.trim();
+      if (url) {
+        uploadPreviewImg.src = url;
+        imageUploadZone.style.display = 'none';
+        uploadPreviewContainer.classList.add('active');
+        uploadedImageUrl = url;
+      } else {
+        if (!resourceImageFile.value) {
+          resetImageUpload();
+        }
+      }
+    });
+  }
 
   async function handleImageSelection(file) {
     if (!file.type.startsWith('image/')) {
@@ -205,6 +240,9 @@ export function initResources(showToast) {
         uploadProgressBar.style.width = `${progress}%`;
       });
       console.log('Image upload resolved to:', uploadedImageUrl);
+      if (resourceImageUrlInput) {
+        resourceImageUrlInput.value = uploadedImageUrl;
+      }
 
       showToast('Image uploaded successfully!', 'success');
     } catch (err) {
@@ -230,6 +268,10 @@ export function initResources(showToast) {
     uploadProgressBarContainer.classList.remove('active');
     uploadProgressBar.style.width = '0%';
     uploadedImageUrl = '';
+    const urlInput = document.getElementById('resourceImageUrlInput');
+    if (urlInput) {
+      urlInput.value = '';
+    }
   }
 
   // Create Resource Submission
@@ -254,13 +296,16 @@ export function initResources(showToast) {
     try {
       setLoading(submitBtn, true, 'Posting...');
       
+      const imageUrlInputVal = resourceImageUrlInput ? resourceImageUrlInput.value.trim() : '';
+      const finalImageUrl = uploadedImageUrl || imageUrlInputVal;
+      
       const payload = {
         title,
         category,
         quantity,
         location,
         description,
-        imageUrl: uploadedImageUrl,
+        imageUrl: finalImageUrl,
         latitude: latitude ? Number(latitude) : null,
         longitude: longitude ? Number(longitude) : null
       };
@@ -463,7 +508,12 @@ export function renderResources() {
         ` : ''}
       </div>
       <div class="card-content">
-        <div class="card-category">${resource.category}</div>
+        <div class="card-category" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <span>${resource.category}</span>
+          <span class="card-owner-link" style="color: var(--primary); text-decoration: underline; font-weight: 500; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem;">
+            👤 ${resource.ownerName}
+          </span>
+        </div>
         <h3 class="card-title">${resource.title}</h3>
         <p class="card-desc">${resource.description}</p>
         <div class="card-footer">
@@ -478,6 +528,15 @@ export function renderResources() {
         </div>
       </div>
     `;
+
+    // Click handler for Card Owner Link
+    const ownerLink = card.querySelector('.card-owner-link');
+    if (ownerLink) {
+      ownerLink.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openUserProfileModal(resource.ownerId, resource.ownerName);
+      });
+    }
 
     // Click handler for Card Bookmark
     const saveBtn = card.querySelector('.card-save-btn');
@@ -516,6 +575,37 @@ export function renderResources() {
 // Side panels details list
 function renderDashboardPanels() {
   const user = getLoggedInUser();
+  
+  // My Impact sidebar widget
+  const myImpactPanel = document.getElementById('myImpactPanel');
+  if (myImpactPanel) {
+    if (!user) {
+      myImpactPanel.style.display = 'none';
+    } else {
+      myImpactPanel.style.display = 'block';
+      const mySharedItems = allResources.filter(r => r.ownerId === user.uid);
+      const shareCount = mySharedItems.length;
+      const co2Saved = (shareCount * 2.5).toFixed(1);
+      
+      let badgeIcon = '🌱';
+      let badgeLabel = 'Eco Seedling';
+      if (shareCount >= 1 && shareCount <= 2) {
+        badgeIcon = '🌿';
+        badgeLabel = 'Green Sprout';
+      } else if (shareCount >= 3 && shareCount <= 5) {
+        badgeIcon = '🌳';
+        badgeLabel = 'Forest Guardian';
+      } else if (shareCount > 5) {
+        badgeIcon = '👑';
+        badgeLabel = 'Eco Champion';
+      }
+      
+      document.getElementById('myImpactShares').textContent = shareCount;
+      document.getElementById('myImpactCarbon').textContent = `${co2Saved} kg`;
+      document.getElementById('myImpactBadgeIcon').textContent = badgeIcon;
+      document.getElementById('myImpactBadgeLabel').textContent = badgeLabel;
+    }
+  }
   
   // Recent items sidebar widget
   const recentPanel = document.getElementById('recentPanelList');
@@ -603,7 +693,7 @@ function openDetailModal(resource) {
         <div class="detail-header-block">
           <span class="card-badge badge-${resource.status.toLowerCase()}" style="position: static; width: fit-content; margin-bottom: 0.5rem;">${resource.status}</span>
           <h2>${resource.title}</h2>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Posted by ${resource.ownerName}</p>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Posted by <span class="detail-owner-link" style="color: var(--primary); text-decoration: underline; font-weight: 600; cursor: pointer;">${resource.ownerName}</span></p>
         </div>
         
         <div class="detail-meta-list">
@@ -632,6 +722,15 @@ function openDetailModal(resource) {
       </div>
     </div>
   `;
+
+  // Bind owner profile click handler
+  const detailOwnerLink = detailBody.querySelector('.detail-owner-link');
+  if (detailOwnerLink) {
+    detailOwnerLink.addEventListener('click', () => {
+      detailModal.classList.remove('active');
+      openUserProfileModal(resource.ownerId, resource.ownerName);
+    });
+  }
 
   // Render Footer Buttons
   detailFooter.innerHTML = '';
@@ -787,6 +886,96 @@ function openDetailModal(resource) {
   if (modalBody) modalBody.scrollTop = 0;
 }
 
+// Open Contributor Profile View Modal
+function openUserProfileModal(ownerId, ownerName) {
+  const profileModal = document.getElementById('userProfileModal');
+  const headerArea = document.getElementById('profileHeaderArea');
+  const resourcesGrid = document.getElementById('profileResourcesGrid');
+
+  if (!profileModal || !headerArea || !resourcesGrid) return;
+
+  // Find location and details from existing resources
+  const ownerResources = allResources.filter(r => r.ownerId === ownerId || r.ownerName === ownerName);
+  const sharesCount = ownerResources.length;
+  const co2Saved = (sharesCount * 2.5).toFixed(1);
+
+  // Determine Level badge
+  let badgeIcon = '🌱';
+  let badgeLabel = 'Eco Seedling';
+  if (sharesCount >= 6) {
+    badgeIcon = '👑';
+    badgeLabel = 'Eco Champion';
+  } else if (sharesCount >= 3) {
+    badgeIcon = '🌳';
+    badgeLabel = 'Forest Guardian';
+  } else if (sharesCount >= 1) {
+    badgeIcon = '🌿';
+    badgeLabel = 'Green Sprout';
+  }
+
+  // Find location
+  let ownerLocation = 'EcoShare Community';
+  if (ownerResources.length > 0) {
+    ownerLocation = ownerResources[0].location;
+  }
+
+  // Hydrate header
+  const firstLetter = (ownerName || 'A')[0].toUpperCase();
+  headerArea.innerHTML = `
+    <div class="user-avatar" style="width: 60px; height: 60px; font-size: 1.75rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: var(--shadow-sm);">
+      ${firstLetter}
+    </div>
+    <div style="flex: 1;">
+      <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem; margin-top: 0;">${ownerName}</h3>
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary);"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        <span>${ownerLocation}</span>
+      </div>
+    </div>
+    <div style="background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-card) 100%); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: center; min-width: 140px;">
+      <div style="font-size: 1.25rem;">${badgeIcon}</div>
+      <div style="font-weight: 700; font-size: 0.8rem; color: var(--primary); margin-top: 0.15rem;">${badgeLabel}</div>
+      <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-top: 0.25rem; white-space: nowrap;">${sharesCount} Shared &bull; ${co2Saved}kg saved</div>
+    </div>
+  `;
+
+  // Hydrate resources list
+  resourcesGrid.innerHTML = '';
+  if (ownerResources.length === 0) {
+    resourcesGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 2rem;">No shared items found.</p>`;
+  } else {
+    ownerResources.forEach(r => {
+      const itemCard = document.createElement('div');
+      itemCard.className = 'resource-card';
+      itemCard.style.cursor = 'pointer';
+      itemCard.style.boxShadow = 'none';
+      itemCard.style.border = '1px solid var(--border-color)';
+      itemCard.innerHTML = `
+        <div class="card-img-wrapper" style="height: 100px;">
+          <img class="card-img" src="${r.imageUrl || getDefaultBanner(r.category)}" alt="${r.title}">
+          <span class="card-badge badge-${r.status.toLowerCase()}" style="font-size: 0.65rem; padding: 0.15rem 0.4rem;">${r.status}</span>
+        </div>
+        <div class="card-content" style="padding: 0.75rem;">
+          <h5 class="card-title" style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 0;">${r.title}</h5>
+          <div class="card-category" style="font-size: 0.7rem; margin-bottom: 0;">${r.category}</div>
+        </div>
+      `;
+      itemCard.addEventListener('click', () => {
+        profileModal.classList.remove('active');
+        openDetailModal(r);
+      });
+      resourcesGrid.appendChild(itemCard);
+    });
+  }
+
+  // Also export this function to window so other files can trigger it
+  window.openUserProfileModal = openUserProfileModal;
+
+  profileModal.classList.add('active');
+  const modalBody = profileModal.querySelector('.modal-body');
+  if (modalBody) modalBody.scrollTop = 0;
+}
+
 // Open Edit Modal Form
 function openEditModal(resource) {
   const editModal = document.getElementById('editResourceModal');
@@ -802,6 +991,11 @@ function openEditModal(resource) {
   document.getElementById('editResourceQuantity').value = resource.quantity;
   document.getElementById('editResourceLocation').value = resource.location;
   document.getElementById('editResourceDescription').value = resource.description;
+
+  const editResourceImageUrlInput = document.getElementById('editResourceImageUrlInput');
+  if (editResourceImageUrlInput) {
+    editResourceImageUrlInput.value = resource.imageUrl || '';
+  }
 
   // Initialize and center Edit Location Map Picker
   const defaultLat = resource.latitude !== undefined && resource.latitude !== null ? Number(resource.latitude) : 45.5152;
@@ -838,6 +1032,27 @@ function openEditModal(resource) {
   const clickHandler = () => fileInput.click();
   previewZone.addEventListener('click', clickHandler);
 
+  const urlInputHandler = (e) => {
+    const url = e.target.value.trim();
+    if (url) {
+      previewImg.src = url;
+      previewZone.style.display = 'none';
+      previewContainer.classList.add('active');
+      currentEditedImageUrl = url;
+    } else {
+      if (!fileInput.value) {
+        fileInput.value = '';
+        previewImg.src = '';
+        previewZone.style.display = 'flex';
+        previewContainer.classList.remove('active');
+        currentEditedImageUrl = '';
+      }
+    }
+  };
+  if (editResourceImageUrlInput) {
+    editResourceImageUrlInput.addEventListener('input', urlInputHandler);
+  }
+
   const changeHandler = async (e) => {
     if (e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -871,6 +1086,9 @@ function openEditModal(resource) {
         currentEditedImageUrl = await storageService.uploadImage(uploadFile, (progress) => {
           progressBar.style.width = `${progress}%`;
         });
+        if (editResourceImageUrlInput) {
+          editResourceImageUrlInput.value = currentEditedImageUrl;
+        }
         toastFunc('Image updated successfully.', 'success');
       } catch (err) {
         console.error(err);
@@ -893,6 +1111,9 @@ function openEditModal(resource) {
     previewZone.style.display = 'flex';
     previewContainer.classList.remove('active');
     currentEditedImageUrl = '';
+    if (editResourceImageUrlInput) {
+      editResourceImageUrlInput.value = '';
+    }
   };
   removeBtn.addEventListener('click', removeHandler);
 
@@ -917,13 +1138,16 @@ function openEditModal(resource) {
 
     try {
       setLoading(submitBtn, true, 'Updating...');
+      const imageUrlInputVal = editResourceImageUrlInput ? editResourceImageUrlInput.value.trim() : '';
+      const finalImageUrl = currentEditedImageUrl || imageUrlInputVal;
+
       await dbService.updateResource(resource.resourceId, {
         title,
         category,
         quantity,
         location,
         description,
-        imageUrl: currentEditedImageUrl,
+        imageUrl: finalImageUrl,
         latitude: latitude ? Number(latitude) : null,
         longitude: longitude ? Number(longitude) : null
       });
@@ -947,6 +1171,9 @@ function openEditModal(resource) {
     removeBtn.removeEventListener('click', removeHandler);
     cancelEditBtn.removeEventListener('click', closeHandler);
     window.removeEventListener('click', windowHandler);
+    if (editResourceImageUrlInput) {
+      editResourceImageUrlInput.removeEventListener('input', urlInputHandler);
+    }
   };
 
   const closeHandler = () => {

@@ -11,9 +11,11 @@ export function initAuth(showToast) {
   const authContainer = document.getElementById('authContainer');
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
+  const otpForm = document.getElementById('otpForm');
   
   const tabLogin = document.getElementById('tabLogin');
   const tabRegister = document.getElementById('tabRegister');
+  const tabOtp = document.getElementById('tabOtp');
   
   // Sidebar user widgets
   const sidebarUserWidget = document.getElementById('sidebarUserWidget');
@@ -22,19 +24,54 @@ export function initAuth(showToast) {
   const userRoleEl = document.getElementById('userRole');
   const logoutBtn = document.getElementById('logoutBtn');
 
+  // Input sanitization: Automatically strip spaces in email inputs (useful for mobile keyboards)
+  const loginEmail = document.getElementById('loginEmail');
+  const registerEmail = document.getElementById('registerEmail');
+  const otpEmail = document.getElementById('otpEmail');
+  if (loginEmail) {
+    loginEmail.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\s+/g, '');
+    });
+  }
+  if (registerEmail) {
+    registerEmail.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\s+/g, '');
+    });
+  }
+  if (otpEmail) {
+    otpEmail.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\s+/g, '');
+    });
+  }
+
   // Welcome Screen Tab Switching
   tabLogin.addEventListener('click', () => {
     tabLogin.classList.add('active');
+    if (tabOtp) tabOtp.classList.remove('active');
     tabRegister.classList.remove('active');
     loginForm.classList.add('active');
+    if (otpForm) otpForm.classList.remove('active');
     registerForm.classList.remove('active');
   });
+
+  if (tabOtp) {
+    tabOtp.addEventListener('click', () => {
+      tabOtp.classList.add('active');
+      tabLogin.classList.remove('active');
+      tabRegister.classList.remove('active');
+      if (otpForm) otpForm.classList.add('active');
+      loginForm.classList.remove('active');
+      registerForm.classList.remove('active');
+    });
+  }
 
   tabRegister.addEventListener('click', () => {
     tabRegister.classList.add('active');
     tabLogin.classList.remove('active');
+    if (tabOtp) tabOtp.classList.remove('active');
     registerForm.classList.add('active');
     loginForm.classList.remove('active');
+    if (otpForm) otpForm.classList.remove('active');
   });
 
   // Login Form Submission
@@ -67,6 +104,8 @@ export function initAuth(showToast) {
     }
   });
 
+
+
   // Register Form Submission
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -95,9 +134,10 @@ export function initAuth(showToast) {
     try {
       setLoadingState(submitBtn, true, 'Creating Account...');
       localStorage.setItem('ecoshare_auth_in_progress', 'true');
-      const user = await authService.register(email, password, name, location);
-      if (user && user.activeSessionId) {
-        localStorage.setItem('ecoshare_session_id', user.activeSessionId);
+      const response = await authService.register(email, password, name, location);
+      
+      if (response && response.activeSessionId) {
+        localStorage.setItem('ecoshare_session_id', response.activeSessionId);
       }
       showToast('Account created successfully! Welcome!', 'success');
       registerForm.reset();
@@ -109,6 +149,8 @@ export function initAuth(showToast) {
       setLoadingState(submitBtn, false, 'Sign Up');
     }
   });
+
+
 
   // Logout Action
   logoutBtn.addEventListener('click', async () => {

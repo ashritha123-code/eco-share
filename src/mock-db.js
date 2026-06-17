@@ -13,9 +13,17 @@ class MockDatabase {
       localStorage.setItem('ecoshare_users', JSON.stringify([]));
     }
     
-    if (!localStorage.getItem('ecoshare_resources')) {
-      this.seedDefaultResources();
+    // Clear out any old seed data/fake users
+    let resources = [];
+    try {
+      const stored = localStorage.getItem('ecoshare_resources');
+      if (stored) {
+        resources = JSON.parse(stored).filter(r => r.resourceId && !r.resourceId.startsWith('seed_'));
+      }
+    } catch (e) {
+      console.error(e);
     }
+    localStorage.setItem('ecoshare_resources', JSON.stringify(resources));
 
     if (!localStorage.getItem('ecoshare_chats')) {
       localStorage.setItem('ecoshare_chats', JSON.stringify([]));
@@ -100,7 +108,8 @@ class MockDatabase {
         
         const activeSessionId = 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
         const isAdmin = email.toLowerCase() === 'admin@gmail.com' || email.toLowerCase() === 'admin@ecoshare.com';
-        const newUser = {
+
+        const sessionUser = {
           uid: 'mock_uid_' + Math.random().toString(36).substr(2, 9),
           email,
           displayName,
@@ -112,19 +121,16 @@ class MockDatabase {
           activeSessionId,
           createdAt: new Date().toISOString()
         };
-        
-        // Save user details (store pass hashed/plain since it's mock)
-        users.push({ ...newUser, password });
+
+        users.push({ ...sessionUser, password });
         localStorage.setItem('ecoshare_users', JSON.stringify(users));
-        
-        // Log in user
-        localStorage.setItem('ecoshare_session', JSON.stringify(newUser));
+        localStorage.setItem('ecoshare_session', JSON.stringify(sessionUser));
         this.notifyAuthListeners();
-        
-        resolve(newUser);
+        resolve(sessionUser);
       }, 500);
     });
   }
+
   
   login(email, password) {
     return new Promise((resolve, reject) => {
@@ -671,6 +677,115 @@ class MockDatabase {
         this.notifyAuthListeners();
       }
       resolve();
+    });
+  }
+
+  sendOtp(email, metadata = {}) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockCode = '123456';
+        localStorage.setItem(`ecoshare_mock_otp_${email}`, JSON.stringify({
+          code: mockCode,
+          metadata,
+          timestamp: Date.now()
+        }));
+        
+        if (window.showToastNotification) {
+          window.showToastNotification(`[MOCK OTP] A verification code has been sent: 123456`, 'success');
+        } else {
+          alert(`[MOCK OTP] One-time code for ${email} is: 123456`);
+        }
+        resolve({ email });
+      }, 500);
+    });
+  }
+
+  verifyOtp(email, token) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const cached = localStorage.getItem(`ecoshare_mock_otp_${email}`);
+        if (!cached) return reject(new Error('No OTP request found for this email or code has expired.'));
+        
+        const { code, metadata } = JSON.parse(cached);
+        if (token !== code) {
+          return reject(new Error('Invalid verification code. Please try again.'));
+        }
+        
+        localStorage.removeItem(`ecoshare_mock_otp_${email}`);
+        
+        const users = JSON.parse(localStorage.getItem('ecoshare_users') || '[]');
+        let userIndex = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+        const activeSessionId = 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        
+        let sessionUser;
+        if (userIndex === -1) {
+          const isAdmin = email.toLowerCase() === 'admin@gmail.com' || email.toLowerCase() === 'admin@ecoshare.com';
+          sessionUser = {
+            uid: 'mock_uid_' + Math.random().toString(36).substr(2, 9),
+            email,
+            displayName: metadata.displayName || 'EcoShare Member',
+            location: metadata.location || 'Community Center',
+            role: isAdmin ? 'admin' : 'resident',
+            approved: isAdmin ? true : false,
+            status: isAdmin ? 'approved' : 'pending',
+            savedResources: [],
+            activeSessionId,
+            createdAt: new Date().toISOString()
+          };
+          users.push(sessionUser);
+          localStorage.setItem('ecoshare_users', JSON.stringify(users));
+        } else {
+          sessionUser = {
+            ...users[userIndex],
+            activeSessionId
+          };
+          users[userIndex] = sessionUser;
+          localStorage.setItem('ecoshare_users', JSON.stringify(users));
+        }
+        
+        localStorage.setItem('ecoshare_session', JSON.stringify(sessionUser));
+        this.notifyAuthListeners();
+        resolve(sessionUser);
+      }, 500);
+    });
+  }
+
+  verifySignupOtp(email, token) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const cached = localStorage.getItem(`ecoshare_mock_verify_${email}`);
+        if (!cached) return reject(new Error('No registration verification pending for this email.'));
+
+        const { code, displayName, location, password } = JSON.parse(cached);
+        if (token !== code) {
+          return reject(new Error('Invalid verification code. Please try again.'));
+        }
+
+        localStorage.removeItem(`ecoshare_mock_verify_${email}`);
+
+        const users = JSON.parse(localStorage.getItem('ecoshare_users') || '[]');
+        const activeSessionId = 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        const isAdmin = email.toLowerCase() === 'admin@gmail.com' || email.toLowerCase() === 'admin@ecoshare.com';
+
+        const sessionUser = {
+          uid: 'mock_uid_' + Math.random().toString(36).substr(2, 9),
+          email,
+          displayName,
+          location,
+          role: isAdmin ? 'admin' : 'resident',
+          approved: isAdmin ? true : false,
+          status: isAdmin ? 'approved' : 'pending',
+          savedResources: [],
+          activeSessionId,
+          createdAt: new Date().toISOString()
+        };
+
+        users.push({ ...sessionUser, password });
+        localStorage.setItem('ecoshare_users', JSON.stringify(users));
+        localStorage.setItem('ecoshare_session', JSON.stringify(sessionUser));
+        this.notifyAuthListeners();
+        resolve(sessionUser);
+      }, 500);
     });
   }
 }

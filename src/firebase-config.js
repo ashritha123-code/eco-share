@@ -4,7 +4,7 @@
 import mockDb from './mock-db.js';
 
 let activeProvider = mockDb;
-let isFirebaseMode = false;
+let activeProviderType = 'mock'; // 'mock' | 'firebase' | 'supabase'
 let firebaseInstance = null;
 let currentProviderName = 'Mock Database';
 let providerChangeListeners = [];
@@ -41,7 +41,25 @@ export const authService = {
   },
   login: (email, password) => activeProvider.login(email, password),
   register: (email, password, displayName, location) => activeProvider.register(email, password, displayName, location),
-  logout: () => activeProvider.logout()
+  logout: () => activeProvider.logout(),
+  sendOtp: (email, metadata = {}) => {
+    if (activeProvider.sendOtp) {
+      return activeProvider.sendOtp(email, metadata);
+    }
+    throw new Error('OTP logins are not supported by the active database provider.');
+  },
+  verifyOtp: (email, token) => {
+    if (activeProvider.verifyOtp) {
+      return activeProvider.verifyOtp(email, token);
+    }
+    throw new Error('OTP logins are not supported by the active database provider.');
+  },
+  verifySignupOtp: (email, token, displayName, location) => {
+    if (activeProvider.verifySignupOtp) {
+      return activeProvider.verifySignupOtp(email, token, displayName, location);
+    }
+    throw new Error('Email OTP verification is not supported by the active database provider.');
+  }
 };
 
 export const dbService = {
@@ -69,8 +87,8 @@ export function getActiveProviderName() {
   return currentProviderName;
 }
 
-export function isFirebaseActive() {
-  return isFirebaseMode;
+export function getActiveProviderType() {
+  return activeProviderType;
 }
 
 export function onProviderChanged(callback) {
@@ -82,7 +100,7 @@ export function onProviderChanged(callback) {
 
 function notifyProviderChanged() {
   providerChangeListeners.forEach(callback => {
-    try { callback(currentProviderName, isFirebaseMode); } catch (e) { console.error(e); }
+    try { callback(currentProviderName, activeProviderType); } catch (e) { console.error(e); }
   });
 }
 
@@ -650,11 +668,12 @@ export async function tryInitializeFirebase(config) {
     };
 
     activeProvider = firebaseProvider;
-    isFirebaseMode = true;
+    activeProviderType = 'firebase';
     currentProviderName = 'Live Firebase';
     
     // Cache configuration successfully
     localStorage.setItem('ecoshare_firebase_config', JSON.stringify(config));
+    localStorage.setItem('ecoshare_active_provider_type', 'firebase');
     
     syncAuthProviderSubscription();
     notifyProviderChanged();
@@ -667,45 +686,94 @@ export async function tryInitializeFirebase(config) {
   }
 }
 
+// Supabase SDK Dynamic Initializer
+export async function tryInitializeSupabase(url, anonKey) {
+  if (!url || !anonKey) {
+    switchToMockMode();
+    return false;
+  }
+
+  try {
+    const { initializeSupabaseInstance, SupabaseProvider } = await import('./supabase-service.js');
+    initializeSupabaseInstance(url, anonKey);
+
+    activeProvider = SupabaseProvider;
+    activeProviderType = 'supabase';
+    currentProviderName = 'Live Supabase';
+
+    // Cache configurations
+    localStorage.setItem('ecoshare_supabase_config', JSON.stringify({ supabaseUrl: url, supabaseAnonKey: anonKey }));
+    localStorage.setItem('ecoshare_active_provider_type', 'supabase');
+
+    syncAuthProviderSubscription();
+    notifyProviderChanged();
+    console.log("Supabase initialized successfully.");
+    return true;
+  } catch (err) {
+    console.error("Supabase Initialization Failed. Falling back to Mock DB.", err);
+    switchToMockMode();
+    throw err;
+  }
+}
+
 function switchToMockMode() {
   activeProvider = mockDb;
-  isFirebaseMode = false;
+  activeProviderType = 'mock';
   currentProviderName = 'Mock Database';
+  localStorage.setItem('ecoshare_active_provider_type', 'mock');
   syncAuthProviderSubscription();
   notifyProviderChanged();
 }
 
-export function removeFirebaseConfig() {
+export function removeCloudConfig() {
   localStorage.removeItem('ecoshare_firebase_config');
+  localStorage.removeItem('ecoshare_supabase_config');
   switchToMockMode();
 }
 
+// Kept for backwards compatibility
+export function removeFirebaseConfig() {
+  removeCloudConfig();
+}
+
 export async function autoInitializeConfig() {
-  try {
-    const response = await fetch('/firebase-config.json');
-    if (response.ok) {
-      const config = await response.json();
-      if (config && config.apiKey && config.projectId) {
-        console.log("Found firebase-config.json, attempting connection...");
-        const success = await tryInitializeFirebase(config);
-        if (success) {
-          return true;
+  const activeType = localStorage.getItem('ecoshare_active_provider_type') || 'mock';
+
+  if (activeType === 'firebase') {
+    try {
+      const response = await fetch('/firebase-config.json');
+      if (response.ok) {
+        const config = await response.json();
+        if (config && config.apiKey && config.projectId) {
+          console.log("Found firebase-config.json, attempting connection...");
+          const success = await tryInitializeFirebase(config);
+          if (success) return true;
         }
       }
+    } catch (err) {
+      console.log("No firebase-config.json found or failed to fetch. Checking LocalStorage...");
     }
-  } catch (err) {
-    console.log("No firebase-config.json found or failed to fetch. Checking LocalStorage...");
-  }
 
-  // Fallback to localStorage if no json file config was resolved
-  const savedConfig = localStorage.getItem('ecoshare_firebase_config');
-  if (savedConfig) {
-    try {
-      const parsed = JSON.parse(savedConfig);
-      const success = await tryInitializeFirebase(parsed);
-      return success;
-    } catch (e) {
-      console.error("Error loading cached LocalStorage config:", e);
+    const savedConfig = localStorage.getItem('ecoshare_firebase_config');
+    if (savedConfig) {
+      try {
+        const parsed = JSON.parse(savedConfig);
+        const success = await tryInitializeFirebase(parsed);
+        return success;
+      } catch (e) {
+        console.error("Error loading cached LocalStorage config:", e);
+      }
+    }
+  } else if (activeType === 'supabase') {
+    const savedConfig = localStorage.getItem('ecoshare_supabase_config');
+    if (savedConfig) {
+      try {
+        const { supabaseUrl, supabaseAnonKey } = JSON.parse(savedConfig);
+        const success = await tryInitializeSupabase(supabaseUrl, supabaseAnonKey);
+        return success;
+      } catch (e) {
+        console.error("Error loading cached Supabase config:", e);
+      }
     }
   }
   

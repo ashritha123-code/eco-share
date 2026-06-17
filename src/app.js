@@ -3,9 +3,10 @@ import { initResources, renderResources } from './resources.js';
 import { initChats } from './chats.js';
 import { 
   tryInitializeFirebase, 
-  removeFirebaseConfig, 
+  tryInitializeSupabase,
+  removeCloudConfig, 
   getActiveProviderName, 
-  isFirebaseActive,
+  getActiveProviderType,
   onProviderChanged 
 } from './firebase-config.js';
 
@@ -103,20 +104,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial Route Load
   handleRoute(window.location.hash);
 
-  // 3. Firebase Connection Manager (Modal and status)
+  // 3. Cloud Connection Manager (Modal and status)
   const configModal = document.getElementById('configModal');
   const configForm = document.getElementById('configForm');
   const configModalClose = document.getElementById('configModalClose');
-  const disconnectFirebaseBtn = document.getElementById('disconnectFirebaseBtn');
+  const disconnectCloudBtn = document.getElementById('disconnectCloudBtn');
   const currentProviderBadge = document.getElementById('currentProviderBadge');
   const firebaseStatusText = document.getElementById('firebaseStatusText');
   const cancelConfigBtn = document.getElementById('cancelConfigBtn');
 
-  // Load existing configuration in inputs if present
-  const saved = localStorage.getItem('ecoshare_firebase_config');
-  if (saved) {
+  const configProviderSelect = document.getElementById('configProviderSelect');
+  const firebaseConfigFields = document.getElementById('firebaseConfigFields');
+  const supabaseConfigFields = document.getElementById('supabaseConfigFields');
+
+  // Load existing configurations in inputs if present
+  const savedFirebase = localStorage.getItem('ecoshare_firebase_config');
+  if (savedFirebase) {
     try {
-      const cfg = JSON.parse(saved);
+      const cfg = JSON.parse(savedFirebase);
       document.getElementById('apiKey').value = cfg.apiKey || '';
       document.getElementById('authDomain').value = cfg.authDomain || '';
       document.getElementById('projectId').value = cfg.projectId || '';
@@ -125,6 +130,39 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('appId').value = cfg.appId || '';
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  const savedSupabase = localStorage.getItem('ecoshare_supabase_config');
+  if (savedSupabase) {
+    try {
+      const cfg = JSON.parse(savedSupabase);
+      document.getElementById('supabaseUrl').value = cfg.supabaseUrl || '';
+      document.getElementById('supabaseAnonKey').value = cfg.supabaseAnonKey || '';
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const savedActiveProvider = localStorage.getItem('ecoshare_active_provider_type') || 'mock';
+  if (configProviderSelect) {
+    configProviderSelect.value = savedActiveProvider === 'mock' ? 'supabase' : savedActiveProvider;
+    updateFieldsVisibility(configProviderSelect.value);
+  }
+
+  if (configProviderSelect) {
+    configProviderSelect.addEventListener('change', (e) => {
+      updateFieldsVisibility(e.target.value);
+    });
+  }
+
+  function updateFieldsVisibility(provider) {
+    if (provider === 'firebase') {
+      firebaseConfigFields.style.display = 'flex';
+      supabaseConfigFields.style.display = 'none';
+    } else {
+      firebaseConfigFields.style.display = 'none';
+      supabaseConfigFields.style.display = 'flex';
     }
   }
 
@@ -138,72 +176,101 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Listen for database changes
-  onProviderChanged((name, isFirebase) => {
-    updateProviderUI(name, isFirebase);
+  onProviderChanged((name, providerType) => {
+    updateProviderUI(name, providerType);
     // Refresh resources to fetch from new active provider
     renderResources();
   });
 
   // Initialize UI state
-  updateProviderUI(getActiveProviderName(), isFirebaseActive());
+  updateProviderUI(getActiveProviderName(), getActiveProviderType());
 
-  function updateProviderUI(name, isFirebase) {
+  function updateProviderUI(name, providerType) {
     if (currentProviderBadge) {
       currentProviderBadge.textContent = name;
-      currentProviderBadge.className = `config-badge ${isFirebase ? 'firebase' : 'mock'}`;
+      currentProviderBadge.className = `config-badge ${providerType}`;
     }
     if (firebaseStatusText) {
-      firebaseStatusText.textContent = isFirebase 
-        ? 'Connected to your Live Google Firebase project. Authentications, assets and items are synchronized with Firestore/Storage.' 
-        : 'Running in mock database mode (LocalStorage). Data stays locally in your browser. Paste Firebase credentials to connect to Cloud.';
+      if (providerType === 'firebase') {
+        firebaseStatusText.textContent = 'Connected to your Live Google Firebase project. Authentications, assets and items are synchronized with Firestore/Storage.';
+      } else if (providerType === 'supabase') {
+        firebaseStatusText.textContent = 'Connected to your Live Supabase project. Authentications, assets and items are synchronized with PostgreSQL/Supabase Storage.';
+      } else {
+        firebaseStatusText.textContent = 'Running in mock database mode (LocalStorage). Data stays locally in your browser. Connect to a Cloud database below.';
+      }
     }
-    if (disconnectFirebaseBtn) {
-      disconnectFirebaseBtn.style.display = isFirebase ? 'inline-block' : 'none';
+    if (disconnectCloudBtn) {
+      disconnectCloudBtn.style.display = providerType !== 'mock' ? 'inline-block' : 'none';
     }
   }
 
-  // Connect Firebase Submission
+  // Connect Cloud Submission
   configForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = configForm.querySelector('button[type="submit"]');
+    const provider = configProviderSelect ? configProviderSelect.value : 'supabase';
 
-    const config = {
-      apiKey: document.getElementById('apiKey').value.trim(),
-      authDomain: document.getElementById('authDomain').value.trim(),
-      projectId: document.getElementById('projectId').value.trim(),
-      storageBucket: document.getElementById('storageBucket').value.trim(),
-      messagingSenderId: document.getElementById('messagingSenderId').value.trim(),
-      appId: document.getElementById('appId').value.trim()
-    };
+    if (provider === 'firebase') {
+      const config = {
+        apiKey: document.getElementById('apiKey').value.trim(),
+        authDomain: document.getElementById('authDomain').value.trim(),
+        projectId: document.getElementById('projectId').value.trim(),
+        storageBucket: document.getElementById('storageBucket').value.trim(),
+        messagingSenderId: document.getElementById('messagingSenderId').value.trim(),
+        appId: document.getElementById('appId').value.trim()
+      };
 
-    if (!config.apiKey || !config.projectId) {
-      showToast('API Key and Project ID are required to connect.', 'warning');
-      return;
-    }
+      if (!config.apiKey || !config.projectId) {
+        showToast('API Key and Project ID are required to connect Firebase.', 'warning');
+        return;
+      }
 
-    try {
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Connecting...';
-      
-      showToast('Connecting to Firebase and importing SDK...', 'info');
-      await tryInitializeFirebase(config);
-      
-      showToast('Connected to Cloud Firebase successfully!', 'success');
-      configModal.classList.remove('active');
-    } catch (err) {
-      console.error(err);
-      showToast('Connection failed: ' + (err.message || 'Check credentials'), 'error');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Connect Firebase';
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Connecting...';
+        showToast('Connecting to Firebase and importing SDK...', 'info');
+        await tryInitializeFirebase(config);
+        showToast('Connected to Cloud Firebase successfully!', 'success');
+        configModal.classList.remove('active');
+      } catch (err) {
+        console.error(err);
+        showToast('Connection failed: ' + (err.message || 'Check credentials'), 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Connect Cloud';
+      }
+    } else {
+      // Supabase
+      const url = document.getElementById('supabaseUrl').value.trim();
+      const anonKey = document.getElementById('supabaseAnonKey').value.trim();
+
+      if (!url || !anonKey) {
+        showToast('Supabase API URL and Anon Key are required to connect.', 'warning');
+        return;
+      }
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Connecting...';
+        showToast('Connecting to Supabase and importing SDK...', 'info');
+        await tryInitializeSupabase(url, anonKey);
+        showToast('Connected to Cloud Supabase successfully!', 'success');
+        configModal.classList.remove('active');
+      } catch (err) {
+        console.error(err);
+        showToast('Connection failed: ' + (err.message || 'Check credentials'), 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Connect Cloud';
+      }
     }
   });
 
   // Disconnect / Revert back to Mock
-  disconnectFirebaseBtn.addEventListener('click', () => {
+  disconnectCloudBtn.addEventListener('click', () => {
     if (confirm('Revert back to Mock database mode? Data will load locally from now on.')) {
-      removeFirebaseConfig();
-      showToast('Disconnected from Firebase. Reverted to Local storage DB.', 'info');
+      removeCloudConfig();
+      showToast('Disconnected from Cloud. Reverted to Local storage DB.', 'info');
       configModal.classList.remove('active');
     }
   });
