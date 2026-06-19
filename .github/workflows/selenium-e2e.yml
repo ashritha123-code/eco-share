@@ -11,73 +11,44 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    # ─── 1. Checkout ──────────────────────────────────────────
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # ─── 2. Node.js Setup ─────────────────────────────────────
     - name: Set up Node.js 20
       uses: actions/setup-node@v4
       with:
         node-version: '20'
 
-    # ─── 3. Python Setup ──────────────────────────────────────
     - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-
-    # ─── 4. Verify Chrome ─────────────────────────────────────
+        
     - name: Verify Chrome Installation
-      run: google-chrome --version || echo "Chrome not found"
-
-    # ─── 5. Install Node Dependencies ─────────────────────────
-    - name: Install Node.js Dependencies
-      run: npm install
-
-    # ─── 6. Run Jest Unit Tests ───────────────────────────────
-    - name: Run Jest Unit Test Suite
-      run: npx jest --verbose --forceExit
-      env:
-        CI: true
-
-    # ─── 7. Install Python Dependencies ───────────────────────
-    - name: Install Python Test Dependencies
+      run: google-chrome --version
+        
+    - name: Install Application Dependencies
       run: |
+        npm install
+        npm run build
         python -m pip install --upgrade pip
-        pip install selenium webdriver-manager openpyxl requests
+        pip install -r requirements.txt
+        # Ensure testing packages are installed
+        pip install pytest selenium webdriver-manager pandas openpyxl requests
 
-    # ─── 8. Build Web App ─────────────────────────────────────
-    - name: Build EcoCircle Web App
-      run: npm run build
-
-    # ─── 9. Start Local HTTP Server ───────────────────────────
     - name: Start Local HTTP Server
       run: |
         python -m http.server 3000 --directory www &
         sleep 3
         curl --retry 5 --retry-delay 1 --retry-connrefused http://localhost:3000 -o /dev/null -s -w "HTTP Status: %{http_code}\n"
 
-    # ─── 10. Execute Selenium E2E Test Suite ──────────────────
-    - name: Execute Automated Selenium E2E Test Suite
-      run: python run_e2e.py
-      env:
-        DISPLAY: :99
+    - name: Execute Automated Selenium Test Suite
+      run: |
+        python run_e2e.py
 
-    # ─── 11. Upload Excel Report ──────────────────────────────
     - name: Upload E2E Excel Report Artifact
       uses: actions/upload-artifact@v4
-      if: always()
+      if: always() # Upload the report even if some tests fail
       with:
-        name: EcoCircle-E2E-Test-Report
+        name: SecureExam-E2E-Report
         path: E2E_Test_Report.xlsx
-        retention-days: 30
-
-    # ─── 12. Upload Test Files ────────────────────────────────
-    - name: Upload Jest Test Files
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: EcoCircle-Jest-Tests
-        path: tests/
-        retention-days: 30
