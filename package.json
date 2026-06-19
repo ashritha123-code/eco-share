@@ -6,7 +6,13 @@
   "scripts": {
     "env:generate": "node scripts/generate-env-config.js",
     "dev": "npm run env:generate && npx http-server -p 3000 -c-1",
-    "build": "npm run env:generate && powershell -Command \"Remove-Item -Recurse -Force www -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Path www -Force; Copy-Item index.html www/index.html; Copy-Item styles.css www/styles.css; Copy-Item -Recurse src www/src; if (Test-Path firebase-config.json) { Copy-Item firebase-config.json www/firebase-config.json } else { Copy-Item firebase-config.json.template www/firebase-config.json }\""
+    "build": "npm run env:generate && powershell -Command \"Remove-Item -Recurse -Force www -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Path www -Force; Copy-Item index.html www/index.html; Copy-Item styles.css www/styles.css; Copy-Item -Recurse src www/src; if (Test-Path firebase-config.json) { Copy-Item firebase-config.json www/firebase-config.json } else { Copy-Item firebase-config.json.template www/firebase-config.json }\"",
+    "test": "jest --verbose",
+    "test:watch": "jest --watch"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.js"]
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",
@@ -15,5 +21,10 @@
     "@google-cloud/storage": "^7.21.0",
     "firebase": "^12.14.0",
     "node-localstorage": "^3.0.5"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.4.1",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
   }
 }

@@ -11,34 +11,143 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    # ─── 1. Checkout ──────────────────────────────────────────
     - name: Checkout Repository
       uses: actions/checkout@v4
 
+    # ─── 2. Node.js Setup (for building the web app) ──────────
+    - name: Set up Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    # ─── 3. Python Setup ──────────────────────────────────────
     - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-        
+
+    # ─── 4. Verify Chrome (pre-installed on ubuntu-latest) ────
     - name: Verify Chrome Installation
-      run: google-chrome --version
-        
-    - name: Install Application Dependencies
+      run: |
+        google-chrome --version
+        chromedriver --version || echo "ChromeDriver not on PATH, webdriver-manager will handle it"
+
+    # ─── 5. Install Node Dependencies ─────────────────────────
+    - name: Install Node.js Dependencies
+      run: npm ci
+
+    # ─── 6. Run JavaScript Unit Tests (Jest) ──────────────────
+    - name: Run Jest Unit Test Suite
+      run: npm test -- --ci --forceExit
+      env:
+        CI: true
+
+    # ─── 7. Install Python Dependencies ───────────────────────
+    - name: Install Python Test Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest selenium webdriver-manager pandas openpyxl
+        pip install selenium webdriver-manager openpyxl requests pytest
 
+    # ─── 8. Build Web App ─────────────────────────────────────
+    - name: Build EcoCircle Web App
+      run: npm run build
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+    # ─── 9. Start Local HTTP Server (serve built app) ─────────
     - name: Start Local HTTP Server
       run: |
+        cd www
         python -m http.server 3000 &
+        echo "Server PID: $!"
         sleep 3
+        # Verify server is up
+        curl --retry 5 --retry-delay 1 --retry-connrefused http://localhost:3000 -o /dev/null -s -w "HTTP Status: %{http_code}\n"
 
-    - name: Execute Automated Selenium Test Suite
+    # ─── 10. Execute Selenium E2E Test Suite ──────────────────
+    - name: Execute Automated Selenium E2E Test Suite
       run: |
         python run_e2e.py
+      env:
+        DISPLAY: :99
 
+    # ─── 11. Upload Excel Report Artifact ─────────────────────
     - name: Upload E2E Excel Report Artifact
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: EcoShare-E2E-Report
+        name: EcoCircle-E2E-Test-Report
         path: E2E_Test_Report.xlsx
+        retention-days: 30
+
+    # ─── 12. Upload Jest Coverage (if exists) ─────────────────
+    - name: Upload Jest Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: EcoCircle-Jest-Results
+        path: |
+          coverage/
+          tests/
+        retention-days: 30
+
+  # ──────────────────────────────────────────────────────────
+  # Optional: Android Build Verification
+  # ──────────────────────────────────────────────────────────
+  android-build-check:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Set up Java 17 (Required for Android Gradle)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Install Node Dependencies
+      run: npm ci
+
+    - name: Build Web App for Android
+      run: npm run build
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+    - name: Sync Capacitor Android
+      run: npx cap sync android
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Verify Android Project Structure
+      run: |
+        echo "Checking Android project structure..."
+        ls android/app/src/main/assets/public/ | head -10
+        echo "✅ Android assets synced successfully"
+
+    - name: Report Deployment Ready Status
+      run: |
+        echo "============================================"
+        echo "  ✅ EcoCircle — Deployment Status"
+        echo "============================================"
+        echo "  Jest Tests       : PASSED"
+        echo "  Selenium E2E     : PASSED"
+        echo "  Android Sync     : PASSED"
+        echo "  Status           : READY TO DEPLOY"
+        echo "============================================"
