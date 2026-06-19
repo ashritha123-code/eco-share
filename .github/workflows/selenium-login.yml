@@ -1,0 +1,55 @@
+name: Selenium E2E Login Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  selenium-login-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Verify Chrome Installation
+      run: google-chrome --version
+
+    - name: Install Application Dependencies
+      run: |
+        npm install
+        npm install selenium-webdriver --save-dev
+
+    - name: Wait for GitHub Pages to be live
+      run: |
+        echo "Waiting for GitHub Pages deployment at https://ashritha123-code.github.io/eco-share ..."
+        for i in $(seq 1 12); do
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://ashritha123-code.github.io/eco-share)
+          echo "Attempt $i: HTTP $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "Site is live!"
+            break
+          fi
+          sleep 10
+        done
+
+    - name: Execute Selenium Login Test Suite
+      run: |
+        node selenium-tests/tests/login.test.js
+      env:
+        DISPLAY: :99
+
+    - name: Upload Selenium Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Selenium-Login-Test-Results
+        path: selenium-tests/
+        retention-days: 30

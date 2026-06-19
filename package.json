@@ -1,5 +1,6 @@
 {
   "name": "ecocircle",
+  "homepage": "https://ashritha123-code.github.io/eco-share",
   "version": "1.0.0",
   "description": "EcoCircle - local eco community resource sharing platform",
   "main": "index.html",
@@ -7,12 +8,17 @@
     "env:generate": "node scripts/generate-env-config.js",
     "dev": "npm run env:generate && npx http-server -p 3000 -c-1",
     "build": "npm run env:generate && node scripts/build.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d www",
     "test": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:selenium": "node selenium-tests/tests/login.test.js"
   },
   "jest": {
     "testEnvironment": "node",
-    "testMatch": ["**/tests/**/*.test.js"]
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",
@@ -24,6 +30,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
+    "gh-pages": "^6.3.0",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1"
   }
