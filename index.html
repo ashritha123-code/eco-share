@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      const div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.bottom = '10px';
+      div.style.left = '10px';
+      div.style.right = '10px';
+      div.style.background = 'rgba(220, 53, 69, 0.95)';
+      div.style.color = 'white';
+      div.style.padding = '15px';
+      div.style.borderRadius = '5px';
+      div.style.zIndex = '999999';
+      div.style.fontFamily = 'monospace';
+      div.style.fontSize = '12px';
+      div.style.boxShadow = '0 4px 6px rgba(0,0,0,0.2)';
+      div.innerHTML = '<strong>JS Error:</strong> ' + message + ' <br><em>at ' + source + ':' + lineno + ':' + colno + '</em>';
+      document.body.appendChild(div);
+      return false;
+    };
+    window.onunhandledrejection = function(event) {
+      const div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.bottom = '10px';
+      div.style.left = '10px';
+      div.style.right = '10px';
+      div.style.background = 'rgba(220, 53, 69, 0.95)';
+      div.style.color = 'white';
+      div.style.padding = '15px';
+      div.style.borderRadius = '5px';
+      div.style.zIndex = '999999';
+      div.style.fontFamily = 'monospace';
+      div.style.fontSize = '12px';
+      div.style.boxShadow = '0 4px 6px rgba(0,0,0,0.2)';
+      div.innerHTML = '<strong>Unhandled Rejection:</strong> ' + (event.reason ? (event.reason.message || event.reason) : 'Unknown promise rejection');
+      document.body.appendChild(div);
+    };
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>EcoCircle - Community Resource Sharing & Sustainability Platform</title>
+  <meta name="description" content="Share unused resources, reduce waste, and promote sustainable living with your neighbors. Build a greener community together using EcoCircle.">
+  
+  <!-- Leaflet Maps CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Toast Notification Hub -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Primary SPA Shell -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div>
+        <div class="brand-section">
+          <div class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <span class="brand-name">EcoCircle</span>
+        </div>
+
+        <nav aria-label="Main Navigation">
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="#dashboard" id="navDashboard" class="nav-link active">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#messages" id="navMessages" class="nav-link">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#ai-assistant" id="navAIAssistant" class="nav-link">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                  <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5 5 3Z"/>
+                  <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"/>
+                </svg>
+                <span>Eco Assistant</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#settings" id="navSettings" class="nav-link">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Database Settings</span>
+              </a>
+            </li>
+            <li class="nav-item" id="navAdminItem" style="display: none;">
+              <a href="#admin" id="navAdmin" class="nav-link">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>Admin Panel</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- User Widget/Logout (Hydrated dynamically) -->
+      <div id="sidebarUserWidget" class="user-widget" style="display: none;">
+        <div id="userAvatar" class="user-avatar">U</div>
+        <div class="user-info">
+          <div id="userName" class="user-name">Loading...</div>
+          <div id="userRole" class="user-role">Resident</div>
+        </div>
+        <button id="logoutBtn" class="logout-btn" title="Sign Out" aria-label="Sign out">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ======= MOBILE TOP HEADER (hidden on desktop) ======= -->
+    <div class="mobile-top-bar" id="mobileTopBar" style="display:none;">
+      <div class="mobile-brand">
+        <div class="brand-logo" style="width:32px;height:32px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        </div>
+        <span class="mobile-brand-name">EcoCircle</span>
+      </div>
+      <div class="mobile-top-actions">
+        <button id="mobileThemeToggle" class="btn btn-secondary btn-icon-only mobile-icon-btn" aria-label="Toggle theme" title="Toggle theme"></button>
+        <button id="mobileLogoutBtn" class="mobile-logout-btn" title="Sign Out" aria-label="Sign out">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======= MOBILE BOTTOM NAV (hidden on desktop) ======= -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav" style="display:none;" aria-label="Mobile Navigation">
+      <a href="#dashboard" id="mobileNavDashboard" class="mobile-nav-item active">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+        <span>Home</span>
+      </a>
+      <a href="#messages" id="mobileNavMessages" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Messages</span>
+      </a>
+      <a href="#ai-assistant" id="mobileNavAIAssistant" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+          <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5 5 3Z"/>
+          <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"/>
+        </svg>
+        <span>Eco AI</span>
+      </a>
+      <a href="#" id="mobileNavShare" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        <span>Share</span>
+      </a>
+      <a href="#settings" id="mobileNavSettings" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Connect</span>
+      </a>
+      <a href="#admin" id="mobileNavAdmin" class="mobile-nav-item" style="display:none;">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span>Admin</span>
+      </a>
+    </nav>
+
+    <!-- Main View Window -->
+    <main class="main-content">
+      
+      <!-- Top Utility Header -->
+      <header class="page-header">
+        <div class="header-title">
+          <h1 id="pageTitleHeading">EcoCircle Platform</h1>
+          <p id="pageSubtitle">Reduce waste, share surplus, and support your neighbors.</p>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <button id="themeToggle" class="btn btn-secondary btn-icon-only" aria-label="Toggle dark/light theme" title="Toggle theme">
+            <!-- Populated by JS -->
+          </button>
+          <button id="addResourceBtn" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Share Resource</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Panel -->
+      <section id="dashboard" class="content-section active" aria-labelledby="pageTitleHeading">
+        <div class="dashboard-grid">
+          
+          <!-- Primary Feed Area -->
+          <div class="dashboard-main">
+            
+            <!-- Search & Filters Hub -->
+            <div class="search-filter-hub">
+              <div class="search-bar-wrapper">
+                <div class="search-input-container">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="searchInput" class="search-input" placeholder="Search for items (e.g. books, fresh food, tools)..." aria-label="Search resources">
+                </div>
+              </div>
+              
+              <div class="filters-wrapper">
+                <select id="statusFilter" class="filter-select" aria-label="Filter by Status">
+                  <option value="All">All Statuses</option>
+                  <option value="Available">Available</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Shared">Shared</option>
+                  <option value="Completed">Completed</option>
+                </select>
+
+                <select id="locationFilter" class="filter-select" aria-label="Filter by Location">
+                  <option value="All">All Locations</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Categories Slider -->
+            <div class="categories-container">
+              <h2 class="section-title">Browse Categories</h2>
+              <div class="categories-scroll" id="categoriesScroll" role="tablist" aria-label="Resource Categories">
+                <button class="category-chip active" data-category="All" role="tab" aria-selected="true">All</button>
+                <button class="category-chip" data-category="Food" role="tab" aria-selected="false">Food</button>
+                <button class="category-chip" data-category="Clothes" role="tab" aria-selected="false">Clothes</button>
+                <button class="category-chip" data-category="Books" role="tab" aria-selected="false">Books</button>
+                <button class="category-chip" data-category="Furniture" role="tab" aria-selected="false">Furniture</button>
+                <button class="category-chip" data-category="Electronics" role="tab" aria-selected="false">Electronics</button>
+                <button class="category-chip" data-category="Kitchen Items" role="tab" aria-selected="false">Kitchen Items</button>
+                <button class="category-chip" data-category="Medical Supplies" role="tab" aria-selected="false">Medical Supplies</button>
+                <button class="category-chip" data-category="Educational Materials" role="tab" aria-selected="false">Educational Materials</button>
+                <button class="category-chip" data-category="Household Items" role="tab" aria-selected="false">Household Items</button>
+                <button class="category-chip" data-category="Other" role="tab" aria-selected="false">Other</button>
+              </div>
+            </div>
+
+            <!-- Listings Tabs & Grid -->
+            <div>
+              <div class="categories-container" style="margin-bottom: 1.5rem;">
+                <div class="categories-scroll" style="border-bottom: 1px solid var(--border-color); padding-bottom: 0px;" role="tablist" aria-label="Resource Feed Subdivisions">
+                  <button id="tabRecent" class="category-chip active" style="border-radius: 0; border: none; background: none; border-bottom: 2px solid var(--primary);" role="tab" aria-selected="true">Recent</button>
+                  <button id="tabNearby" class="category-chip" style="border-radius: 0; border: none; background: none; border-bottom: 2px solid transparent;" role="tab" aria-selected="false">Nearby</button>
+                  <button id="tabSaved" class="category-chip" style="border-radius: 0; border: none; background: none; border-bottom: 2px solid transparent;" role="tab" aria-selected="false">Saved</button>
+                  <button id="tabMyResources" class="category-chip" style="border-radius: 0; border: none; background: none; border-bottom: 2px solid transparent;" role="tab" aria-selected="false">My Shares</button>
+                  <button id="tabMapView" class="category-chip" style="border-radius: 0; border: none; background: none; border-bottom: 2px solid transparent;" role="tab" aria-selected="false">Map View</button>
+                </div>
+              </div>
+
+              <!-- Main Grid of Resources -->
+              <div class="resources-grid" id="resourcesGrid" aria-live="polite">
+                <!-- Skeleton Loader initially -->
+                <div class="resource-card skeleton-rect skeleton"></div>
+                <div class="resource-card skeleton-rect skeleton"></div>
+                <div class="resource-card skeleton-rect skeleton"></div>
+              </div>
+
+              <!-- Interactive Leaflet Map Container -->
+              <div id="mapViewContainer" style="display: none; height: 500px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-sm); z-index: 10;"></div>
+            </div>
+
+          </div>
+
+          <!-- Secondary Widget Sidebar -->
+          <div class="dashboard-sidebar">
+            
+            <section class="sidebar-panel" id="myImpactPanel" style="display: none;" aria-labelledby="myImpactHeading">
+              <h2 id="myImpactHeading" class="section-title">My Impact</h2>
+              <div class="my-impact-card" style="background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-card) 100%); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div id="myImpactBadgeIcon" style="font-size: 2rem;">🌱</div>
+                  <div>
+                    <div id="myImpactBadgeLabel" style="font-weight: 700; font-size: 0.95rem; color: var(--primary);">Eco Seedling</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Sustainability Level</div>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; text-align: center; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+                  <div>
+                    <div id="myImpactShares" style="font-size: 1.2rem; font-weight: 800; color: var(--text-main);">0</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Items Shared</div>
+                  </div>
+                  <div>
+                    <div id="myImpactCarbon" style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">0.0 kg</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">CO2 Saved</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="sidebar-panel" aria-labelledby="recentPanelHeading">
+              <h2 id="recentPanelHeading" class="section-title">New Additions</h2>
+              <div class="panel-list" id="recentPanelList">
+                <div class="skeleton" style="height: 50px; border-radius: var(--radius-sm);"></div>
+                <div class="skeleton" style="height: 50px; border-radius: var(--radius-sm); margin-top: 10px;"></div>
+              </div>
+            </section>
+
+            <section class="sidebar-panel" aria-labelledby="savedPanelHeading">
+              <h2 id="savedPanelHeading" class="section-title">Bookmarks</h2>
+              <div class="panel-list" id="savedPanelList">
+                <div class="skeleton" style="height: 50px; border-radius: var(--radius-sm);"></div>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Messages Section -->
+      <section id="messages" class="content-section" aria-labelledby="messagesHeading">
+        <div class="chat-layout">
+          <!-- Left Column: Active Chats List -->
+          <div class="chat-list-panel">
+            <h2 id="messagesHeading" class="section-title" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 0;">Conversations</h2>
+            <div id="chatsContainer" class="chats-container-list">
+              <!-- Hydrated dynamically -->
+              <p style="color: var(--text-muted); font-size: 0.9rem; padding: 2rem; text-align: center;">No active chats.</p>
+            </div>
+          </div>
+
+          <!-- Right Column: Chat Window -->
+          <div class="chat-thread-panel">
+            <!-- Empty Placeholder -->
+            <div id="chatThreadPlaceholder" class="chat-placeholder-view">
+              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" style="color: var(--text-muted); margin-bottom: 1rem;">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <h3>Select a Conversation</h3>
+              <p>Choose a chat from the panel or request an item to start coordinating.</p>
+            </div>
+
+            <!-- Active Thread Workspace -->
+            <div id="chatThreadWorkspace" class="chat-workspace-view" style="display: none;">
+              <header class="chat-workspace-header">
+                <div>
+                  <h3 id="chatPartnerName">Resident Name</h3>
+                  <div id="chatResourceContext" class="chat-resource-badge">Context Resource</div>
+                </div>
+              </header>
+              <div id="chatMessagesThread" class="chat-messages-thread-container">
+                <!-- Message bubbles -->
+              </div>
+              <form id="chatSendForm" class="chat-send-box-wrapper">
+                <input type="text" id="chatInputMessage" placeholder="Type a message..." required autocomplete="off">
+                <button type="submit" class="btn btn-primary btn-icon-only" aria-label="Send">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Eco AI Assistant Section -->
+      <section id="ai-assistant" class="content-section" aria-labelledby="aiHeadingTitle">
+        <div class="dashboard-grid">
+          
+          <!-- Left Column: Suggestion Panel & AI Settings Promo -->
+          <div class="dashboard-sidebar">
+            <div class="sidebar-panel">
+              <h2 class="section-title">AI Quick Starts</h2>
+              <div class="panel-list" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+                <button class="ai-suggestion-card" data-prompt="How can I start composting at home easily?">
+                  <div style="font-size: 1.25rem;">🍂</div>
+                  <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">Home Composting</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Steps to start composting</div>
+                  </div>
+                </button>
+                <button class="ai-suggestion-card" data-prompt="What items are safe to recycle in general and how do I prep them?">
+                  <div style="font-size: 1.25rem;">♻️</div>
+                  <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">Recycling Guide</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Standard recycling rules</div>
+                  </div>
+                </button>
+                <button class="ai-suggestion-card" data-prompt="Estimate the carbon footprint offset of sharing a running lawnmower with 5 neighbors.">
+                  <div style="font-size: 1.25rem;">🌱</div>
+                  <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">Lawnmower Share Offset</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">CO2 reduction calculations</div>
+                  </div>
+                </button>
+                <button class="ai-suggestion-card" data-prompt="Give me 5 creative DIY upcycling ideas for old cardboard boxes and plastic jars.">
+                  <div style="font-size: 1.25rem;">🎨</div>
+                  <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">Upcycling DIY Ideas</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Crafting with household waste</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div class="sidebar-panel" id="aiApiKeyAlert" style="background: linear-gradient(135deg, var(--primary-glow) 0%, rgba(245, 158, 11, 0.05) 100%); border: 1px dashed var(--border-color); padding: 1.25rem; border-radius: var(--radius-md);">
+              <div style="display: flex; gap: 0.75rem;">
+                <span style="font-size: 1.5rem;">✨</span>
+                <div>
+                  <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-main);">Live Gemini Brain</h4>
+                  <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.75rem;">
+                    Unlock full AI replies by adding a Gemini API Key under <strong>Database Settings</strong>.
+                  </p>
+                  <button id="aiConfigOpenBtn" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem; border-radius: 6px;">Configure Key</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Chat Panel -->
+          <div class="dashboard-main">
+            <div class="chat-thread-panel" style="min-height: 520px; display: flex; flex-direction: column; background-color: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); overflow: hidden;">
+              <header class="chat-workspace-header" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-card);">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div class="brand-logo" style="width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                  </div>
+                  <div>
+                    <h3 id="aiHeadingTitle" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">EcoCircle AI Assistant</h3>
+                    <div style="font-size: 0.75rem; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 0.25rem;">
+                      <span class="pulse-indicator"></span> Live Sustainability Advisor
+                    </div>
+                  </div>
+                </div>
+                <button id="aiClearChatBtn" class="btn btn-secondary btn-icon-only" style="width: 36px; height: 36px; border-radius: 50%;" title="Clear conversation" aria-label="Clear chat">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </header>
+              
+              <!-- Messages Container -->
+              <div id="aiChatMessages" class="chat-messages-thread-container" style="flex-grow: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-height: 400px; min-height: 350px;">
+                <!-- Initial greeting message -->
+                <div class="chat-msg chat-msg-partner" style="display: flex; gap: 0.75rem; align-items: flex-start; max-width: 85%;">
+                  <div class="chat-msg-avatar" style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0;">AI</div>
+                  <div class="chat-msg-body" style="background-color: var(--primary-light); color: var(--text-main); padding: 0.9rem 1.25rem; border-radius: 0 16px 16px 16px; font-size: 0.9rem; line-height: 1.5; box-shadow: var(--shadow-sm);">
+                    Hi there! I am your EcoCircle AI Assistant. 🌟 <br><br>
+                    Ask me anything about:
+                    <ul style="margin-left: 1.25rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem;">
+                      <li>Recycling rules and preparation</li>
+                      <li>Composting techniques for beginners</li>
+                      <li>Upcycling household objects</li>
+                      <li>Estimating Carbon Footprint (CO2) savings</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chat Form Input -->
+              <form id="aiChatForm" class="chat-send-box-wrapper" style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; gap: 0.75rem; background-color: var(--bg-card); align-items: center;">
+                <input type="text" id="aiChatInput" placeholder="Ask a sustainability question..." required autocomplete="off" style="flex-grow: 1; padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1.5px solid var(--border-color); background-color: var(--bg-app); color: var(--text-main); font-family: var(--font-body); font-size: 0.95rem; transition: border-color var(--transition-fast);" />
+                <button type="submit" id="aiChatSubmitBtn" class="btn btn-primary btn-icon-only" aria-label="Send query">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </section>
+      
+      <!-- Admin Panel Section -->
+      <section id="admin" class="content-section" aria-labelledby="adminHeading">
+        <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+          <div class="dashboard-main">
+            <h2 id="adminHeading" class="section-title">Community Administration</h2>
+            
+            <!-- Admin Sub-Navigation Tabs -->
+            <div class="categories-container" style="margin-bottom: 1.5rem; margin-top: -0.5rem;">
+              <div class="categories-scroll" style="border-bottom: 1px solid var(--border-color); padding-bottom: 0px;" role="tablist" aria-label="Admin Subsections">
+                <button id="adminTabAnalytics" class="category-chip active" style="border-radius: 0; border: none; background: none; border-bottom: 2px solid var(--primary);" role="tab" aria-selected="true">Analytics Dashboard</button>
+                <button id="adminTabRequests" class="category-chip" style="border-radius: 0; border: none; background: none; border-bottom: 2px solid transparent;" role="tab" aria-selected="false">Pending Registrations</button>
+              </div>
+            </div>
+
+            <!-- Tab 1: Analytics Dashboard Content -->
+            <div id="adminAnalyticsContent" class="admin-tab-content active">
+              
+              <!-- KPI Summary Cards -->
+              <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+                <div class="kpi-card">
+                  <div class="kpi-icon" style="color: var(--primary);">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                  </div>
+                  <div class="kpi-info">
+                    <span class="kpi-label">Total Shared Items</span>
+                    <h3 id="statTotalItems" class="kpi-value">0</h3>
+                  </div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-icon" style="color: #3b82f6;">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div class="kpi-info">
+                    <span class="kpi-label">Active Neighbors</span>
+                    <h3 id="statActiveUsers" class="kpi-value">0</h3>
+                  </div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-icon" style="color: var(--success);">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="kpi-info">
+                    <span class="kpi-label">Completed Exchanges</span>
+                    <h3 id="statCompletedExchanges" class="kpi-value">0</h3>
+                  </div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-icon" style="color: #eab308;">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M6 3h12"></path><path d="M6 8h12"></path><path d="m6 13 8.5 8"></path><path d="M6 13h3"></path><path d="M9 13c6.667 0 6.667-10 0-10"></path></svg>
+                  </div>
+                  <div class="kpi-info">
+                    <span class="kpi-label">Carbon Saved (kg CO2)</span>
+                    <h3 id="statCarbonSaved" class="kpi-value">0.0</h3>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Analytics Charts Row -->
+              <div class="charts-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                
+                <!-- Category Distribution Card -->
+                <div class="analytics-card">
+                  <h3 class="analytics-card-title">Category Distribution</h3>
+                  <div class="donut-chart-container" style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; min-height: 220px;">
+                    <!-- Left: SVG Pie/Donut Chart -->
+                    <div id="categoryDonutWrapper" style="position: relative; width: 160px; height: 160px;">
+                      <!-- Generated Dynamically -->
+                    </div>
+                    <!-- Right: Custom Legend List -->
+                    <div id="categoryLegendList" class="chart-legend-list" style="flex: 1; min-width: 120px;">
+                      <!-- Generated Dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Monthly Activity Chart Card -->
+                <div class="analytics-card">
+                  <h3 class="analytics-card-title">Community Sharing Activity</h3>
+                  <div class="activity-chart-container" style="position: relative; height: 200px; display: flex; align-items: flex-end; justify-content: space-between; padding: 1rem 0.5rem 0.5rem 0.5rem; border-bottom: 2px solid var(--border-color);">
+                    <!-- Dynamic bar elements or area graph -->
+                    <div id="activityChartBars" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: space-around;">
+                      <!-- Generated Dynamically -->
+                    </div>
+                  </div>
+                  <!-- X-Axis Labels -->
+                  <div id="activityChartLabels" style="display: flex; justify-content: space-around; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                    <!-- Generated Dynamically -->
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Leaderboard Card -->
+              <div class="analytics-card" style="margin-bottom: 1rem;">
+                <h3 class="analytics-card-title" style="margin-bottom: 1rem;">Top Sustainability Contributors</h3>
+                <div class="leaderboard-table-wrapper" style="overflow-x: auto;">
+                  <table class="leaderboard-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                      <tr style="border-bottom: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted);">
+                        <th style="padding: 0.75rem 1rem;">Rank</th>
+                        <th style="padding: 0.75rem 1rem;">Contributor</th>
+                        <th style="padding: 0.75rem 1rem;">Neighborhood</th>
+                        <th style="padding: 0.75rem 1rem; text-align: right;">Resources Shared</th>
+                      </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                      <!-- Generated Dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Tab 2: Pending Requests Content -->
+            <div id="adminRequestsContent" class="admin-tab-content" style="display: none;">
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1.5rem;">
+                Review and manage user registration requests for the EcoCircle community.
+              </p>
+              <div class="resources-grid" id="pendingUsersGrid" style="grid-template-columns: 1fr; gap: 1rem;">
+                <!-- Dynamically populated user requests -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      
+    </main>
+  </div>
+
+  <!-- Pending Approval Overlay -->
+  <div id="pendingApprovalContainer" class="auth-container" style="display: none; background: rgba(10, 15, 12, 0.95); backdrop-filter: blur(10px); z-index: 9999;">
+    <div class="auth-card" style="text-align: center; max-width: 450px; padding: 3rem 2rem;">
+      <div id="pendingApprovalIcon" style="color: var(--warning); margin-bottom: 1.5rem;">
+        <svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <h2 id="pendingApprovalTitle" style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; margin-bottom: 0.75rem;">Account Pending Approval</h2>
+      <p id="pendingApprovalDesc" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
+        Thank you for registering! Your membership request has been submitted to the community admin for approval. Please check back later.
+      </p>
+      <button id="pendingSignOutBtn" class="btn btn-secondary" style="width: 100%;">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Authentication Welcome Screen Overlay -->
+  <div id="authContainer" class="auth-container active">
+    <div class="auth-card">
+      <header class="auth-hero">
+        <div class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        </div>
+        <h2>Welcome to EcoCircle</h2>
+        <p>Your local community resource sharing platform</p>
+      </header>
+
+      <div class="auth-tabs" role="tablist">
+        <button id="tabLogin" class="auth-tab active" role="tab" aria-selected="true">Sign In</button>
+        <button id="tabRegister" class="auth-tab" role="tab" aria-selected="false">Create Account</button>
+      </div>
+
+      <div class="auth-form-container">
+        
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active" aria-label="Sign In Form">
+          <div class="form-group">
+            <label for="loginEmail">Email Address</label>
+            <div class="input-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <input type="email" id="loginEmail" class="input-field" required placeholder="name@example.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <div class="input-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <input type="password" id="loginPassword" class="input-field" required placeholder="Enter password">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Sign In</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form" aria-label="Register Form">
+          <div class="form-group">
+            <label for="registerName">Full Name</label>
+            <div class="input-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <input type="text" id="registerName" class="input-field" required placeholder="John Doe">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerEmail">Email Address</label>
+            <div class="input-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <input type="email" id="registerEmail" class="input-field" required placeholder="name@example.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="registerLocation">Location / Neighborhood</label>
+            <div class="input-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <input type="text" id="registerLocation" class="input-field" required placeholder="e.g. Westside, Oakwood Heights">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="registerPassword">Password</label>
+              <div class="input-container">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <input type="password" id="registerPassword" class="input-field" required placeholder="Min 6 chars">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="registerConfirmPassword">Confirm</label>
+              <div class="input-container">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <input type="password" id="registerConfirmPassword" class="input-field" required placeholder="Confirm">
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Sign Up</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Resource -->
+  <dialog id="addResourceModal" class="modal-overlay" aria-labelledby="addModalHeading">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h3 id="addModalHeading">Share a New Resource</h3>
+        <button id="cancelAddBtn" class="modal-close" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </header>
+      <form id="addResourceForm">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <label for="resourceTitle" style="margin-bottom: 0;">Title / Name</label>
+              <button type="button" id="aiAutoFillBtn" class="btn" style="font-size: 0.75rem; padding: 0.35rem 0.75rem; display: flex; align-items: center; gap: 0.3rem; border-radius: 6px; border: 1px solid var(--accent); color: var(--accent); background-color: var(--accent-light); cursor: pointer; transition: all var(--transition-fast);">
+                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                <span>AI Auto-Fill</span>
+              </button>
+            </div>
+            <div class="input-container">
+              <input type="text" id="resourceTitle" class="input-field" style="padding-left: 1rem;" placeholder="e.g. Electric Lawn Mower, Fresh Strawberries" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="resourceCategory">Category</label>
+              <select id="resourceCategory" class="filter-select" style="width: 100%; padding: 0.9rem 1rem;" required>
+                <option value="" disabled selected>Select Category</option>
+                <option value="Food">Food</option>
+                <option value="Clothes">Clothes</option>
+                <option value="Books">Books</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Kitchen Items">Kitchen Items</option>
+                <option value="Medical Supplies">Medical Supplies</option>
+                <option value="Educational Materials">Educational Materials</option>
+                <option value="Household Items">Household Items</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="resourceQuantity">Quantity</label>
+              <div class="input-container">
+                <input type="text" id="resourceQuantity" class="input-field" style="padding-left: 1rem;" placeholder="e.g. 1 unit, 3 kg" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="resourceLocation">Pick-up Location</label>
+            <div class="input-container">
+              <input type="text" id="resourceLocation" class="input-field" style="padding-left: 1rem;" placeholder="e.g. Westside Community Center" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="resourceDescription">Description & Condition</label>
+            <textarea id="resourceDescription" class="input-field" style="padding: 1rem; padding-left: 1rem; min-height: 100px; resize: vertical;" placeholder="Provide details about the item condition, expiry date (if food), instructions, or share terms..." required></textarea>
+          </div>
+
+          <!-- Form Map Location Picker -->
+          <div class="form-group">
+            <label>Pick-up Location on Map</label>
+            <div id="addMapPicker" style="height: 180px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 0.5rem; z-index: 10;"></div>
+            <input type="hidden" id="addResourceLat">
+            <input type="hidden" id="addResourceLng">
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.25rem;">Click on the map to drop a pin at the pick-up spot.</p>
+          </div>
+
+          <!-- Image Upload Component -->
+          <div class="form-group">
+            <label for="resourceImageUrlInput">Resource Image URL</label>
+            <div class="input-container" style="margin-bottom: 0.75rem;">
+              <input type="url" id="resourceImageUrlInput" class="input-field" style="padding-left: 1rem;" placeholder="Paste an image web link (optional)">
+            </div>
+            <label>Or Upload Image File</label>
+            <input type="file" id="resourceImageFile" accept="image/*" style="display: none;">
+            
+            <div class="image-upload-zone" id="imageUploadZone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <div class="upload-instructions">
+                <span>Upload a file</span> or drag and drop
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">PNG, JPG up to 10MB</div>
+            </div>
+
+            <div class="upload-preview-container" id="uploadPreviewContainer">
+              <img id="uploadPreviewImg" class="upload-preview-img" src="" alt="Thumbnail preview">
+              <button type="button" id="uploadRemoveBtn" class="upload-remove-btn" title="Remove image" aria-label="Remove image">&times;</button>
+            </div>
+
+            <!-- Simulated Upload Progress -->
+            <div class="upload-progress-container" id="uploadProgressBarContainer">
+              <div class="upload-progress-bar" id="uploadProgressBar"></div>
+            </div>
+          </div>
+
+        </div>
+        <footer class="modal-footer">
+          <button type="submit" class="btn btn-primary">Share Resource</button>
+        </footer>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal: Edit Resource -->
+  <dialog id="editResourceModal" class="modal-overlay" aria-labelledby="editModalHeading">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h3 id="editModalHeading">Edit Shared Resource</h3>
+        <button id="cancelEditBtn" class="modal-close" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </header>
+      <form id="editResourceForm">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <div class="form-group">
+            <label for="editResourceTitle">Title / Name</label>
+            <div class="input-container">
+              <input type="text" id="editResourceTitle" class="input-field" style="padding-left: 1rem;" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editResourceCategory">Category</label>
+              <select id="editResourceCategory" class="filter-select" style="width: 100%; padding: 0.9rem 1rem;" required>
+                <option value="Food">Food</option>
+                <option value="Clothes">Clothes</option>
+                <option value="Books">Books</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Kitchen Items">Kitchen Items</option>
+                <option value="Medical Supplies">Medical Supplies</option>
+                <option value="Educational Materials">Educational Materials</option>
+                <option value="Household Items">Household Items</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="editResourceQuantity">Quantity</label>
+              <div class="input-container">
+                <input type="text" id="editResourceQuantity" class="input-field" style="padding-left: 1rem;" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editResourceLocation">Pick-up Location</label>
+            <div class="input-container">
+              <input type="text" id="editResourceLocation" class="input-field" style="padding-left: 1rem;" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editResourceDescription">Description & Condition</label>
+            <textarea id="editResourceDescription" class="input-field" style="padding: 1rem; padding-left: 1rem; min-height: 100px; resize: vertical;" required></textarea>
+          </div>
+
+          <!-- Edit Map Location Picker -->
+          <div class="form-group">
+            <label>Pick-up Location on Map</label>
+            <div id="editMapPicker" style="height: 180px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 0.5rem; z-index: 10;"></div>
+            <input type="hidden" id="editResourceLat">
+            <input type="hidden" id="editResourceLng">
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.25rem;">Click on the map to drop a pin at the pick-up spot.</p>
+          </div>
+
+          <!-- Edit Image Upload -->
+          <div class="form-group">
+            <label for="editResourceImageUrlInput">Resource Image URL</label>
+            <div class="input-container" style="margin-bottom: 0.75rem;">
+              <input type="url" id="editResourceImageUrlInput" class="input-field" style="padding-left: 1rem;" placeholder="Paste an image web link (optional)">
+            </div>
+            <label>Or Replace Image File</label>
+            <input type="file" id="editResourceImageFile" accept="image/*" style="display: none;">
+            
+            <div class="image-upload-zone" id="editImageUploadZone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <div class="upload-instructions">
+                <span>Replace image file</span> or drag and drop
+              </div>
+            </div>
+
+            <div class="upload-preview-container" id="editUploadPreviewContainer">
+              <img id="editUploadPreviewImg" class="upload-preview-img" src="" alt="Thumbnail preview">
+              <button type="button" id="editUploadRemoveBtn" class="upload-remove-btn" title="Remove image" aria-label="Remove image">&times;</button>
+            </div>
+
+            <div class="upload-progress-container" id="editUploadProgressBarContainer">
+              <div class="upload-progress-bar" id="editUploadProgressBar"></div>
+            </div>
+          </div>
+
+        </div>
+        <footer class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </footer>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal: Details View -->
+  <dialog id="detailModal" class="modal-overlay" aria-labelledby="detailModalHeading">
+    <div class="modal-content" style="max-width: 760px;">
+      <header class="modal-header">
+        <h3 id="detailModalHeading">Resource Details</h3>
+        <button id="detailModalClose" class="modal-close" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </header>
+      <div class="modal-body" id="detailModalBody">
+        <!-- Rendered dynamically -->
+      </div>
+      <footer class="modal-footer" id="detailModalFooter">
+        <!-- Buttons rendered dynamically -->
+      </footer>
+    </div>
+  </dialog>
+ 
+  <!-- Modal: User Profile View -->
+  <dialog id="userProfileModal" class="modal-overlay" aria-labelledby="profileModalHeading">
+    <div class="modal-content" style="max-width: 650px;">
+      <header class="modal-header">
+        <h3 id="profileModalHeading">Contributor Profile</h3>
+        <button id="profileModalClose" class="modal-close" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </header>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div id="profileHeaderArea" style="display: flex; align-items: center; gap: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color);">
+          <!-- Hydrated dynamically -->
+        </div>
+        <div>
+          <h4 style="margin-bottom: 1rem; font-family: var(--font-display); font-weight: 700; color: var(--text-main);">Shared Resources</h4>
+          <div class="resources-grid" id="profileResourcesGrid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; max-height: 350px; overflow-y: auto; padding: 0.25rem;">
+            <!-- Hydrated dynamically -->
+          </div>
+        </div>
+      </div>
+      <footer class="modal-footer">
+        <button id="profileModalCloseBtn" class="btn btn-secondary">Close</button>
+      </footer>
+    </div>
+  </dialog>
+
+  <!-- Modal: Config Settings (Firebase Management) -->
+  <dialog id="configModal" class="modal-overlay" aria-labelledby="configModalHeading">
+    <div class="modal-content" style="max-width: 550px;">
+      <header class="modal-header">
+        <h3 id="configModalHeading">Database Configuration</h3>
+        <button id="configModalClose" class="modal-close" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </header>
+      <form id="configForm">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-app); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-weight: 600; font-size: 0.95rem;">Active Backend:</div>
+            <div id="currentProviderBadge" class="config-badge mock">Mock Database</div>
+          </div>
+          
+          <p id="firebaseStatusText" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.5rem;">
+            Running in mock database mode (LocalStorage). Data stays locally in your browser. Connect to a Cloud database below.
+          </p>
+
+          <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 0.5rem 0;">
+
+          <div class="form-group">
+            <label for="configProviderSelect">Cloud Database Provider</label>
+            <select id="configProviderSelect" class="filter-select" style="width: 100%; padding: 0.9rem 1rem;">
+              <option value="firebase">Firebase (Google Cloud)</option>
+              <option value="supabase" selected>Supabase (PostgreSQL Cloud)</option>
+            </select>
+          </div>
+
+          <!-- Firebase Fields Wrapper -->
+          <div id="firebaseConfigFields" style="display: none; flex-direction: column; gap: 1.25rem;">
+            <div class="form-group">
+              <label for="apiKey">API Key</label>
+              <input type="text" id="apiKey" class="input-field" style="padding-left: 1rem;" placeholder="AIzaSy...">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="projectId">Project ID</label>
+                <input type="text" id="projectId" class="input-field" style="padding-left: 1rem;" placeholder="EcoCircle-app-123">
+              </div>
+              <div class="form-group">
+                <label for="authDomain">Auth Domain</label>
+                <input type="text" id="authDomain" class="input-field" style="padding-left: 1rem;" placeholder="EcoCircle-app-123.firebaseapp.com">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="storageBucket">Storage Bucket</label>
+                <input type="text" id="storageBucket" class="input-field" style="padding-left: 1rem;" placeholder="EcoCircle-app-123.appspot.com">
+              </div>
+              <div class="form-group">
+                <label for="messagingSenderId">Messaging Sender ID</label>
+                <input type="text" id="messagingSenderId" class="input-field" style="padding-left: 1rem;" placeholder="1234567890">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="appId">App ID</label>
+              <input type="text" id="appId" class="input-field" style="padding-left: 1rem;" placeholder="1:1234567890:web:abc123xyz">
+            </div>
+          </div>
+
+          <!-- Supabase Fields Wrapper -->
+          <div id="supabaseConfigFields" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div class="form-group">
+              <label for="supabaseUrl">Supabase API URL</label>
+              <input type="url" id="supabaseUrl" class="input-field" style="padding-left: 1rem;" placeholder="https://xxxxxx.supabase.co">
+            </div>
+            <div class="form-group">
+              <label for="supabaseAnonKey">Supabase Anon Key</label>
+              <input type="text" id="supabaseAnonKey" class="input-field" style="padding-left: 1rem;" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+            </div>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 0.5rem 0;">
+          
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <h4 style="font-family: var(--font-headings); font-weight: 700; font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem;">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" style="color: var(--accent);"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              Gemini AI Integration
+            </h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+              Paste a Gemini API key to enable live AI-powered descriptions, CO2 offset estimation, and the sustainability chatbot. Get a free key at <a href="https://aistudio.google.com/" target="_blank" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Google AI Studio</a>.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="geminiApiKeyInput">Gemini API Key</label>
+            <div class="input-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text-muted);"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.778-7.778zM12 2v4m10 4h-4M5.64 5.64l2.82 2.82M18.36 5.64l-2.82 2.82"/></svg>
+              <input type="password" id="geminiApiKeyInput" class="input-field" style="padding-left: 2.75rem;" placeholder="Enter Gemini API Key (Optional)">
+            </div>
+          </div>
+
+        </div>
+        <footer class="modal-footer" style="gap: 1rem;">
+          <button type="button" id="disconnectCloudBtn" class="btn btn-danger" style="margin-right: auto; display: none;">Disconnect Cloud</button>
+          <button type="button" id="cancelConfigBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-accent">Connect Cloud</button>
+        </footer>
+      </form>
+    </div>
+  </dialog>
+
+
+
+  <!-- Environment config (sets window.__ENV__ with Supabase/Firebase credentials) -->
+  <script src="src/env-config.js"></script>
+  <!-- Offline/WebView-safe Local Supabase UMD Bundle -->
+  <script src="src/supabase-js.js"></script>
+  <!-- ES6 App Controller Module -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
+

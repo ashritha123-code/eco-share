@@ -1,0 +1,54 @@
+name: Selenium E2E Testing Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Verify Chrome Installation
+      run: google-chrome --version
+        
+    - name: Install Application Dependencies
+      run: |
+        npm install
+        npm run build
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Ensure testing packages are installed
+        pip install pytest selenium webdriver-manager pandas openpyxl requests
+
+    - name: Start Local HTTP Server
+      run: |
+        python -m http.server 3000 --directory www &
+        sleep 3
+        curl --retry 5 --retry-delay 1 --retry-connrefused http://localhost:3000 -o /dev/null -s -w "HTTP Status: %{http_code}\n"
+
+    - name: Execute Automated Selenium Test Suite
+      run: |
+        python run_e2e.py
+
+    - name: Upload E2E Excel Report Artifact
+      uses: actions/upload-artifact@v4
+      if: always() # Upload the report even if some tests fail
+      with:
+        name: SecureExam-E2E-Report
+        path: E2E_Test_Report.xlsx
