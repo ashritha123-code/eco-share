@@ -1,29 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Green Sustainability Theme Colors */
-  --primary-hue: 142;
-  --primary: hsl(var(--primary-hue), 72%, 29%); /* Deep Forest Green */
-  --primary-medium: hsl(var(--primary-hue), 64%, 40%); /* Leaf Green */
-  --primary-light: hsl(var(--primary-hue), 70%, 94%); /* Soft Green Tint */
-  --primary-glow: hsla(var(--primary-hue), 72%, 29%, 0.15);
+  /* Premium Deep Teal & Gold Sustainability Palette */
+  --primary-hue: 172;
+  --primary: hsl(var(--primary-hue), 85%, 23%); /* Luxurious Deep Teal */
+  --primary-medium: hsl(var(--primary-hue), 70%, 33%); /* Vibrant Eucalyptus */
+  --primary-light: hsl(var(--primary-hue), 50%, 94%); /* Extremely Soft Sage/Teal */
+  --primary-glow: hsla(var(--primary-hue), 85%, 23%, 0.12);
   
-  --accent-hue: 160;
-  --accent: hsl(var(--accent-hue), 84%, 39%); /* Minty Emerald Green */
-  --accent-light: hsl(var(--accent-hue), 84%, 96%);
+  --accent-hue: 43;
+  --accent: hsl(var(--accent-hue), 96%, 53%); /* Premium Warm Gold/Amber */
+  --accent-light: hsl(var(--accent-hue), 96%, 95%);
 
   /* Neutrals (Light Mode Default) */
-  --bg-app: #f4f7f5;
+  --bg-app: #f4f8f6; /* Modern cool grey-green */
   --bg-card: #ffffff;
-  --bg-sidebar: #0f1d13; /* Dark green/slate for luxury feel sidebar */
-  --text-main: #1b2620;
-  --text-muted: #5e6d64;
-  --border-color: #e2e8e4;
-  --shadow-sm: 0 2px 4px rgba(15, 29, 19, 0.04);
-  --shadow-md: 0 8px 16px rgba(15, 29, 19, 0.08);
-  --shadow-lg: 0 16px 32px rgba(15, 29, 19, 0.12);
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.5);
+  --bg-sidebar: #081a14; /* Deep forest-teal for luxury sidebar */
+  --text-main: #0c1c16;
+  --text-muted: #4e5f57;
+  --border-color: #e3ece8;
+  --shadow-sm: 0 4px 8px rgba(8, 26, 20, 0.03);
+  --shadow-md: 0 10px 24px rgba(8, 26, 20, 0.06);
+  --shadow-lg: 0 20px 48px rgba(8, 26, 20, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.6);
 
   /* Status Colors */
   --status-available: #10b981; /* Green */
@@ -46,18 +46,18 @@
 
 /* Dark Mode override */
 [data-theme="dark"] {
-  --bg-app: #0b100c;
-  --bg-card: #121a14;
-  --bg-sidebar: #070a08;
-  --text-main: #e2e8e4;
-  --text-muted: #94a39a;
-  --border-color: #1f2d23;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.4);
-  --glass-bg: rgba(18, 26, 20, 0.7);
-  --glass-border: rgba(31, 45, 35, 0.5);
-  --primary-light: hsl(var(--primary-hue), 40%, 15%);
+  --bg-app: #08100c; /* Deep dark slate-teal */
+  --bg-card: #0f1a15; /* Refined dark card */
+  --bg-sidebar: #060c09; /* Deepest dark */
+  --text-main: #e2ede8;
+  --text-muted: #889e93;
+  --border-color: #1a2a22;
+  --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 10px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.45);
+  --glass-bg: rgba(15, 26, 21, 0.75);
+  --glass-border: rgba(26, 42, 34, 0.55);
+  --primary-light: hsl(var(--primary-hue), 40%, 12%);
   --accent-light: hsl(var(--accent-hue), 40%, 12%);
 }
 
