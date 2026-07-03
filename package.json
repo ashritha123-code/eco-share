@@ -18,6 +18,10 @@
     "testEnvironment": "node",
     "testMatch": [
       "**/tests/**/*.test.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/selenium-tests/"
     ]
   },
   "dependencies": {
