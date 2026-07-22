@@ -1,0 +1,32 @@
+# Node dependencies
+node_modules/
+
+# Local build artifacts
+www/
+android/.gradle/
+android/app/build/
+android/local.properties
+.gradle/
+build/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+automation/logs/
+
+# Private environment configurations — DO NOT COMMIT
+.env
+firebase-config.json
+
+# Auto-generated from .env — DO NOT COMMIT
+src/env-config.js
+
+# IDE config files
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+test-api.ps1
