@@ -763,16 +763,38 @@ export function removeFirebaseConfig() {
   removeCloudConfig();
 }
 
+// Detects if the app is running inside a Capacitor Android/iOS WebView
+function isCapacitorNative() {
+  return !!(
+    (window.Capacitor && window.Capacitor.platform && window.Capacitor.platform !== 'web') ||
+    window.location.protocol === 'capacitor:' ||
+    window.location.origin === 'https://localhost' ||
+    window.location.protocol === 'file:'
+  );
+}
+
 export async function autoInitializeConfig() {
+  // --- MOBILE / CAPACITOR FIX ---
+  // When running inside the Android APK (Capacitor WebView), always use Firebase.
+  // MySQL requires a local server that is not available on a real phone.
+  // Also clear any stale 'mysql' provider setting left from a previous install.
+  if (isCapacitorNative()) {
+    const stale = localStorage.getItem('EcoCircle_active_provider_type');
+    if (stale === 'mysql' || stale === 'mock' || !stale) {
+      console.log('[EcoCircle] Mobile context detected. Forcing Firebase provider.');
+      localStorage.setItem('EcoCircle_active_provider_type', 'firebase');
+    }
+  }
+
   let activeType = localStorage.getItem('EcoCircle_active_provider_type');
   if (!activeType) {
     // Default to Firebase (cloud backend) on fresh install.
-    // MySQL requires a locally-running server and is not available on mobile devices.
     activeType = 'firebase';
     localStorage.setItem('EcoCircle_active_provider_type', 'firebase');
   }
 
   if (activeType === 'firebase') {
+    // 1. Try fetching firebase-config.json (works on web server / GitHub Pages)
     try {
       const response = await fetch('/firebase-config.json');
       if (response.ok) {
@@ -784,19 +806,41 @@ export async function autoInitializeConfig() {
         }
       }
     } catch (err) {
-      console.log("No firebase-config.json found or failed to fetch. Checking LocalStorage...");
+      console.log("No firebase-config.json found or failed to fetch. Trying embedded config...");
     }
 
+    // 2. Try cached config from localStorage
     const savedConfig = localStorage.getItem('EcoCircle_firebase_config');
     if (savedConfig) {
       try {
         const parsed = JSON.parse(savedConfig);
-        const success = await tryInitializeFirebase(parsed);
-        return success;
+        if (parsed && parsed.apiKey && parsed.projectId) {
+          const success = await tryInitializeFirebase(parsed);
+          if (success) return true;
+        }
       } catch (e) {
         console.error("Error loading cached LocalStorage config:", e);
       }
     }
+
+    // 3. HARDCODED EMBEDDED FIREBASE CONFIG — always works on Android/iOS APK
+    // This is the EcoShare Firebase project. Safe to embed as it is protected by Firebase Rules.
+    const embeddedConfig = {
+      apiKey: (window.__ENV__ && window.__ENV__.FIREBASE_API_KEY) || "AIzaSyCML2DwhVEb17zri9LDPxrkjv_NTB_LHyQ",
+      authDomain: (window.__ENV__ && window.__ENV__.FIREBASE_AUTH_DOMAIN) || "ecoshare-app-2026.firebaseapp.com",
+      projectId: (window.__ENV__ && window.__ENV__.FIREBASE_PROJECT_ID) || "ecoshare-app-2026",
+      storageBucket: (window.__ENV__ && window.__ENV__.FIREBASE_STORAGE_BUCKET) || "ecoshare-app-2026.firebasestorage.app",
+      messagingSenderId: (window.__ENV__ && window.__ENV__.FIREBASE_MESSAGING_SENDER_ID) || "749730328979",
+      appId: (window.__ENV__ && window.__ENV__.FIREBASE_APP_ID) || "1:749730328979:web:8a5d50f3f4baff4f1fb866"
+    };
+    console.log("[EcoCircle] Using embedded Firebase config as fallback.");
+    try {
+      const success = await tryInitializeFirebase(embeddedConfig);
+      if (success) return true;
+    } catch (err) {
+      console.error("Embedded Firebase config also failed:", err);
+    }
+
   } else if (activeType === 'mysql') {
     const success = await tryInitializeMysql();
     return success;
