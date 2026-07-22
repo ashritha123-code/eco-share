@@ -9,6 +9,14 @@ android/local.properties
 .gradle/
 build/
 
+# Python caches
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+automation/logs/
+
 # Private environment configurations — DO NOT COMMIT
 .env
 firebase-config.json
@@ -21,6 +29,4 @@ src/env-config.js
 .vscode/
 Thumbs.db
 .DS_Store
-test-api.ps1  
-jest-results.json
-
+test-api.ps1
