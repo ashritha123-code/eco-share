@@ -77,7 +77,7 @@ app.post('/api/auth/register', async (req, res) => {
 
     const checkIsAdmin = (emailStr) => {
       const normalized = emailStr.toLowerCase().trim().replace(/\+[^@]*@/, '@');
-      return normalized === 'admin@gmail.com' || normalized === 'admin@ecocircle.com' || normalized === 'ashrithap2200.sse@saveetha.com';
+      return normalized === 'admin@gmail.com' || normalized === 'admin@ecocircle.com' || normalized === 'admin@ecoshare.com' || normalized === 'ashrithap2200.sse@saveetha.com';
     };
 
     const uid = 'mysql_uid_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now();

@@ -106,13 +106,15 @@ async function setupDatabase() {
     // 6. Seed Default Users
     console.log('[MySQL Setup] Seeding default admin users...');
     const adminUsers = [
-      ['admin_uid_1', 'admin@gmail.com', 'System Admin', 'Central Hub', 'admin', 1, 'approved', '[]', new Date().toISOString()],
-      ['admin_uid_2', 'admin@ecocircle.com', 'Eco Admin', 'Central Hub', 'admin', 1, 'approved', '[]', new Date().toISOString()]
+      ['admin_uid_1', 'admin@gmail.com', 'System Admin', 'Central Hub', 'admin', 1, 'approved', '[]', 'EcoPass123', new Date().toISOString()],
+      ['admin_uid_2', 'admin@ecocircle.com', 'Eco Admin', 'Central Hub', 'admin', 1, 'approved', '[]', 'EcoPass123', new Date().toISOString()],
+      ['admin_uid_3', 'admin@ecoshare.com', 'EcoShare Admin', 'Central Hub', 'admin', 1, 'approved', '[]', 'EcoPass123', new Date().toISOString()],
+      ['admin_uid_4', 'ashrithap2200.sse@saveetha.com', 'Admin Developer', 'Central Hub', 'admin', 1, 'approved', '[]', 'EcoPass123', new Date().toISOString()]
     ];
 
     for (const u of adminUsers) {
       await connection.query(
-        'INSERT INTO `users` (uid, email, displayName, location, role, approved, status, savedResources, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO `users` (uid, email, displayName, location, role, approved, status, savedResources, password, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         u
       );
     }
