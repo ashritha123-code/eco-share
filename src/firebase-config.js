@@ -766,8 +766,8 @@ export function removeFirebaseConfig() {
 export async function autoInitializeConfig() {
   let activeType = localStorage.getItem('EcoCircle_active_provider_type');
   if (!activeType) {
-    activeType = 'supabase';
-    localStorage.setItem('EcoCircle_active_provider_type', 'supabase');
+    activeType = 'mysql';
+    localStorage.setItem('EcoCircle_active_provider_type', 'mysql');
   }
 
   if (activeType === 'firebase') {
