@@ -766,8 +766,10 @@ export function removeFirebaseConfig() {
 export async function autoInitializeConfig() {
   let activeType = localStorage.getItem('EcoCircle_active_provider_type');
   if (!activeType) {
-    activeType = 'mysql';
-    localStorage.setItem('EcoCircle_active_provider_type', 'mysql');
+    // Default to Firebase (cloud backend) on fresh install.
+    // MySQL requires a locally-running server and is not available on mobile devices.
+    activeType = 'firebase';
+    localStorage.setItem('EcoCircle_active_provider_type', 'firebase');
   }
 
   if (activeType === 'firebase') {

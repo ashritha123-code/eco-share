@@ -107,6 +107,12 @@ export function initAuth(showToast) {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showInlineError(loginForm, submitBtn, 'Please enter a valid email address (e.g. ashrithap2200.sse@saveetha.com).');
+      return;
+    }
+
     try {
       setLoadingState(submitBtn, true, 'Signing In...');
       localStorage.setItem('EcoCircle_auth_in_progress', 'true');
@@ -118,7 +124,10 @@ export function initAuth(showToast) {
       loginForm.reset();
     } catch (err) {
       console.error(err);
-      const msg = err.message || 'Login failed. Please check your email and password.';
+      let msg = err.message || 'Login failed. Please check your email and password.';
+      if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+        msg = 'Network connection error. Please check your internet connection or ensure your backend server is accessible.';
+      }
       showInlineError(loginForm, submitBtn, msg);
       showToast(msg, 'error');
     } finally {
