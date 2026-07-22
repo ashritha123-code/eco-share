@@ -14,7 +14,11 @@
     "deploy": "gh-pages -d www",
     "test": "jest --verbose",
     "test:watch": "jest --watch",
-    "test:selenium": "node selenium-tests/tests/login.test.js"
+    "test:ci": "jest --forceExit --json --outputFile=jest-results.json",
+    "test:selenium": "node selenium-tests/tests/login.test.js",
+    "test:e2e": "python run_e2e.py",
+    "test:all": "npm run test:ci && python run_e2e.py && python generate_reports.py",
+    "report": "python generate_reports.py"
   },
   "jest": {
     "testEnvironment": "node",
@@ -23,7 +27,8 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/selenium-tests/"
+      "/selenium-tests/",
+      "/android-tests/"
     ]
   },
   "dependencies": {

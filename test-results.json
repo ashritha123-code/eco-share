@@ -1,0 +1,3558 @@
+{
+  "generated_at": "2026-07-22 21:43:19",
+  "summary": {
+    "total": 394,
+    "passed": 394,
+    "failed": 0,
+    "skipped": 0,
+    "pass_rate": 100.0
+  },
+  "tests": [
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V01: title with 3 chars passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V01: title with 3 chars passes",
+      "status": "PASSED",
+      "duration": 55,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V02: title with 50 chars passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V02: title with 50 chars passes",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V03: title with 2 chars fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V03: title with 2 chars fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V04: empty title fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V04: empty title fails",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V05: null title fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V05: null title fails",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V06: title with 101 chars fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V06: title with 101 chars fails",
+      "status": "PASSED",
+      "duration": 19,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V07: whitespace-only title fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V07: whitespace-only title fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V08: standard email passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V08: standard email passes",
+      "status": "PASSED",
+      "duration": 11,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V09: subdomain email passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V09: subdomain email passes",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V10: email with plus alias passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V10: email with plus alias passes",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V11: email without @ fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V11: email without @ fails",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V12: email without TLD fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V12: email without TLD fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V13: email starting with @ fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V13: email starting with @ fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V14: empty email fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V14: empty email fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V15: email with spaces fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V15: email with spaces fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V16: description with 10 chars passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V16: description with 10 chars passes",
+      "status": "PASSED",
+      "duration": 6,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V17: description with 9 chars fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V17: description with 9 chars fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V18: empty description fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V18: empty description fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V19: null description fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V19: null description fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V20: long description (1000 chars) passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V20: long description (1000 chars) passes",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V21: too long description (1001 chars) fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V21: too long description (1001 chars) fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V22: Food is a valid category",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V22: Food is a valid category",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V23: Books is a valid category",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V23: Books is a valid category",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V24: Electronics is a valid category",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V24: Electronics is a valid category",
+      "status": "PASSED",
+      "duration": 7,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V25: invalid category fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V25: invalid category fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V26: empty string fails category validation",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V26: empty string fails category validation",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V27: case-sensitive category (lowercase) fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V27: case-sensitive category (lowercase) fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V28: positive CO2 offset is valid",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V28: positive CO2 offset is valid",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V29: zero CO2 offset is valid",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V29: zero CO2 offset is valid",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V30: negative CO2 offset fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V30: negative CO2 offset fails",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V31: string CO2 offset fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V31: string CO2 offset fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V32: Infinity fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V32: Infinity fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V33: NaN fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V33: NaN fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V34: valid location passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V34: valid location passes",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V35: single character location fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V35: single character location fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V36: empty location fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V36: empty location fails",
+      "status": "PASSED",
+      "duration": 19,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V37: valid name passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V37: valid name passes",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V38: single character name fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V38: single character name fails",
+      "status": "PASSED",
+      "duration": 13,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V39: empty name fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V39: empty name fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V40: name with 60 chars passes",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V40: name with 60 chars passes",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[VALIDATION] Form Field Validation TC-V41: name with 61 chars fails",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-V41: name with 61 chars fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI01: formatTimeAgo shows \"just now\" for recent times",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI01: formatTimeAgo shows \"just now\" for recent times",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI02: formatTimeAgo shows minutes for 5 min ago",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI02: formatTimeAgo shows minutes for 5 min ago",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI03: formatTimeAgo shows hours for 3 hrs ago",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI03: formatTimeAgo shows hours for 3 hrs ago",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI04: formatTimeAgo shows days for yesterday",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI04: formatTimeAgo shows days for yesterday",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI05: truncateText returns full text when under limit",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI05: truncateText returns full text when under limit",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI06: truncateText adds ellipsis when text is too long",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI06: truncateText adds ellipsis when text is too long",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI07: truncateText at exact limit is not truncated",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI07: truncateText at exact limit is not truncated",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI08: available status badge has green color",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI08: available status badge has green color",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI09: reserved status badge has orange color",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI09: reserved status badge has orange color",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI10: taken status badge has red color",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI10: taken status badge has red color",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI11: unknown status returns fallback badge",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI11: unknown status returns fallback badge",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI12: CO2 display formats grams for small values",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI12: CO2 display formats grams for small values",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI13: CO2 display formats kg for medium values",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI13: CO2 display formats kg for medium values",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI14: CO2 display formats tonnes for large values",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI14: CO2 display formats tonnes for large values",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI15: Books category shows book emoji",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI15: Books category shows book emoji",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI16: Electronics category shows laptop emoji",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI16: Electronics category shows laptop emoji",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI17: Food category shows food emoji",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI17: Food category shows food emoji",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UI/UX] Rendering & Display Logic TC-UI18: unknown category returns default emoji",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-UI18: unknown category returns default emoji",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S01: XSS script tag is escaped",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S01: XSS script tag is escaped",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S02: HTML tags are escaped",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S02: HTML tags are escaped",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S03: double quotes are escaped",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S03: double quotes are escaped",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S04: single quotes are escaped",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S04: single quotes are escaped",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S05: ampersand is escaped",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S05: ampersand is escaped",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S06: normal text passes through sanitization unchanged (except chars)",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S06: normal text passes through sanitization unchanged (except chars)",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S07: null input returns empty string",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S07: null input returns empty string",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S08: non-string input returns empty string",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S08: non-string input returns empty string",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S09: valid API key is considered safe",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S09: valid API key is considered safe",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S10: API key with spaces is unsafe",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S10: API key with spaces is unsafe",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S11: empty API key is unsafe",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S11: empty API key is unsafe",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S12: null API key is unsafe",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S12: null API key is unsafe",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S13: API key with HTML tags is unsafe",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S13: API key with HTML tags is unsafe",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S14: SQL injection pattern detected in title",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S14: SQL injection pattern detected in title",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S15: SQL SELECT detected",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S15: SQL SELECT detected",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S16: normal text has no SQL injection",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S16: normal text has no SQL injection",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[SECURITY] Input Sanitization & XSS Prevention TC-S17: slash in input is escaped",
+      "suite": "validation-ui-security.test.js",
+      "name": "TC-S17: slash in input is escaped",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-01: valid message is created successfully",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-01: valid message is created successfully",
+      "status": "PASSED",
+      "duration": 96,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-02: created message has a unique id",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-02: created message has a unique id",
+      "status": "PASSED",
+      "duration": 21,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-03: created message has timestamp",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-03: created message has timestamp",
+      "status": "PASSED",
+      "duration": 20,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-04: created message is unread by default",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-04: created message is unread by default",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-05: created message has correct sender",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-05: created message has correct sender",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-06: empty message text fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-06: empty message text fails",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-07: whitespace-only message fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-07: whitespace-only message fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-08: null message text fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-08: null message text fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-09: empty sender fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-09: empty sender fails",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-10: null sender fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-10: null sender fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-11: message longer than 2000 chars fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-11: message longer than 2000 chars fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-12: message exactly 2000 chars passes",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-12: message exactly 2000 chars passes",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-13: message type defaults to text",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-13: message type defaults to text",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-14: image message type is preserved",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-14: image message type is preserved",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Creation TC-CHAT-15: two messages have different ids",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-15: two messages have different ids",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-16: messages saved to storage correctly",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-16: messages saved to storage correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-17: messages loaded back from storage correctly",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-17: messages loaded back from storage correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-18: loaded messages preserve sender field",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-18: loaded messages preserve sender field",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-19: loaded messages preserve text field",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-19: loaded messages preserve text field",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-20: empty storage returns empty array",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-20: empty storage returns empty array",
+      "status": "PASSED",
+      "duration": 43,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-21: corrupted storage returns empty array gracefully",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-21: corrupted storage returns empty array gracefully",
+      "status": "PASSED",
+      "duration": 73,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-22: 50 messages persist correctly",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-22: 50 messages persist correctly",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Persistence TC-CHAT-23: clearing messages removes from storage",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-23: clearing messages removes from storage",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-24: filter messages by sender returns correct count",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-24: filter messages by sender returns correct count",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-25: filter messages by non-existent sender returns empty array",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-25: filter messages by non-existent sender returns empty array",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-26: markAsRead marks other users messages as read",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-26: markAsRead marks other users messages as read",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-27: markAsRead does not mark own messages as read",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-27: markAsRead does not mark own messages as read",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-28: getUnreadCount returns correct count for current user",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-28: getUnreadCount returns correct count for current user",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-29: getUnreadCount is 0 when all messages are from self",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-29: getUnreadCount is 0 when all messages are from self",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-30: valid chatroom ID passes validation",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-30: valid chatroom ID passes validation",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-31: chatroom ID shorter than 3 chars fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-31: chatroom ID shorter than 3 chars fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[CHAT] Message Filtering & Read Status TC-CHAT-32: null chatroom ID fails",
+      "suite": "chat.test.js",
+      "name": "TC-CHAT-32: null chatroom ID fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Category Breakdown TC-ANLYT-01: getCategoryBreakdown counts categories correctly",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-01: getCategoryBreakdown counts categories correctly",
+      "status": "PASSED",
+      "duration": 223,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Category Breakdown TC-ANLYT-02: getCategoryBreakdown returns empty object for empty list",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-02: getCategoryBreakdown returns empty object for empty list",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Category Breakdown TC-ANLYT-03: getTopCategory returns the most common category",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-03: getTopCategory returns the most common category",
+      "status": "PASSED",
+      "duration": 25,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Category Breakdown TC-ANLYT-04: getTopCategory returns null for empty list",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-04: getTopCategory returns null for empty list",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Category Breakdown TC-ANLYT-05: getCategoryCO2 sums CO2 per category correctly",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-05: getCategoryCO2 sums CO2 per category correctly",
+      "status": "PASSED",
+      "duration": 26,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-06: calculateTreeEquivalent from 21000g = 1 tree",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-06: calculateTreeEquivalent from 21000g = 1 tree",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-07: calculateTreeEquivalent from 42000g = 2 trees",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-07: calculateTreeEquivalent from 42000g = 2 trees",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-08: calculateTreeEquivalent from 0g = 0 trees",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-08: calculateTreeEquivalent from 0g = 0 trees",
+      "status": "PASSED",
+      "duration": 35,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-09: calculateTreeEquivalent floors result",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-09: calculateTreeEquivalent floors result",
+      "status": "PASSED",
+      "duration": 40,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-10: calculateWasteReductionKg for furniture is significant",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-10: calculateWasteReductionKg for furniture is significant",
+      "status": "PASSED",
+      "duration": 11,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-11: calculateWasteReductionKg for mixed resources sums correctly",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-11: calculateWasteReductionKg for mixed resources sums correctly",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-12: calculateWasteReductionKg for empty list is 0",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-12: calculateWasteReductionKg for empty list is 0",
+      "status": "PASSED",
+      "duration": 10,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] CO2 & Environmental Impact TC-ANLYT-13: Electronics has higher CO2 offset than Food",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-13: Electronics has higher CO2 offset than Food",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Monthly Statistics TC-ANLYT-14: this month resources are counted correctly",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-14: this month resources are counted correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Monthly Statistics TC-ANLYT-15: this month CO2 is summed correctly",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-15: this month CO2 is summed correctly",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Monthly Statistics TC-ANLYT-16: resources without createdAt are excluded",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-16: resources without createdAt are excluded",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Monthly Statistics TC-ANLYT-17: old resources are not counted in this month",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-17: old resources are not counted in this month",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-18: getPassRate calculates correctly",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-18: getPassRate calculates correctly",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-19: getPassRate is 100 when all pass",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-19: getPassRate is 100 when all pass",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-20: getPassRate is 0 when all fail",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-20: getPassRate is 0 when all fail",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-21: getPassRate returns 0 for empty list",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-21: getPassRate returns 0 for empty list",
+      "status": "PASSED",
+      "duration": 11,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-22: generateReportSummary counts correctly",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-22: generateReportSummary counts correctly",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-23: generateReportSummary passRate is correct",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-23: generateReportSummary passRate is correct",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-24: generateReportSummary with all passing",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-24: generateReportSummary with all passing",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ANALYTICS] Report Generation TC-ANLYT-25: generateReportSummary with empty list",
+      "suite": "analytics.test.js",
+      "name": "TC-ANLYT-25: generateReportSummary with empty list",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-01: valid resource creation succeeds",
+      "suite": "resources.test.js",
+      "name": "TC-RES-01: valid resource creation succeeds",
+      "status": "PASSED",
+      "duration": 214,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-02: new resource has Available status by default",
+      "suite": "resources.test.js",
+      "name": "TC-RES-02: new resource has Available status by default",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-03: new resource has resourceId assigned",
+      "suite": "resources.test.js",
+      "name": "TC-RES-03: new resource has resourceId assigned",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-04: new resource has createdAt timestamp",
+      "suite": "resources.test.js",
+      "name": "TC-RES-04: new resource has createdAt timestamp",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-05: resource with no title fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-05: resource with no title fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-06: resource with 2-char title fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-06: resource with 2-char title fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-07: resource with 3-char title passes",
+      "suite": "resources.test.js",
+      "name": "TC-RES-07: resource with 3-char title passes",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-08: resource with 101-char title fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-08: resource with 101-char title fails",
+      "status": "PASSED",
+      "duration": 10,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-09: resource with short description fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-09: resource with short description fails",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-10: resource with description too long fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-10: resource with description too long fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-11: resource with invalid category fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-11: resource with invalid category fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-12: resource with no category fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-12: resource with no category fails",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-13: resource with no location fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-13: resource with no location fails",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-14: resource with single char location fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-14: resource with single char location fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-15: resource missing quantity fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-15: resource missing quantity fails",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Resource Creation Validation TC-RES-16: multiple validation errors returned at once",
+      "suite": "resources.test.js",
+      "name": "TC-RES-16: multiple validation errors returned at once",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-01: Food is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-01: Food is a valid category",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-02: Clothes is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-02: Clothes is a valid category",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-03: Books is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-03: Books is a valid category",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-04: Furniture is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-04: Furniture is a valid category",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-05: Electronics is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-05: Electronics is a valid category",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-06: Kitchen Items is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-06: Kitchen Items is a valid category",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-07: Medical Supplies is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-07: Medical Supplies is a valid category",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-08: Educational Materials is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-08: Educational Materials is a valid category",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-09: Household Items is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-09: Household Items is a valid category",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-10: Other is a valid category",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-10: Other is a valid category",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Valid Categories TC-RES-CAT-11: lowercase category fails validation",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CAT-11: lowercase category fails validation",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Status Management TC-RES-ST-01: resource can be set to Reserved",
+      "suite": "resources.test.js",
+      "name": "TC-RES-ST-01: resource can be set to Reserved",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Status Management TC-RES-ST-02: resource can be set to Taken",
+      "suite": "resources.test.js",
+      "name": "TC-RES-ST-02: resource can be set to Taken",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Status Management TC-RES-ST-03: resource can be set to Completed",
+      "suite": "resources.test.js",
+      "name": "TC-RES-ST-03: resource can be set to Completed",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Status Management TC-RES-ST-04: resource can be set back to Available",
+      "suite": "resources.test.js",
+      "name": "TC-RES-ST-04: resource can be set back to Available",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Status Management TC-RES-ST-05: invalid status string fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-ST-05: invalid status string fails",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Status Management TC-RES-ST-06: empty status string fails",
+      "suite": "resources.test.js",
+      "name": "TC-RES-ST-06: empty status string fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Delete Authorization TC-RES-DEL-01: owner can delete their own resource",
+      "suite": "resources.test.js",
+      "name": "TC-RES-DEL-01: owner can delete their own resource",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Delete Authorization TC-RES-DEL-02: non-owner cannot delete resource",
+      "suite": "resources.test.js",
+      "name": "TC-RES-DEL-02: non-owner cannot delete resource",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Delete Authorization TC-RES-DEL-03: non-existent resource returns not found error",
+      "suite": "resources.test.js",
+      "name": "TC-RES-DEL-03: non-existent resource returns not found error",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-SRCH-01: search by title returns matching resources",
+      "suite": "resources.test.js",
+      "name": "TC-RES-SRCH-01: search by title returns matching resources",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-SRCH-02: search is case-insensitive",
+      "suite": "resources.test.js",
+      "name": "TC-RES-SRCH-02: search is case-insensitive",
+      "status": "PASSED",
+      "duration": 43,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-SRCH-03: search by location returns matching resources",
+      "suite": "resources.test.js",
+      "name": "TC-RES-SRCH-03: search by location returns matching resources",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-SRCH-04: search with no match returns empty array",
+      "suite": "resources.test.js",
+      "name": "TC-RES-SRCH-04: search with no match returns empty array",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-SRCH-05: empty search returns all resources",
+      "suite": "resources.test.js",
+      "name": "TC-RES-SRCH-05: empty search returns all resources",
+      "status": "PASSED",
+      "duration": 18,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-SRCH-06: null search returns all resources",
+      "suite": "resources.test.js",
+      "name": "TC-RES-SRCH-06: null search returns all resources",
+      "status": "PASSED",
+      "duration": 8,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-FILTER-01: filter by Books category returns correct results",
+      "suite": "resources.test.js",
+      "name": "TC-RES-FILTER-01: filter by Books category returns correct results",
+      "status": "PASSED",
+      "duration": 7,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-FILTER-02: filter by Electronics returns correct results",
+      "suite": "resources.test.js",
+      "name": "TC-RES-FILTER-02: filter by Electronics returns correct results",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-FILTER-03: filter by non-existent category returns empty",
+      "suite": "resources.test.js",
+      "name": "TC-RES-FILTER-03: filter by non-existent category returns empty",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-FILTER-04: filter by status Available returns correct count",
+      "suite": "resources.test.js",
+      "name": "TC-RES-FILTER-04: filter by status Available returns correct count",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-FILTER-05: filter by status Reserved returns correct count",
+      "suite": "resources.test.js",
+      "name": "TC-RES-FILTER-05: filter by status Reserved returns correct count",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] Search & Filtering TC-RES-FILTER-06: null category returns all resources",
+      "suite": "resources.test.js",
+      "name": "TC-RES-FILTER-06: null category returns all resources",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-01: total CO2 calculated correctly",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-01: total CO2 calculated correctly",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-02: handles resources with missing co2Offset",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-02: handles resources with missing co2Offset",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-03: empty resource list returns 0",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-03: empty resource list returns 0",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-04: formats grams correctly",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-04: formats grams correctly",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-05: formats kg correctly",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-05: formats kg correctly",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-06: formats tonnes correctly",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-06: formats tonnes correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-07: Electronics category has high CO2 offset",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-07: Electronics category has high CO2 offset",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[RESOURCES] CO2 Analytics TC-RES-CO2-08: Furniture category has high CO2 offset",
+      "suite": "resources.test.js",
+      "name": "TC-RES-CO2-08: Furniture category has high CO2 offset",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U01: returns empty string when no key configured",
+      "suite": "ai-service.test.js",
+      "name": "TC-U01: returns empty string when no key configured",
+      "status": "PASSED",
+      "duration": 243,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U02: returns key stored in localStorage",
+      "suite": "ai-service.test.js",
+      "name": "TC-U02: returns key stored in localStorage",
+      "status": "PASSED",
+      "duration": 82,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U03: falls back to window.__ENV__ when localStorage empty",
+      "suite": "ai-service.test.js",
+      "name": "TC-U03: falls back to window.__ENV__ when localStorage empty",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U04: localStorage key takes priority over window.__ENV__",
+      "suite": "ai-service.test.js",
+      "name": "TC-U04: localStorage key takes priority over window.__ENV__",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U05: isLive() returns false with no key",
+      "suite": "ai-service.test.js",
+      "name": "TC-U05: isLive() returns false with no key",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U06: isLive() returns true with a key set",
+      "suite": "ai-service.test.js",
+      "name": "TC-U06: isLive() returns true with a key set",
+      "status": "PASSED",
+      "duration": 8,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U07: saveApiKey() stores trimmed key",
+      "suite": "ai-service.test.js",
+      "name": "TC-U07: saveApiKey() stores trimmed key",
+      "status": "PASSED",
+      "duration": 9,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U08: saveApiKey() removes key when empty string given",
+      "suite": "ai-service.test.js",
+      "name": "TC-U08: saveApiKey() removes key when empty string given",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U09: saveApiKey() removes key when null given",
+      "suite": "ai-service.test.js",
+      "name": "TC-U09: saveApiKey() removes key when null given",
+      "status": "PASSED",
+      "duration": 9,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - API Key Management TC-U10: isLive() is false when key is empty string in localStorage",
+      "suite": "ai-service.test.js",
+      "name": "TC-U10: isLive() is false when key is empty string in localStorage",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U11: compost query returns composting guide",
+      "suite": "ai-service.test.js",
+      "name": "TC-U11: compost query returns composting guide",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U12: recycle query returns recycling guide",
+      "suite": "ai-service.test.js",
+      "name": "TC-U12: recycle query returns recycling guide",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U13: carbon query returns carbon info",
+      "suite": "ai-service.test.js",
+      "name": "TC-U13: carbon query returns carbon info",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U14: upcycling query returns DIY ideas",
+      "suite": "ai-service.test.js",
+      "name": "TC-U14: upcycling query returns DIY ideas",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U15: solar query returns energy tips",
+      "suite": "ai-service.test.js",
+      "name": "TC-U15: solar query returns energy tips",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U16: water query returns conservation tips",
+      "suite": "ai-service.test.js",
+      "name": "TC-U16: water query returns conservation tips",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U17: plastic query returns plastic reduction guide",
+      "suite": "ai-service.test.js",
+      "name": "TC-U17: plastic query returns plastic reduction guide",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U18: unknown query returns default sustainability tip",
+      "suite": "ai-service.test.js",
+      "name": "TC-U18: unknown query returns default sustainability tip",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U19: compost response contains emoji",
+      "suite": "ai-service.test.js",
+      "name": "TC-U19: compost response contains emoji",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U20: recycle response contains emoji",
+      "suite": "ai-service.test.js",
+      "name": "TC-U20: recycle response contains emoji",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U21: different queries return different responses",
+      "suite": "ai-service.test.js",
+      "name": "TC-U21: different queries return different responses",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U22: response is always a non-empty string",
+      "suite": "ai-service.test.js",
+      "name": "TC-U22: response is always a non-empty string",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U23: case-insensitive matching for COMPOST",
+      "suite": "ai-service.test.js",
+      "name": "TC-U23: case-insensitive matching for COMPOST",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Mock Responses TC-U24: case-insensitive matching for RECYCLE",
+      "suite": "ai-service.test.js",
+      "name": "TC-U24: case-insensitive matching for RECYCLE",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U25: books categorized correctly",
+      "suite": "ai-service.test.js",
+      "name": "TC-U25: books categorized correctly",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U26: novel categorized as Books",
+      "suite": "ai-service.test.js",
+      "name": "TC-U26: novel categorized as Books",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U27: textbook categorized as Books",
+      "suite": "ai-service.test.js",
+      "name": "TC-U27: textbook categorized as Books",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U28: chair categorized as Furniture",
+      "suite": "ai-service.test.js",
+      "name": "TC-U28: chair categorized as Furniture",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U29: table categorized as Furniture",
+      "suite": "ai-service.test.js",
+      "name": "TC-U29: table categorized as Furniture",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U30: sofa categorized as Furniture",
+      "suite": "ai-service.test.js",
+      "name": "TC-U30: sofa categorized as Furniture",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U31: shirt categorized as Clothes",
+      "suite": "ai-service.test.js",
+      "name": "TC-U31: shirt categorized as Clothes",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U32: jacket categorized as Clothes",
+      "suite": "ai-service.test.js",
+      "name": "TC-U32: jacket categorized as Clothes",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U33: phone categorized as Electronics",
+      "suite": "ai-service.test.js",
+      "name": "TC-U33: phone categorized as Electronics",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U34: charger categorized as Electronics",
+      "suite": "ai-service.test.js",
+      "name": "TC-U34: charger categorized as Electronics",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U35: food categorized correctly",
+      "suite": "ai-service.test.js",
+      "name": "TC-U35: food categorized correctly",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U36: medical supplies categorized correctly",
+      "suite": "ai-service.test.js",
+      "name": "TC-U36: medical supplies categorized correctly",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U37: unrecognized item defaults to Other",
+      "suite": "ai-service.test.js",
+      "name": "TC-U37: unrecognized item defaults to Other",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U38: co2Offset is always positive",
+      "suite": "ai-service.test.js",
+      "name": "TC-U38: co2Offset is always positive",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U39: furniture has highest co2 offset among common items",
+      "suite": "ai-service.test.js",
+      "name": "TC-U39: furniture has highest co2 offset among common items",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U40: all required fields present in auto-fill result",
+      "suite": "ai-service.test.js",
+      "name": "TC-U40: all required fields present in auto-fill result",
+      "status": "PASSED",
+      "duration": 6,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U41: description is non-empty string",
+      "suite": "ai-service.test.js",
+      "name": "TC-U41: description is non-empty string",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[UNIT] AI Service - Auto-Fill Categorization TC-U42: quantity is non-empty string",
+      "suite": "ai-service.test.js",
+      "name": "TC-U42: quantity is non-empty string",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Approval TC-ADM-01: admin can approve a pending user",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-01: admin can approve a pending user",
+      "status": "PASSED",
+      "duration": 82,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Approval TC-ADM-02: approved user gets approvedAt timestamp",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-02: approved user gets approvedAt timestamp",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Approval TC-ADM-03: cannot approve already approved user",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-03: cannot approve already approved user",
+      "status": "PASSED",
+      "duration": 9,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Approval TC-ADM-04: cannot approve rejected user",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-04: cannot approve rejected user",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Approval TC-ADM-05: approving non-existent user fails",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-05: approving non-existent user fails",
+      "status": "PASSED",
+      "duration": 26,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-06: admin can reject a pending user with reason",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-06: admin can reject a pending user with reason",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-07: rejected user has rejectionReason stored",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-07: rejected user has rejectionReason stored",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-08: rejected user gets rejectedAt timestamp",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-08: rejected user gets rejectedAt timestamp",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-09: cannot reject without a reason",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-09: cannot reject without a reason",
+      "status": "PASSED",
+      "duration": 9,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-10: cannot reject with reason less than 3 chars",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-10: cannot reject with reason less than 3 chars",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-11: cannot reject already rejected user",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-11: cannot reject already rejected user",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-12: cannot reject approved user",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-12: cannot reject approved user",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Rejection TC-ADM-13: rejecting non-existent user fails",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-13: rejecting non-existent user fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Queries TC-ADM-14: getPendingUsers returns only pending users",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-14: getPendingUsers returns only pending users",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Queries TC-ADM-15: getApprovedUsers returns only approved users",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-15: getApprovedUsers returns only approved users",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Queries TC-ADM-16: getRejectedUsers returns only rejected users",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-16: getRejectedUsers returns only rejected users",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] User Queries TC-ADM-17: empty user list returns empty pending array",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-17: empty user list returns empty pending array",
+      "status": "PASSED",
+      "duration": 7,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-18: getDashboardStats total users is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-18: getDashboardStats total users is correct",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-19: getDashboardStats pendingCount is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-19: getDashboardStats pendingCount is correct",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-20: getDashboardStats approvedCount is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-20: getDashboardStats approvedCount is correct",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-21: getDashboardStats rejectedCount is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-21: getDashboardStats rejectedCount is correct",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-22: getDashboardStats adminCount is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-22: getDashboardStats adminCount is correct",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-23: getDashboardStats totalResources is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-23: getDashboardStats totalResources is correct",
+      "status": "PASSED",
+      "duration": 8,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-24: getDashboardStats availableResources is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-24: getDashboardStats availableResources is correct",
+      "status": "PASSED",
+      "duration": 11,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-25: getDashboardStats totalCO2 is correct",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-25: getDashboardStats totalCO2 is correct",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Dashboard Statistics TC-ADM-26: getDashboardStats with empty data",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-26: getDashboardStats with empty data",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-27: admin user can access admin panel",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-27: admin user can access admin panel",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-28: regular resident cannot access admin panel",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-28: regular resident cannot access admin panel",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-29: null user cannot access admin panel",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-29: null user cannot access admin panel",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-30: admin can change user role to volunteer",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-30: admin can change user role to volunteer",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-31: admin can change user role to ngo",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-31: admin can change user role to ngo",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-32: non-admin cannot change user role",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-32: non-admin cannot change user role",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-33: admin cannot assign invalid role",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-33: admin cannot assign invalid role",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[ADMIN] Access Control TC-ADM-34: admin cannot assign role to non-existent user",
+      "suite": "admin.test.js",
+      "name": "TC-ADM-34: admin cannot assign role to non-existent user",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-01: valid registration data passes",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-01: valid registration data passes",
+      "status": "PASSED",
+      "duration": 68,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-02: registered user gets resident role by default",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-02: registered user gets resident role by default",
+      "status": "PASSED",
+      "duration": 6,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-03: registered user status is pending by default",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-03: registered user status is pending by default",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-04: admin email gets admin role on registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-04: admin email gets admin role on registration",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-05: admin is auto-approved on registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-05: admin is auto-approved on registration",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-06: empty name fails registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-06: empty name fails registration",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-07: single character name fails registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-07: single character name fails registration",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-08: 61-character name fails registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-08: 61-character name fails registration",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-09: 60-character name passes registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-09: 60-character name passes registration",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-10: invalid email fails registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-10: invalid email fails registration",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-11: email without domain fails",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-11: email without domain fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-12: email with spaces fails",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-12: email with spaces fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-13: short password fails registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-13: short password fails registration",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-14: password without uppercase fails",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-14: password without uppercase fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-15: password without number fails",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-15: password without number fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-16: empty location fails registration",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-16: empty location fails registration",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-17: single character location fails",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-17: single character location fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-18: multiple validation errors returned at once",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-18: multiple validation errors returned at once",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-19: registered user has uid assigned",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-19: registered user has uid assigned",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Registration Validation TC-AUTH-20: registered user has createdAt timestamp",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-20: registered user has createdAt timestamp",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-21: valid credentials login succeeds",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-21: valid credentials login succeeds",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-22: admin can login",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-22: admin can login",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-23: wrong password returns invalid credentials error",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-23: wrong password returns invalid credentials error",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-24: non-existent email returns invalid credentials error",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-24: non-existent email returns invalid credentials error",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-25: pending account cannot login",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-25: pending account cannot login",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-26: rejected account cannot login",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-26: rejected account cannot login",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-27: empty email returns invalid error",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-27: empty email returns invalid error",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-28: empty password returns invalid error",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-28: empty password returns invalid error",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-29: login returns user object on success",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-29: login returns user object on success",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Login Validation TC-AUTH-30: successful login user has correct role",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-30: successful login user has correct role",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Logout & Session TC-AUTH-31: logout with active session succeeds",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-31: logout with active session succeeds",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Logout & Session TC-AUTH-32: logout with no session fails gracefully",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-32: logout with no session fails gracefully",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Logout & Session TC-AUTH-33: logout with undefined session fails gracefully",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-33: logout with undefined session fails gracefully",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-34: admin@ecoshare.com is recognized as admin",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-34: admin@ecoshare.com is recognized as admin",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-35: admin@ecocircle.com is recognized as admin",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-35: admin@ecocircle.com is recognized as admin",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-36: admin@gmail.com is recognized as admin",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-36: admin@gmail.com is recognized as admin",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-37: saveetha email is recognized as admin",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-37: saveetha email is recognized as admin",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-38: regular user email is not admin",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-38: regular user email is not admin",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-39: email check is case-insensitive",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-39: email check is case-insensitive",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-40: role assignment gives admin role to admin emails",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-40: role assignment gives admin role to admin emails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-41: role assignment gives resident role to normal emails",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-41: role assignment gives resident role to normal emails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-42: null email is not admin",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-42: null email is not admin",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[AUTH] Role Management TC-AUTH-43: empty email is not admin",
+      "suite": "auth.test.js",
+      "name": "TC-AUTH-43: empty email is not admin",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F01: valid resource creation succeeds",
+      "suite": "functional.test.js",
+      "name": "TC-F01: valid resource creation succeeds",
+      "status": "PASSED",
+      "duration": 17,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F02: created resource has required fields",
+      "suite": "functional.test.js",
+      "name": "TC-F02: created resource has required fields",
+      "status": "PASSED",
+      "duration": 36,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F03: resource creation fails with empty title",
+      "suite": "functional.test.js",
+      "name": "TC-F03: resource creation fails with empty title",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F04: resource creation fails with short title (2 chars)",
+      "suite": "functional.test.js",
+      "name": "TC-F04: resource creation fails with short title (2 chars)",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F05: resource creation fails with no category",
+      "suite": "functional.test.js",
+      "name": "TC-F05: resource creation fails with no category",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F06: resource creation fails with empty description",
+      "suite": "functional.test.js",
+      "name": "TC-F06: resource creation fails with empty description",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F07: resource creation fails with short description",
+      "suite": "functional.test.js",
+      "name": "TC-F07: resource creation fails with short description",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F08: resource creation fails with no location",
+      "suite": "functional.test.js",
+      "name": "TC-F08: resource creation fails with no location",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F09: multiple validation errors returned at once",
+      "suite": "functional.test.js",
+      "name": "TC-F09: multiple validation errors returned at once",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F10: filter by category returns correct results",
+      "suite": "functional.test.js",
+      "name": "TC-F10: filter by category returns correct results",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F11: filter by search term (case-insensitive)",
+      "suite": "functional.test.js",
+      "name": "TC-F11: filter by search term (case-insensitive)",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F12: filter by location returns matching resources",
+      "suite": "functional.test.js",
+      "name": "TC-F12: filter by location returns matching resources",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F13: combined filters work together",
+      "suite": "functional.test.js",
+      "name": "TC-F13: combined filters work together",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F14: no filter returns all resources",
+      "suite": "functional.test.js",
+      "name": "TC-F14: no filter returns all resources",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Resource Management TC-F15: search with no match returns empty array",
+      "suite": "functional.test.js",
+      "name": "TC-F15: search with no match returns empty array",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F16: valid registration data passes",
+      "suite": "functional.test.js",
+      "name": "TC-F16: valid registration data passes",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F17: registration fails with name too short",
+      "suite": "functional.test.js",
+      "name": "TC-F17: registration fails with name too short",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F18: registration fails with invalid email",
+      "suite": "functional.test.js",
+      "name": "TC-F18: registration fails with invalid email",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F19: registration fails when passwords do not match",
+      "suite": "functional.test.js",
+      "name": "TC-F19: registration fails when passwords do not match",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F20: email validation accepts standard emails",
+      "suite": "functional.test.js",
+      "name": "TC-F20: email validation accepts standard emails",
+      "status": "PASSED",
+      "duration": 0,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F21: email validation rejects malformed emails",
+      "suite": "functional.test.js",
+      "name": "TC-F21: email validation rejects malformed emails",
+      "status": "PASSED",
+      "duration": 16,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F22: password too short fails",
+      "suite": "functional.test.js",
+      "name": "TC-F22: password too short fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F23: password with no uppercase fails",
+      "suite": "functional.test.js",
+      "name": "TC-F23: password with no uppercase fails",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F24: password with no number fails",
+      "suite": "functional.test.js",
+      "name": "TC-F24: password with no number fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F25: strong password passes all checks",
+      "suite": "functional.test.js",
+      "name": "TC-F25: strong password passes all checks",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F26: empty name fails",
+      "suite": "functional.test.js",
+      "name": "TC-F26: empty name fails",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Authentication TC-F27: empty password fails",
+      "suite": "functional.test.js",
+      "name": "TC-F27: empty password fails",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F28: messages saved to storage correctly",
+      "suite": "functional.test.js",
+      "name": "TC-F28: messages saved to storage correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F29: multiple messages persist",
+      "suite": "functional.test.js",
+      "name": "TC-F29: multiple messages persist",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F30: clearing messages removes from storage",
+      "suite": "functional.test.js",
+      "name": "TC-F30: clearing messages removes from storage",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F31: empty storage returns empty array",
+      "suite": "functional.test.js",
+      "name": "TC-F31: empty storage returns empty array",
+      "status": "PASSED",
+      "duration": 6,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F32: corrupted storage returns empty array gracefully",
+      "suite": "functional.test.js",
+      "name": "TC-F32: corrupted storage returns empty array gracefully",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F33: messages preserve sender field",
+      "suite": "functional.test.js",
+      "name": "TC-F33: messages preserve sender field",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F34: large conversation persists (50 messages)",
+      "suite": "functional.test.js",
+      "name": "TC-F34: large conversation persists (50 messages)",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] Chat System TC-F35: message HTML content is preserved",
+      "suite": "functional.test.js",
+      "name": "TC-F35: message HTML content is preserved",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F36: sums CO2 offsets correctly",
+      "suite": "functional.test.js",
+      "name": "TC-F36: sums CO2 offsets correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F37: handles missing co2Offset fields",
+      "suite": "functional.test.js",
+      "name": "TC-F37: handles missing co2Offset fields",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F38: empty list returns 0",
+      "suite": "functional.test.js",
+      "name": "TC-F38: empty list returns 0",
+      "status": "PASSED",
+      "duration": 0,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F39: formats kg correctly",
+      "suite": "functional.test.js",
+      "name": "TC-F39: formats kg correctly",
+      "status": "PASSED",
+      "duration": 0,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F40: formats large values as tonnes",
+      "suite": "functional.test.js",
+      "name": "TC-F40: formats large values as tonnes",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F41: tree equivalent is calculated correctly",
+      "suite": "functional.test.js",
+      "name": "TC-F41: tree equivalent is calculated correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F42: zero offset gives zero trees",
+      "suite": "functional.test.js",
+      "name": "TC-F42: zero offset gives zero trees",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F43: furniture has significant CO2 offset",
+      "suite": "functional.test.js",
+      "name": "TC-F43: furniture has significant CO2 offset",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "[FUNCTIONAL] CO2 Offset Calculations TC-F44: electronics offset is meaningful",
+      "suite": "functional.test.js",
+      "name": "TC-F44: electronics offset is meaningful",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - API Key Management returns empty string when no key is set",
+      "suite": "ai-service.test.js",
+      "name": "returns empty string when no key is set",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - API Key Management returns key from localStorage when set",
+      "suite": "ai-service.test.js",
+      "name": "returns key from localStorage when set",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - API Key Management returns key from window.__ENV__ when localStorage is empty",
+      "suite": "ai-service.test.js",
+      "name": "returns key from window.__ENV__ when localStorage is empty",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - API Key Management isLive() returns false when no key is set",
+      "suite": "ai-service.test.js",
+      "name": "isLive() returns false when no key is set",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - API Key Management isLive() returns true when key is set",
+      "suite": "ai-service.test.js",
+      "name": "isLive() returns true when key is set",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - API Key Management saveApiKey() stores trimmed key in localStorage",
+      "suite": "ai-service.test.js",
+      "name": "saveApiKey() stores trimmed key in localStorage",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - API Key Management saveApiKey() removes key from localStorage when empty string passed",
+      "suite": "ai-service.test.js",
+      "name": "saveApiKey() removes key from localStorage when empty string passed",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Mock Responses returns composting guide for compost query",
+      "suite": "ai-service.test.js",
+      "name": "returns composting guide for compost query",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Mock Responses returns recycling guide for recycle query",
+      "suite": "ai-service.test.js",
+      "name": "returns recycling guide for recycle query",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Mock Responses returns carbon footprint info for carbon query",
+      "suite": "ai-service.test.js",
+      "name": "returns carbon footprint info for carbon query",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Mock Responses returns upcycling ideas for upcycle query",
+      "suite": "ai-service.test.js",
+      "name": "returns upcycling ideas for upcycle query",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Mock Responses returns default sustainability tip for unrecognized query",
+      "suite": "ai-service.test.js",
+      "name": "returns default sustainability tip for unrecognized query",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Mock Responses mock responses are different for different topics",
+      "suite": "ai-service.test.js",
+      "name": "mock responses are different for different topics",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Auto-Fill Resource Categorization categorizes books correctly",
+      "suite": "ai-service.test.js",
+      "name": "categorizes books correctly",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Auto-Fill Resource Categorization categorizes furniture correctly",
+      "suite": "ai-service.test.js",
+      "name": "categorizes furniture correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Auto-Fill Resource Categorization categorizes clothes correctly",
+      "suite": "ai-service.test.js",
+      "name": "categorizes clothes correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Auto-Fill Resource Categorization categorizes electronics correctly",
+      "suite": "ai-service.test.js",
+      "name": "categorizes electronics correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Auto-Fill Resource Categorization defaults to \"Other\" for unrecognized items",
+      "suite": "ai-service.test.js",
+      "name": "defaults to \"Other\" for unrecognized items",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Auto-Fill Resource Categorization auto-fill always returns required fields",
+      "suite": "ai-service.test.js",
+      "name": "auto-fill always returns required fields",
+      "status": "PASSED",
+      "duration": 7,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "AIService - Auto-Fill Resource Categorization co2Offset is always a positive number",
+      "suite": "ai-service.test.js",
+      "name": "co2Offset is always a positive number",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Resource Form Validation valid resource passes all validation",
+      "suite": "app-features.test.js",
+      "name": "valid resource passes all validation",
+      "status": "PASSED",
+      "duration": 5,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Resource Form Validation rejects resource with short title",
+      "suite": "app-features.test.js",
+      "name": "rejects resource with short title",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Resource Form Validation rejects resource with no category",
+      "suite": "app-features.test.js",
+      "name": "rejects resource with no category",
+      "status": "PASSED",
+      "duration": 0,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Resource Form Validation rejects resource with short description",
+      "suite": "app-features.test.js",
+      "name": "rejects resource with short description",
+      "status": "PASSED",
+      "duration": 0,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Resource Form Validation rejects resource with no location",
+      "suite": "app-features.test.js",
+      "name": "rejects resource with no location",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Resource Form Validation can return multiple errors at once",
+      "suite": "app-features.test.js",
+      "name": "can return multiple errors at once",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Email Validation accepts valid email addresses",
+      "suite": "app-features.test.js",
+      "name": "accepts valid email addresses",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Email Validation rejects invalid email addresses",
+      "suite": "app-features.test.js",
+      "name": "rejects invalid email addresses",
+      "status": "PASSED",
+      "duration": 4,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Password Validation accepts a strong password",
+      "suite": "app-features.test.js",
+      "name": "accepts a strong password",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Password Validation rejects password shorter than 8 characters",
+      "suite": "app-features.test.js",
+      "name": "rejects password shorter than 8 characters",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Password Validation rejects password with no uppercase letter",
+      "suite": "app-features.test.js",
+      "name": "rejects password with no uppercase letter",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Password Validation rejects password with no number",
+      "suite": "app-features.test.js",
+      "name": "rejects password with no number",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Chat History Persistence saves chat messages to localStorage",
+      "suite": "app-features.test.js",
+      "name": "saves chat messages to localStorage",
+      "status": "PASSED",
+      "duration": 7,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Chat History Persistence retrieves saved chat messages from localStorage",
+      "suite": "app-features.test.js",
+      "name": "retrieves saved chat messages from localStorage",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Chat History Persistence clearing chat removes data from localStorage",
+      "suite": "app-features.test.js",
+      "name": "clearing chat removes data from localStorage",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Chat History Persistence handles empty chat history gracefully",
+      "suite": "app-features.test.js",
+      "name": "handles empty chat history gracefully",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "Chat History Persistence handles corrupted localStorage data gracefully",
+      "suite": "app-features.test.js",
+      "name": "handles corrupted localStorage data gracefully",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "CO2 Offset Calculations calculates total CO2 offset correctly",
+      "suite": "app-features.test.js",
+      "name": "calculates total CO2 offset correctly",
+      "status": "PASSED",
+      "duration": 1,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "CO2 Offset Calculations handles resources with no CO2 offset",
+      "suite": "app-features.test.js",
+      "name": "handles resources with no CO2 offset",
+      "status": "PASSED",
+      "duration": 0,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "CO2 Offset Calculations returns 0 for empty resource list",
+      "suite": "app-features.test.js",
+      "name": "returns 0 for empty resource list",
+      "status": "PASSED",
+      "duration": 0,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "CO2 Offset Calculations formats CO2 in kg correctly",
+      "suite": "app-features.test.js",
+      "name": "formats CO2 in kg correctly",
+      "status": "PASSED",
+      "duration": 2,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    },
+    {
+      "id": "CO2 Offset Calculations formats large CO2 values as tonnes",
+      "suite": "app-features.test.js",
+      "name": "formats large CO2 values as tonnes",
+      "status": "PASSED",
+      "duration": 3,
+      "category": "Unit / Functional",
+      "type": "Jest"
+    }
+  ]
+}

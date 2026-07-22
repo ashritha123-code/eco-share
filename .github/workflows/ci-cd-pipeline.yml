@@ -27,8 +27,8 @@ jobs:
       - name: Install Node Dependencies
         run: npm install
 
-      - name: Run All Jest Test Suites
-        run: npm test -- --forceExit --json --outputFile=jest-results.json
+      - name: Run All Jest Test Suites (394 tests)
+        run: npm run test:ci
 
       - name: Upload Jest Results JSON
         uses: actions/upload-artifact@v4
@@ -126,12 +126,40 @@ jobs:
         env:
           DISPLAY: :99
 
-      - name: Upload Full E2E Test Report (Excel)
+      - name: Generate All Report Formats (HTML + JSON + Markdown)
+        if: always()
+        run: PYTHONUTF8=1 python generate_reports.py
+
+      - name: Upload Excel Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: EcoCircle-E2E-Test-Report
+          name: EcoCircle-Excel-Report
           path: E2E_Test_Report.xlsx
+          retention-days: 30
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: EcoCircle-HTML-Report
+          path: test-report.html
+          retention-days: 30
+
+      - name: Upload JSON Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: EcoCircle-JSON-Report
+          path: test-results.json
+          retention-days: 30
+
+      - name: Upload Markdown Summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: EcoCircle-Test-Summary
+          path: TEST_SUMMARY.md
           retention-days: 30
 
   # ─────────────────────────────────────────────
