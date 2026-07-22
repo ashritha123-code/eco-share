@@ -1,0 +1,185 @@
+name: EcoCircle CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # JOB 1: Jest Unit, Functional, Validation & Security Tests
+  # ─────────────────────────────────────────────
+  jest-tests:
+    name: "Step 1 | Jest Unit & Functional Tests"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Run All Jest Test Suites
+        run: npm test -- --forceExit --json --outputFile=jest-results.json
+        continue-on-error: false
+
+      - name: Upload Jest Results JSON
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jest-results
+          path: jest-results.json
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # JOB 2: Build the Application (runs after Jest passes)
+  # ─────────────────────────────────────────────
+  build:
+    name: "Step 2 | Build Application"
+    runs-on: ubuntu-latest
+    needs: jest-tests
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Static Web App
+        run: npm run build
+
+      - name: Upload Built App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-app
+          path: www/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # JOB 3: Selenium E2E Tests (runs after Build passes)
+  # ─────────────────────────────────────────────
+  selenium-tests:
+    name: "Step 3 | Selenium E2E Browser Tests"
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Install Python Test Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download Built App
+        uses: actions/download-artifact@v4
+        with:
+          name: built-app
+          path: www/
+
+      - name: Download Jest Results
+        uses: actions/download-artifact@v4
+        with:
+          name: jest-results
+          path: .
+
+      - name: Verify Chrome Installation
+        run: google-chrome --version
+
+      - name: Start Local App Server (Mock Mode)
+        run: |
+          python -m http.server 3000 --directory www &
+          sleep 3
+          curl --retry 5 --retry-delay 1 --retry-connrefused http://localhost:3000 -o /dev/null -s -w "HTTP Status: %{http_code}\n"
+
+      - name: Run Selenium E2E Test Suite
+        run: |
+          PYTHONUTF8=1 python run_e2e.py
+        env:
+          DISPLAY: :99
+
+      - name: Upload Full E2E Test Report (Excel)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: EcoCircle-E2E-Test-Report
+          path: E2E_Test_Report.xlsx
+          retention-days: 30
+
+  # ─────────────────────────────────────────────
+  # JOB 4: Deploy to GitHub Pages (runs after Selenium passes)
+  # ─────────────────────────────────────────────
+  deploy:
+    name: "Step 4 | Deploy to GitHub Pages"
+    runs-on: ubuntu-latest
+    needs: selenium-tests
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Download Built App
+        uses: actions/download-artifact@v4
+        with:
+          name: built-app
+          path: www/
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Deploy to GitHub Pages
+        run: npm run deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deployment Complete
+        run: |
+          echo "========================================"
+          echo "  DEPLOYMENT SUCCESSFUL!"
+          echo "  Live at: https://ashritha123-code.github.io/eco-share"
+          echo "========================================"
