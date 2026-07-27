@@ -235,18 +235,15 @@ def generate():
 
     all_tests = jest_tests + selenium_tests + appium_tests
 
-    for t in all_tests:
-        t["status"] = "PASSED"
-
     if not all_tests:
         print("WARNING: No test results found.")
         return
 
     total = len(all_tests)
-    passed = total
-    failed = 0
-    skipped = 0
-    pass_rate = 100.0
+    passed = sum(1 for t in all_tests if t.get("status") == "PASSED")
+    failed = sum(1 for t in all_tests if t.get("status") == "FAILED")
+    skipped = sum(1 for t in all_tests if t.get("status") in ("SKIPPED", "PENDING"))
+    pass_rate = round(passed / (passed + failed) * 100, 1) if (passed + failed) > 0 else (100.0 if total > 0 else 0.0)
 
     # HTML
     html = generate_html(all_tests, timestamp)
