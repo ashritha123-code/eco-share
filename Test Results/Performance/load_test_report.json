@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-07-22 22:17:25",
+  "target_url": "http://localhost:3000/",
+  "concurrent_users": 100,
+  "duration_seconds": 60.58,
+  "total_requests": 32751,
+  "successful_requests": 18291,
+  "failed_requests": 14460,
+  "success_rate_percent": 55.85,
+  "requests_per_second": 540.64,
+  "latency_ms": {
+    "min": 25.5,
+    "max": 1024.72,
+    "avg": 162.78,
+    "p95": 352.6,
+    "p99": 425.34
+  }
+}
