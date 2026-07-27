@@ -33,10 +33,24 @@ export function initAIAssistant(showToast) {
 
   function saveChatHistory() {
     const messages = [];
-    aiChatMessages.querySelectorAll('.chat-msg').forEach(msg => {
+    const chatRows = Array.from(aiChatMessages.querySelectorAll('.chat-msg'));
+    
+    chatRows.forEach((msg, idx) => {
       const isUser = msg.classList.contains('chat-msg-user');
       const body = msg.querySelector('.chat-msg-body');
       if (body) {
+        const text = body.textContent || '';
+        const isDecline = text.includes('I am Eco AI, your EcoCircle assistant');
+        
+        // Skip out-of-domain rejections from memory persistence
+        if (isDecline) return;
+        if (isUser) {
+          const nextRow = chatRows[idx + 1];
+          const nextText = nextRow?.querySelector('.chat-msg-body')?.textContent || '';
+          if (nextText.includes('I am Eco AI, your EcoCircle assistant')) {
+            return;
+          }
+        }
         messages.push({ sender: isUser ? 'user' : 'partner', html: body.innerHTML });
       }
     });

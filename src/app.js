@@ -12,6 +12,17 @@ import {
   onProviderChanged 
 } from './firebase-config.js';
 
+// Clear any cached auto-login session so user lands on Sign In form
+if (!localStorage.getItem('EcoCircle_force_login_v3')) {
+  localStorage.removeItem('EcoCircle_session');
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith('EcoCircle_profile_')) {
+      localStorage.removeItem(key);
+    }
+  });
+  localStorage.setItem('EcoCircle_force_login_v3', 'true');
+}
+
 // Global Toast System
 export function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
@@ -409,6 +420,63 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
   }
+
+  function setupKeyboardHandling() {
+    let initialViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+    function handleFocusIn(e) {
+      const target = e.target;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          document.body.classList.add('keyboard-open');
+        }
+      }
+    }
+
+    function handleFocusOut() {
+      setTimeout(() => {
+        const active = document.activeElement;
+        if (!active || (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA')) {
+          document.body.classList.remove('keyboard-open');
+        }
+      }, 100);
+    }
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        const isMobile = window.innerWidth <= 768;
+        const currentHeight = window.visualViewport.height;
+        if (isMobile && (initialViewportHeight - currentHeight > 120)) {
+          document.body.classList.add('keyboard-open');
+        } else if (isMobile && (currentHeight >= initialViewportHeight - 50)) {
+          const active = document.activeElement;
+          if (!active || (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA')) {
+            document.body.classList.remove('keyboard-open');
+          }
+        }
+      });
+    }
+
+    // Capacitor Native Keyboard Plugin Listener
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Keyboard) {
+      try {
+        window.Capacitor.Plugins.Keyboard.addListener('keyboardWillShow', () => {
+          document.body.classList.add('keyboard-open');
+        });
+        window.Capacitor.Plugins.Keyboard.addListener('keyboardWillHide', () => {
+          document.body.classList.remove('keyboard-open');
+        });
+      } catch (e) {
+        console.warn('Capacitor Keyboard listener warning:', e);
+      }
+    }
+  }
+
   initMobileNav();
+  setupKeyboardHandling();
   window.addEventListener('resize', initMobileNav);
 });

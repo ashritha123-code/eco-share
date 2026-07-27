@@ -13,7 +13,7 @@ let providerChangeListeners = [];
 function checkIsAdmin(email) {
   if (!email) return false;
   const normalized = email.toLowerCase().trim().replace(/\+[^@]*@/, '@');
-  return normalized === 'admin@gmail.com' || normalized === 'admin@ecocircle.com' || normalized === 'ashrithap2200.sse@saveetha.com';
+  return normalized === 'ashrithap2200.sse@saveetha.com';
 }
 
 // Multiplexer tracking for dynamic activeProvider auth listeners
@@ -71,6 +71,7 @@ export const authService = {
 
 export const dbService = {
   onResourcesChanged: (callback) => activeProvider.onResourcesChanged(callback),
+  onUsersChanged: (callback) => activeProvider.onUsersChanged(callback),
   addResource: (resourceData) => activeProvider.addResource(resourceData),
   updateResource: (resourceId, resourceData) => activeProvider.updateResource(resourceId, resourceData),
   deleteResource: (resourceId) => activeProvider.deleteResource(resourceId),
@@ -252,21 +253,21 @@ export async function tryInitializeFirebase(config) {
         const activeSessionId = 'sess_' + Math.random().toString(36).substring(2, 15) + '_' + Date.now();
         
         // Fetch profile
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
         let profile;
-        if (docSnap.exists()) {
-          profile = docSnap.data();
-          profile.activeSessionId = activeSessionId; // update session
-          if (profile.role === undefined) {
-            const isAdmin = checkIsAdmin(user.email);
-            profile.role = isAdmin ? 'admin' : 'resident';
-            profile.approved = isAdmin ? true : false;
-            profile.status = isAdmin ? 'approved' : 'pending';
+        try {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            profile = docSnap.data();
+            profile.activeSessionId = activeSessionId; // update session
+            updateDoc(docRef, { activeSessionId }).catch(e => console.error(e));
           }
-          await setDoc(docRef, profile, { merge: true });
-        } else {
-          const isAdmin = checkIsAdmin(user.email);
+        } catch (e) {
+          console.warn("Firestore getDoc permission/network warning:", e);
+        }
+
+        if (!profile) {
+          const isAdmin = checkIsAdmin(email);
           profile = {
             uid: user.uid,
             email: user.email,
@@ -279,7 +280,7 @@ export async function tryInitializeFirebase(config) {
             activeSessionId,
             createdAt: new Date().toISOString()
           };
-          await setDoc(docRef, profile);
+          setDoc(doc(db, 'users', user.uid), profile).catch(e => console.error('Error creating user doc:', e));
         }
         
         localStorage.setItem(`EcoCircle_profile_${user.uid}`, JSON.stringify(profile));
@@ -579,6 +580,22 @@ export async function tryInitializeFirebase(config) {
         }, { merge: true });
       },
 
+      onUsersChanged: (callback) => {
+        const q = query(collection(db, 'users'));
+        return onSnapshot(q, (snapshot) => {
+          const users = [];
+          snapshot.forEach((docSnap) => {
+            users.push({
+              uid: docSnap.id,
+              ...docSnap.data()
+            });
+          });
+          callback(users);
+        }, (error) => {
+          console.error("Firestore onUsersChanged error:", error);
+        });
+      },
+
       getAllUsers: async () => {
         const querySnapshot = await getDocs(collection(db, 'users'));
         const users = [];
@@ -591,9 +608,11 @@ export async function tryInitializeFirebase(config) {
         return users;
       },
 
-      updateUserApproval: async (userId, approved, status) => {
+      updateUserApproval: async (userId, approved, status, role) => {
         const userRef = doc(db, 'users', userId);
-        await updateDoc(userRef, { approved, status });
+        const updateData = { approved, status };
+        if (role) updateData.role = role;
+        await updateDoc(userRef, updateData);
         
         // Also update local cache if it is the current user
         const currentUser = auth.currentUser;
@@ -603,6 +622,7 @@ export async function tryInitializeFirebase(config) {
             const profile = JSON.parse(cached);
             profile.approved = approved;
             profile.status = status;
+            if (role) profile.role = role;
             localStorage.setItem(`EcoCircle_profile_${userId}`, JSON.stringify(profile));
           }
         }
@@ -775,22 +795,22 @@ function isCapacitorNative() {
 
 export async function autoInitializeConfig() {
   // --- MOBILE / CAPACITOR FIX ---
-  // When running inside the Android APK (Capacitor WebView), always use Firebase.
-  // MySQL requires a local server that is not available on a real phone.
-  // Also clear any stale 'mysql' provider setting left from a previous install.
+  // When running inside the Android APK (Capacitor WebView), MySQL and mock
+  // don't work (they need a local server). Force Firebase if that's the case.
+  // But preserve Supabase since it works fine on mobile.
   if (isCapacitorNative()) {
     const stale = localStorage.getItem('EcoCircle_active_provider_type');
     if (stale === 'mysql' || stale === 'mock' || !stale) {
-      console.log('[EcoCircle] Mobile context detected. Forcing Firebase provider.');
-      localStorage.setItem('EcoCircle_active_provider_type', 'firebase');
+      console.log('[EcoCircle] Mobile context detected. Setting Supabase provider.');
+      localStorage.setItem('EcoCircle_active_provider_type', 'supabase');
     }
   }
 
   let activeType = localStorage.getItem('EcoCircle_active_provider_type');
-  if (!activeType) {
-    // Default to Firebase (cloud backend) on fresh install.
-    activeType = 'firebase';
-    localStorage.setItem('EcoCircle_active_provider_type', 'firebase');
+  if (!activeType || activeType === 'mysql') {
+    // Default to Supabase — this is the primary cloud backend for this app.
+    activeType = 'supabase';
+    localStorage.setItem('EcoCircle_active_provider_type', 'supabase');
   }
 
   if (activeType === 'firebase') {

@@ -40,9 +40,64 @@ export const AIService = {
   },
 
   /**
+   * Validates if a user prompt is related to EcoCircle and sustainability domain.
+   */
+  isEcoCircleTopic: (prompt) => {
+    if (!prompt) return false;
+    const p = prompt.toLowerCase().trim();
+
+    // Explicit forbidden out-of-domain keywords
+    const forbiddenKeywords = [
+      'programming', 'python', 'javascript', 'java', 'c++', 'html', 'css', 'react', 'node', 'sql', 'coding', 'code',
+      'algorithm', 'debug', 'compile', 'math', 'mathematics', 'equation', 'algebra', 'calculus', 'solve 2', '2+2', '5*5',
+      'politics', 'president', 'election', 'minister', 'parliament', 'government candidate', 'democrat', 'republican',
+      'movie', 'film', 'actor', 'actress', 'celebrity', 'hollywood', 'bollywood', 'singer', 'album', 'entertainment',
+      'tv show', 'netflix', 'sports', 'football', 'soccer', 'basketball', 'cricket', 'tennis', 'olympics', 'world cup',
+      'medical advice', 'diagnose', 'disease treatment', 'symptom', 'doctor advice', 'prescription',
+      'travel', 'flight', 'hotel', 'tourism', 'vacation', 'destination',
+      'personal opinion', 'who won', 'who is better'
+    ];
+
+    for (const kw of forbiddenKeywords) {
+      if (p.includes(kw)) {
+        return false;
+      }
+    }
+
+    // Allowed supported EcoCircle & Sustainability keywords
+    const supportedKeywords = [
+      'ecocircle', 'eco', 'share', 'sharing', 'resource', 'donat', 'request', 'ngo', 'rule', 'guideline',
+      'recycle', 'recycling', 'sustainab', 'waste', 'compost', 'upcycl', 'reuse', 'category', 'food',
+      'furniture', 'cloth', 'book', 'electronic', 'kitchen', 'medical supply', 'educational', 'household',
+      'pickup', 'delivery', 'event', 'role', 'feature', 'problem', 'help', 'account', 'notification',
+      'chat', 'map', 'usage', 'carbon', 'offset', 'co2', 'footprint', 'neighbor', 'neighbour', 'community',
+      'item', 'borrow', 'lend', 'zero waste', 'landfill', 'plastic', 'glass', 'paper', 'cardboard',
+      'garden', 'organic', 'environment', 'green', 'lawnmower', 'tool', 'app', 'login', 'register', 'profile', 'admin'
+    ];
+
+    for (const kw of supportedKeywords) {
+      if (p.includes(kw)) {
+        return true;
+      }
+    }
+
+    // Code symbols or raw math expressions without eco keywords are rejected
+    if (/[\{\}\[\]\<\>\;\=\+\*\/]/.test(p) || /^\d+\s*[\+\-\*\/\^]\s*\d+/.test(p)) {
+      return false;
+    }
+
+    return false;
+  },
+
+  /**
    * Sends a prompt to Gemini API or executes mock fallback if offline.
    */
   askGemini: async (prompt, systemInstruction = '') => {
+    // Strictly validate domain
+    if (!AIService.isEcoCircleTopic(prompt)) {
+      return "I am Eco AI, your EcoCircle assistant. I can help only with EcoCircle features, community resource sharing, sustainability, recycling, and related topics.";
+    }
+
     const apiKey = AIService.getApiKey();
 
     if (!apiKey) {
@@ -50,13 +105,23 @@ export const AIService = {
       return AIService.getMockResponse(prompt);
     }
 
+    const defaultSystemInstruction = `You are Eco AI, the official domain-specific assistant for EcoCircle (a local community resource sharing and sustainability platform).
+
+STRICT DOMAIN BOUNDARIES:
+- You ONLY answer questions related to EcoCircle features, resource sharing, donations, resource requests, NGOs, community rules, recycling, sustainability, waste reduction, reuse, sharing process, community guidelines, resource categories (food, furniture, clothes, books, electronics, kitchen items, medical supplies, educational materials, household items), pickup & delivery, community events, user roles, app features, reporting problems, account help, notifications, chat, maps, and EcoCircle usage.
+- If the user asks ANY question outside of this domain (such as general knowledge, programming, coding, mathematics, politics, entertainment, sports, movies, celebrity information, medical advice, travel, or personal opinions), you MUST politely refuse and respond ONLY with:
+"I am Eco AI, your EcoCircle assistant. I can help only with EcoCircle features, community resource sharing, sustainability, recycling, and related topics."
+- Never hallucinate or answer questions outside the application domain under any circumstances.`;
+
+    const finalInstruction = systemInstruction || defaultSystemInstruction;
+
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
       const payload = {
         contents: [
           {
             role: 'user',
-            parts: [{ text: (systemInstruction ? `${systemInstruction}\n\n` : '') + prompt }]
+            parts: [{ text: `${finalInstruction}\n\nUser Question: ${prompt}` }]
           }
         ]
       };
@@ -82,7 +147,7 @@ export const AIService = {
       return text;
     } catch (e) {
       console.warn('[AIService] API error, falling back to mock:', e);
-      return `[Failed to connect to Gemini live: ${e.message}]\n\nHere is a local estimation:\n\n${AIService.getMockResponse(prompt)}`;
+      return AIService.getMockResponse(prompt);
     }
   },
 
@@ -130,6 +195,10 @@ You MUST respond ONLY with a raw JSON object (no markdown formatting, no \`\`\`j
    * Offline mock responder with rich sustainability tips.
    */
   getMockResponse: (prompt) => {
+    if (!AIService.isEcoCircleTopic(prompt)) {
+      return "I am Eco AI, your EcoCircle assistant. I can help only with EcoCircle features, community resource sharing, sustainability, recycling, and related topics.";
+    }
+
     const p = prompt.toLowerCase();
     
     if (p.includes('compost')) {

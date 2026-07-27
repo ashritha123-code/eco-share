@@ -120,6 +120,29 @@ export function initAuth(showToast) {
       if (user && user.activeSessionId) {
         localStorage.setItem('EcoCircle_session_id', user.activeSessionId);
       }
+      // Immediately hide auth screen — don't wait for onAuthStateChanged (Firestore onSnapshot can be slow)
+      if (authContainer) {
+        authContainer.classList.remove('active');
+        authContainer.style.setProperty('display', 'none', 'important');
+      }
+      // Immediately populate sidebar with user data from login response
+      if (sidebarUserWidget && user) {
+        sidebarUserWidget.style.display = 'flex';
+        if (userNameEl && user.displayName) userNameEl.textContent = user.displayName;
+        if (userAvatar && user.displayName) userAvatar.textContent = user.displayName.charAt(0).toUpperCase();
+        if (userRoleEl) {
+          const roleLabel = user.role === 'admin' ? 'Community Admin' : 'Resident';
+          userRoleEl.textContent = `${user.location || 'Community'} (${roleLabel})`;
+        }
+      }
+      
+      // Instantly update neighbour count & list UI
+      try {
+        const { dbService } = await import('./firebase-config.js');
+        const { updateCommunityNeighboursUI } = await import('./resources.js');
+        dbService.getAllUsers().then(users => updateCommunityNeighboursUI(users)).catch(() => {});
+      } catch (_) {}
+
       showToast('Welcome back to EcoCircle!', 'success');
       loginForm.reset();
     } catch (err) {
@@ -177,6 +200,11 @@ export function initAuth(showToast) {
         if (response && response.activeSessionId) {
           localStorage.setItem('EcoCircle_session_id', response.activeSessionId);
         }
+        // Immediately hide auth screen — don't wait for onAuthStateChanged
+        if (authContainer) {
+          authContainer.classList.remove('active');
+          authContainer.style.setProperty('display', 'none', 'important');
+        }
         showToast('Account created successfully! Welcome!', 'success');
         registerForm.reset();
         // Clear any inline errors
@@ -203,12 +231,19 @@ export function initAuth(showToast) {
     try {
       localStorage.removeItem('EcoCircle_session_id');
       await authService.logout();
-      showToast('Logged out successfully.', 'info');
-      // Redirect to dashboard page state to avoid viewing protected pages after logout
-      window.location.hash = '#dashboard';
     } catch (err) {
-      console.error(err);
-      showToast('Failed to log out.', 'error');
+      console.warn('Remote logout warning:', err);
+    } finally {
+      localStorage.removeItem('EcoCircle_session_id');
+      localStorage.removeItem('EcoCircle_session');
+      currentUser = null;
+      if (authContainer) {
+        authContainer.style.removeProperty('display');
+        authContainer.classList.add('active');
+      }
+      if (sidebarUserWidget) sidebarUserWidget.style.display = 'none';
+      showToast('Logged out successfully.', 'info');
+      window.location.hash = '#dashboard';
     }
   });
 
@@ -312,6 +347,7 @@ export function initAuth(showToast) {
           const titleEl = document.getElementById('pendingApprovalTitle');
           const descEl = document.getElementById('pendingApprovalDesc');
 
+          const resubmitBtn = document.getElementById('resubmitApprovalBtn');
           if (user.status === 'rejected') {
             iconContainer.innerHTML = `
               <svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none" style="color: var(--danger);">
@@ -321,8 +357,32 @@ export function initAuth(showToast) {
               </svg>
             `;
             titleEl.textContent = 'Registration Rejected';
-            descEl.textContent = 'Your membership request has been rejected by the community admin. If you believe this is a mistake, please contact support or register with a different email.';
+            descEl.textContent = 'Your membership request was rejected by the admin. You can submit your request again below for admin re-evaluation.';
+            
+            if (resubmitBtn) {
+              resubmitBtn.style.display = 'block';
+              resubmitBtn.onclick = async () => {
+                try {
+                  resubmitBtn.disabled = true;
+                  resubmitBtn.textContent = 'Submitting...';
+                  await dbService.updateUserApproval(user.uid, false, 'pending');
+                  const toastNotifier = window.showToastNotification || console.log;
+                  toastNotifier('Your membership request has been resubmitted for admin approval!', 'success');
+                  user.status = 'pending';
+                  user.approved = false;
+                  titleEl.textContent = 'Account Pending Approval';
+                  descEl.textContent = 'Thank you! Your request has been resubmitted to the community admin for approval. Please check back later.';
+                  resubmitBtn.style.display = 'none';
+                } catch (err) {
+                  const toastNotifier = window.showToastNotification || console.log;
+                  toastNotifier('Failed to resubmit request: ' + err.message, 'error');
+                  resubmitBtn.disabled = false;
+                  resubmitBtn.textContent = 'Resubmit Approval Request 🔄';
+                }
+              };
+            }
           } else {
+            if (resubmitBtn) resubmitBtn.style.display = 'none';
             iconContainer.innerHTML = `
               <svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none" style="color: var(--warning);">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -349,6 +409,8 @@ export function initAuth(showToast) {
       if (navSettingsItem) navSettingsItem.style.display = 'none';
       if (mobileNavSettings) mobileNavSettings.style.display = 'none';
 
+      // Show login screen — clear any inline display:none that was set during login
+      authContainer.style.removeProperty('display');
       authContainer.classList.add('active');
       sidebarUserWidget.style.display = 'none';
       document.dispatchEvent(new CustomEvent('auth-changed', { detail: null }));
@@ -362,12 +424,24 @@ export function initAuth(showToast) {
       try {
         localStorage.removeItem('EcoCircle_session_id');
         await authService.logout();
-        showToast('Signed out successfully.', 'info');
+      } catch (err) {
+        console.warn('Pending signout warning:', err);
+      } finally {
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('EcoCircle_') || key.startsWith('sb-'))) {
+            localStorage.removeItem(key);
+          }
+        }
+        currentUser = null;
         const pendingApprovalContainer = document.getElementById('pendingApprovalContainer');
         if (pendingApprovalContainer) pendingApprovalContainer.style.display = 'none';
-      } catch (err) {
-        console.error(err);
-        showToast('Failed to sign out.', 'error');
+        if (authContainer) {
+          authContainer.style.removeProperty('display');
+          authContainer.classList.add('active');
+        }
+        if (sidebarUserWidget) sidebarUserWidget.style.display = 'none';
+        showToast('Signed out successfully. Please sign in.', 'info');
       }
     });
   }
@@ -447,31 +521,83 @@ function showInlineSuccess(form, beforeEl, message) {
 }
 
 let adminResourcesUnsubscribe = null;
+let adminUsersUnsubscribe = null;
 let currentAdminTab = 'analytics';
+let lastAdminUsers = [];
+let lastAdminResources = [];
 
 // Render the Pending Approvals Admin Panel
 export async function renderAdminPanel() {
   const adminTabAnalytics = document.getElementById('adminTabAnalytics');
+  const adminTabActiveUsers = document.getElementById('adminTabActiveUsers');
   const adminTabRequests = document.getElementById('adminTabRequests');
   const adminAnalyticsContent = document.getElementById('adminAnalyticsContent');
+  const adminActiveUsersContent = document.getElementById('adminActiveUsersContent');
   const adminRequestsContent = document.getElementById('adminRequestsContent');
   const pendingUsersGrid = document.getElementById('pendingUsersGrid');
 
   if (!pendingUsersGrid) return;
+
+  function switchAdminTabVisuals() {
+    [adminTabAnalytics, adminTabActiveUsers, adminTabRequests].forEach(tab => {
+      if (tab) {
+        tab.classList.remove('active');
+        tab.style.borderBottom = '2px solid transparent';
+      }
+    });
+    [adminAnalyticsContent, adminActiveUsersContent, adminRequestsContent].forEach(content => {
+      if (content) {
+        content.classList.remove('active');
+        content.style.display = 'none';
+      }
+    });
+
+    if (currentAdminTab === 'activeUsers') {
+      if (adminTabActiveUsers) {
+        adminTabActiveUsers.classList.add('active');
+        adminTabActiveUsers.style.borderBottom = '2px solid var(--primary)';
+      }
+      if (adminActiveUsersContent) {
+        adminActiveUsersContent.classList.add('active');
+        adminActiveUsersContent.style.display = 'block';
+      }
+    } else if (currentAdminTab === 'requests') {
+      if (adminTabRequests) {
+        adminTabRequests.classList.add('active');
+        adminTabRequests.style.borderBottom = '2px solid var(--primary)';
+      }
+      if (adminRequestsContent) {
+        adminRequestsContent.classList.add('active');
+        adminRequestsContent.style.display = 'block';
+      }
+    } else {
+      currentAdminTab = 'analytics';
+      if (adminTabAnalytics) {
+        adminTabAnalytics.classList.add('active');
+        adminTabAnalytics.style.borderBottom = '2px solid var(--primary)';
+      }
+      if (adminAnalyticsContent) {
+        adminAnalyticsContent.classList.add('active');
+        adminAnalyticsContent.style.display = 'block';
+      }
+    }
+  }
 
   // Bind tab switching clicks once
   if (adminTabAnalytics && !adminTabAnalytics.dataset.bound) {
     adminTabAnalytics.dataset.bound = 'true';
     adminTabAnalytics.addEventListener('click', () => {
       currentAdminTab = 'analytics';
-      adminTabAnalytics.classList.add('active');
-      adminTabAnalytics.style.borderBottom = '2px solid var(--primary)';
-      adminTabRequests.classList.remove('active');
-      adminTabRequests.style.borderBottom = '2px solid transparent';
-      adminAnalyticsContent.classList.add('active');
-      adminAnalyticsContent.style.display = 'block';
-      adminRequestsContent.classList.remove('active');
-      adminRequestsContent.style.display = 'none';
+      switchAdminTabVisuals();
+    });
+  }
+
+  if (adminTabActiveUsers && !adminTabActiveUsers.dataset.bound) {
+    adminTabActiveUsers.dataset.bound = 'true';
+    adminTabActiveUsers.addEventListener('click', () => {
+      currentAdminTab = 'activeUsers';
+      switchAdminTabVisuals();
+      updateAnalyticsDashboard(lastAdminUsers, lastAdminResources);
     });
   }
 
@@ -479,41 +605,12 @@ export async function renderAdminPanel() {
     adminTabRequests.dataset.bound = 'true';
     adminTabRequests.addEventListener('click', () => {
       currentAdminTab = 'requests';
-      adminTabRequests.classList.add('active');
-      adminTabRequests.style.borderBottom = '2px solid var(--primary)';
-      adminTabAnalytics.classList.remove('active');
-      adminTabAnalytics.style.borderBottom = '2px solid transparent';
-      adminRequestsContent.classList.add('active');
-      adminRequestsContent.style.display = 'block';
-      adminAnalyticsContent.classList.remove('active');
-      adminAnalyticsContent.style.display = 'none';
+      switchAdminTabVisuals();
     });
   }
 
   // Restore active visual state based on currentAdminTab
-  if (currentAdminTab === 'analytics') {
-    if (adminTabAnalytics) {
-      adminTabAnalytics.classList.add('active');
-      adminTabAnalytics.style.borderBottom = '2px solid var(--primary)';
-    }
-    if (adminTabRequests) {
-      adminTabRequests.classList.remove('active');
-      adminTabRequests.style.borderBottom = '2px solid transparent';
-    }
-    if (adminAnalyticsContent) adminAnalyticsContent.style.display = 'block';
-    if (adminRequestsContent) adminRequestsContent.style.display = 'none';
-  } else {
-    if (adminTabRequests) {
-      adminTabRequests.classList.add('active');
-      adminTabRequests.style.borderBottom = '2px solid var(--primary)';
-    }
-    if (adminTabAnalytics) {
-      adminTabAnalytics.classList.remove('active');
-      adminTabAnalytics.style.borderBottom = '2px solid transparent';
-    }
-    if (adminRequestsContent) adminRequestsContent.style.display = 'block';
-    if (adminAnalyticsContent) adminAnalyticsContent.style.display = 'none';
-  }
+  switchAdminTabVisuals();
 
   pendingUsersGrid.innerHTML = `
     <div style="grid-column: 1 / -1; display: flex; justify-content: center; padding: 2rem;">
@@ -525,10 +622,11 @@ export async function renderAdminPanel() {
 
   try {
     const { dbService } = await import('./firebase-config.js');
-    const users = await dbService.getAllUsers();
+    lastAdminUsers = await dbService.getAllUsers();
     
-    // Render the user requests list
-    renderUserRequestsList(users, pendingUsersGrid);
+    // Render the user requests list & analytics table immediately
+    renderUserRequestsList(lastAdminUsers, pendingUsersGrid);
+    updateAnalyticsDashboard(lastAdminUsers, lastAdminResources);
 
     // Subscribe to resources changes for real-time Analytics
     if (adminResourcesUnsubscribe) {
@@ -537,8 +635,23 @@ export async function renderAdminPanel() {
     }
 
     adminResourcesUnsubscribe = dbService.onResourcesChanged((resources) => {
-      updateAnalyticsDashboard(users, resources);
+      lastAdminResources = resources || [];
+      updateAnalyticsDashboard(lastAdminUsers, lastAdminResources);
     });
+
+    // Subscribe to users changes for real-time directory updates
+    if (adminUsersUnsubscribe) {
+      adminUsersUnsubscribe();
+      adminUsersUnsubscribe = null;
+    }
+
+    if (typeof dbService.onUsersChanged === 'function') {
+      adminUsersUnsubscribe = dbService.onUsersChanged((users) => {
+        lastAdminUsers = users || [];
+        renderUserRequestsList(lastAdminUsers, pendingUsersGrid);
+        updateAnalyticsDashboard(lastAdminUsers, lastAdminResources);
+      });
+    }
 
   } catch (err) {
     console.error('Failed to load users or resources in admin panel:', err);
@@ -552,15 +665,16 @@ export async function renderAdminPanel() {
 
 // Render User Request Cards
 function renderUserRequestsList(users, pendingUsersGrid) {
-  // Exclude currently logged in admin and other admin accounts from listing
-  const listableUsers = users.filter(u => u.uid !== currentUser.uid && u.role !== 'admin');
+  const currentUid = currentUser ? currentUser.uid : null;
+  // Exclude admin accounts and show ONLY pending user registration requests (exclude approved and rejected)
+  const listableUsers = (users || []).filter(u => u && u.uid !== currentUid && u.role !== 'admin' && !u.approved && u.status !== 'rejected');
 
   if (listableUsers.length === 0) {
     pendingUsersGrid.innerHTML = `
       <div class="no-results" style="grid-column: 1 / -1; padding: 3rem; text-align: center;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="48" height="48" style="color: var(--text-muted); margin-bottom: 1rem; display: block; margin: 0 auto 1rem;"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-        <h3>No community requests</h3>
-        <p>All users are currently approved or no other users exist.</p>
+        <h3>No pending registrations</h3>
+        <p>All user registration requests have been reviewed and processed.</p>
       </div>
     `;
     return;
@@ -607,7 +721,10 @@ function renderUserRequestsList(users, pendingUsersGrid) {
         const { dbService } = await import('./firebase-config.js');
         await dbService.updateUserApproval(u.uid, true, 'approved');
         window.showToastNotification(`Approved user '${u.displayName}' successfully.`, 'success');
-        renderAdminPanel();
+        const freshUsers = await dbService.getAllUsers();
+        const { updateCommunityNeighboursUI } = await import('./resources.js');
+        updateCommunityNeighboursUI(freshUsers);
+        await renderAdminPanel();
       } catch (err) {
         console.error(err);
         window.showToastNotification('Failed to approve user: ' + err.message, 'error');
@@ -625,7 +742,10 @@ function renderUserRequestsList(users, pendingUsersGrid) {
         const { dbService } = await import('./firebase-config.js');
         await dbService.updateUserApproval(u.uid, false, 'rejected');
         window.showToastNotification(`Rejected user '${u.displayName}'.`, 'warning');
-        renderAdminPanel();
+        const freshUsers = await dbService.getAllUsers();
+        const { updateCommunityNeighboursUI } = await import('./resources.js');
+        updateCommunityNeighboursUI(freshUsers);
+        await renderAdminPanel();
       } catch (err) {
         console.error(err);
         window.showToastNotification('Failed to reject user: ' + err.message, 'error');
@@ -640,13 +760,76 @@ function renderUserRequestsList(users, pendingUsersGrid) {
 
 // Compute & Render Analytics Statistics
 function updateAnalyticsDashboard(users, resources) {
+  // Populate Active Users Directory Tables (Name & Email Columns)
+  const activeUsersTableBody = document.getElementById('activeUsersTableBody');
+  const analyticsActiveUsersBody = document.getElementById('analyticsActiveUsersBody');
+  const approvedUsers = (users || []).filter(u => u.approved !== false && u.status !== 'rejected');
+
+  const generateRowsHtml = () => {
+    if (approvedUsers.length === 0) {
+      return `
+        <tr>
+          <td colspan="5" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No active users found.</td>
+        </tr>
+      `;
+    }
+    return approvedUsers.map(u => `
+      <tr style="border-bottom: 1px solid var(--border-color); font-size: 0.9rem;">
+        <td style="padding: 0.85rem 1rem; font-weight: 700; color: var(--text-main);">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-glow); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">
+              ${(u.displayName || 'U').charAt(0).toUpperCase()}
+            </div>
+            <span>${u.displayName || 'Member'}</span>
+          </div>
+        </td>
+        <td style="padding: 0.85rem 1rem; color: var(--primary); font-family: monospace; font-weight: 600;">${u.email || 'N/A'}</td>
+        <td style="padding: 0.85rem 1rem; color: var(--text-muted);">${u.location || 'Community Center'}</td>
+        <td style="padding: 0.85rem 1rem;">
+          <select class="admin-role-select" data-uid="${u.uid}" data-name="${u.displayName || 'User'}" style="padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+            <option value="resident" ${u.role === 'resident' || !u.role ? 'selected' : ''}>Resident</option>
+            <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin 👑</option>
+            <option value="volunteer" ${u.role === 'volunteer' ? 'selected' : ''}>Volunteer</option>
+            <option value="ngo" ${u.role === 'ngo' ? 'selected' : ''}>NGO / Partner</option>
+          </select>
+        </td>
+        <td style="padding: 0.85rem 1rem; text-align: right;"><span class="card-badge badge-completed" style="position: static; font-size: 0.75rem;">Active</span></td>
+      </tr>
+    `).join('');
+  };
+
+  const rowsHtml = generateRowsHtml();
+  if (activeUsersTableBody) activeUsersTableBody.innerHTML = rowsHtml;
+  if (analyticsActiveUsersBody) analyticsActiveUsersBody.innerHTML = rowsHtml;
+
+  // Bind role selector changes for admin promotion
+  document.querySelectorAll('.admin-role-select').forEach(select => {
+    select.addEventListener('change', async (e) => {
+      const targetUid = e.target.getAttribute('data-uid');
+      const targetName = e.target.getAttribute('data-name');
+      const newRole = e.target.value;
+      try {
+        const { dbService } = await import('./firebase-config.js');
+        await dbService.updateUserApproval(targetUid, true, 'approved', newRole);
+        window.showToastNotification(`Role updated: '${targetName}' is now '${newRole}'.`, 'success');
+        const freshUsers = await dbService.getAllUsers();
+        const { updateCommunityNeighboursUI } = await import('./resources.js');
+        updateCommunityNeighboursUI(freshUsers);
+        await renderAdminPanel();
+      } catch (err) {
+        console.error(err);
+        window.showToastNotification('Failed to update role: ' + err.message, 'error');
+      }
+    });
+  });
+
   // 1. KPI cards values
   const totalItemsEl = document.getElementById('statTotalItems');
   const activeUsersEl = document.getElementById('statActiveUsers');
   const completedExchangesEl = document.getElementById('statCompletedExchanges');
   const carbonSavedEl = document.getElementById('statCarbonSaved');
 
-  const activeUsersCount = users.filter(u => u.approved).length;
+  const activeUsersCount = approvedUsers.length;
   const completedCount = resources.filter(r => r.status === 'Completed' || r.status === 'Shared').length;
   const carbonSavedVal = (resources.length * 2.5).toFixed(1);
 

@@ -77,7 +77,7 @@ app.post('/api/auth/register', async (req, res) => {
 
     const checkIsAdmin = (emailStr) => {
       const normalized = emailStr.toLowerCase().trim().replace(/\+[^@]*@/, '@');
-      return normalized === 'admin@gmail.com' || normalized === 'admin@ecocircle.com' || normalized === 'admin@ecoshare.com' || normalized === 'ashrithap2200.sse@saveetha.com';
+      return normalized === 'ashrithap2200.sse@saveetha.com';
     };
 
     const uid = 'mysql_uid_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now();
@@ -203,17 +203,21 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-// Update User Approval Status (Admin)
+// Update User Approval Status & Role (Admin)
 app.post('/api/users/approve', async (req, res) => {
-  const { userId, approved, status } = req.body;
+  const { userId, approved, status, role } = req.body;
   if (!userId || approved === undefined || !status) {
     return res.status(400).json({ error: 'userId, approved, and status are required.' });
   }
 
   try {
     const approvedVal = approved ? 1 : 0;
-    await dbPool.query('UPDATE users SET approved = ?, status = ? WHERE uid = ?', [approvedVal, status, userId]);
-    res.json({ success: true, userId, approved, status });
+    if (role) {
+      await dbPool.query('UPDATE users SET approved = ?, status = ?, role = ? WHERE uid = ?', [approvedVal, status, role, userId]);
+    } else {
+      await dbPool.query('UPDATE users SET approved = ?, status = ? WHERE uid = ?', [approvedVal, status, userId]);
+    }
+    res.json({ success: true, userId, approved, status, role });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database update error: ' + err.message });

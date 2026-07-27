@@ -8,7 +8,7 @@ let activeSessionCheckInterval = null;
 function checkIsAdmin(email) {
   if (!email) return false;
   const normalized = email.toLowerCase().trim().replace(/\+[^@]*@/, '@');
-  return normalized === 'admin@gmail.com' || normalized === 'admin@ecocircle.com' || normalized === 'ashrithap2200.sse@saveetha.com';
+  return normalized === 'ashrithap2200.sse@saveetha.com';
 }
 
 function notifyAuthListeners(profile) {
@@ -405,20 +405,45 @@ export const MysqlProvider = {
 
   // --- Admin Panel API ---
 
-  getAllUsers: async () => {
-    const response = await fetch(`${getBaseUrl()}/api/users`);
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Failed to retrieve all users.');
-    }
-    return await response.json();
+  onUsersChanged: (callback) => {
+    let lastHash = '';
+    const fetchUsers = async () => {
+      try {
+        const users = await MysqlProvider.getAllUsers();
+        const currentHash = JSON.stringify(users.map(u => (u.uid || u.id) + u.location + u.approved + u.status));
+        if (currentHash !== lastHash) {
+          lastHash = currentHash;
+          callback(users);
+        }
+      } catch (err) {
+        console.error('[MySQL DB] Error polling users:', err);
+      }
+    };
+    fetchUsers();
+    const intervalId = setInterval(fetchUsers, 3000);
+    return () => clearInterval(intervalId);
   },
 
-  updateUserApproval: async (userId, approved, status) => {
+  getAllUsers: async () => {
+    try {
+      const response = await fetch(`${getBaseUrl()}/api/users`);
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Failed to retrieve all users.');
+      }
+      return await response.json();
+    } catch (err) {
+      console.warn("MySQL getAllUsers failed:", err);
+      const user = MysqlProvider.getCurrentUser();
+      return user ? [user] : [];
+    }
+  },
+
+  updateUserApproval: async (userId, approved, status, role) => {
     const response = await fetch(`${getBaseUrl()}/api/users/approve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, approved, status })
+      body: JSON.stringify({ userId, approved, status, role })
     });
 
     if (!response.ok) {
@@ -431,6 +456,7 @@ export const MysqlProvider = {
     if (user && user.uid === userId) {
       user.approved = approved;
       user.status = status;
+      if (role) user.role = role;
       localStorage.setItem('EcoCircle_session', JSON.stringify(user));
       notifyAuthListeners(user);
     }

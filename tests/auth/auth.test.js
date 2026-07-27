@@ -35,7 +35,7 @@ function validateLocation(location) {
 function isAdminEmail(email) {
   if (!email) return false;
   const normalized = email.toLowerCase().trim();
-  return ['admin@gmail.com', 'admin@ecocircle.com', 'admin@ecoshare.com', 'ashrithap2200.sse@saveetha.com'].includes(normalized);
+  return normalized === 'ashrithap2200.sse@saveetha.com';
 }
 
 function assignRole(email) {
@@ -81,7 +81,7 @@ function simulateLogout(session) {
 
 // ── Mocked Users DB ───────────────────────────────────────────────────────────
 const MOCK_USERS = [
-  { uid: 'admin_1', email: 'admin@ecoshare.com', password: 'EcoPass123', displayName: 'Admin', role: 'admin', status: 'approved' },
+  { uid: 'admin_1', email: 'ashrithap2200.sse@saveetha.com', password: 'EcoPass123', displayName: 'Ashritha Admin', role: 'admin', status: 'approved' },
   { uid: 'user_1', email: 'john@example.com', password: 'UserPass1', displayName: 'John', role: 'resident', status: 'approved' },
   { uid: 'user_2', email: 'pending@example.com', password: 'Pending1A', displayName: 'Pending', role: 'resident', status: 'pending' },
   { uid: 'user_3', email: 'rejected@example.com', password: 'Reject1A', displayName: 'Rejected', role: 'resident', status: 'rejected' },
@@ -106,12 +106,12 @@ describe('[AUTH] Registration Validation', () => {
   });
 
   test('TC-AUTH-04: admin email gets admin role on registration', () => {
-    const r = simulateRegister('Admin', 'admin@ecoshare.com', 'EcoPass123', 'HQ');
+    const r = simulateRegister('Ashritha Admin', 'ashrithap2200.sse@saveetha.com', 'EcoPass123', 'HQ');
     expect(r.user.role).toBe('admin');
   });
 
   test('TC-AUTH-05: admin is auto-approved on registration', () => {
-    const r = simulateRegister('Admin', 'admin@ecoshare.com', 'EcoPass123', 'HQ');
+    const r = simulateRegister('Ashritha Admin', 'ashrithap2200.sse@saveetha.com', 'EcoPass123', 'HQ');
     expect(r.user.approved).toBe(true);
     expect(r.user.status).toBe('approved');
   });
@@ -203,7 +203,7 @@ describe('[AUTH] Login Validation', () => {
   });
 
   test('TC-AUTH-22: admin can login', () => {
-    const r = simulateLogin('admin@ecoshare.com', 'EcoPass123', MOCK_USERS);
+    const r = simulateLogin('ashrithap2200.sse@saveetha.com', 'EcoPass123', MOCK_USERS);
     expect(r.success).toBe(true);
     expect(r.user.role).toBe('admin');
   });
@@ -276,16 +276,16 @@ describe('[AUTH] Logout & Session', () => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 describe('[AUTH] Role Management', () => {
-  test('TC-AUTH-34: admin@ecoshare.com is recognized as admin', () => {
-    expect(isAdminEmail('admin@ecoshare.com')).toBe(true);
+  test('TC-AUTH-34: admin@ecoshare.com is no longer default admin', () => {
+    expect(isAdminEmail('admin@ecoshare.com')).toBe(false);
   });
 
-  test('TC-AUTH-35: admin@ecocircle.com is recognized as admin', () => {
-    expect(isAdminEmail('admin@ecocircle.com')).toBe(true);
+  test('TC-AUTH-35: admin@ecocircle.com is no longer default admin', () => {
+    expect(isAdminEmail('admin@ecocircle.com')).toBe(false);
   });
 
-  test('TC-AUTH-36: admin@gmail.com is recognized as admin', () => {
-    expect(isAdminEmail('admin@gmail.com')).toBe(true);
+  test('TC-AUTH-36: admin@gmail.com is no longer default admin', () => {
+    expect(isAdminEmail('admin@gmail.com')).toBe(false);
   });
 
   test('TC-AUTH-37: saveetha email is recognized as admin', () => {
@@ -297,11 +297,11 @@ describe('[AUTH] Role Management', () => {
   });
 
   test('TC-AUTH-39: email check is case-insensitive', () => {
-    expect(isAdminEmail('ADMIN@ECOSHARE.COM')).toBe(true);
+    expect(isAdminEmail('ASHRITHAP2200.SSE@SAVEETHA.COM')).toBe(true);
   });
 
-  test('TC-AUTH-40: role assignment gives admin role to admin emails', () => {
-    expect(assignRole('admin@ecoshare.com')).toBe('admin');
+  test('TC-AUTH-40: role assignment gives admin role to sole admin email', () => {
+    expect(assignRole('ashrithap2200.sse@saveetha.com')).toBe('admin');
   });
 
   test('TC-AUTH-41: role assignment gives resident role to normal emails', () => {

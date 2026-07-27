@@ -1,4 +1,4 @@
-﻿// Resource management module for EcoCircle
+// Resource management module for EcoCircle
 import { dbService, storageService, authService } from './firebase-config.js';
 import { getLoggedInUser } from './auth.js';
 import { initMainMap, updateMainMapMarkers, initFormMapPicker } from './map.js';
@@ -12,6 +12,19 @@ let currentStatusFilter = 'All';
 let addMapPicker = null;
 let editMapPicker = null;
 let mainMap = null;
+
+let userCurrentCoordinates = null;
+
+// Try fetching initial user GPS coordinates silently
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      userCurrentCoordinates = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    },
+    () => {},
+    { timeout: 5000 }
+  );
+}
 
 export function getResourcesState() {
   return allResources;
@@ -28,12 +41,73 @@ export function initResources(showToast) {
   const addResourceModal = document.getElementById('addResourceModal');
   const addResourceForm = document.getElementById('addResourceForm');
   const cancelAddBtn = document.getElementById('cancelAddBtn');
+  const useGpsBtn = document.getElementById('useGpsBtn');
   
   const detailModal = document.getElementById('detailModal');
   const detailModalClose = document.getElementById('detailModalClose');
   const userProfileModal = document.getElementById('userProfileModal');
   const profileModalClose = document.getElementById('profileModalClose');
   const profileModalCloseBtn = document.getElementById('profileModalCloseBtn');
+
+  // GPS Location Detection Listener
+  if (useGpsBtn) {
+    useGpsBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        showToast('GPS location is not supported by your browser.', 'warning');
+        return;
+      }
+
+      useGpsBtn.disabled = true;
+      useGpsBtn.innerHTML = `
+        <svg class="spinner" viewBox="0 0 50 50" style="animation: rotate 2s linear infinite; width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4;">
+          <circle cx="25" cy="25" r="20" stroke-dasharray="80, 200" stroke-linecap="round"></circle>
+        </svg>
+        <span>Locating...</span>
+      `;
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          
+          document.getElementById('addResourceLat').value = lat;
+          document.getElementById('addResourceLng').value = lng;
+
+          if (addMapPicker) {
+            addMapPicker.setLocation(lat, lng);
+          }
+
+          userCurrentCoordinates = { lat, lng };
+          showToast(`Exact GPS location captured: ${lat.toFixed(4)}, ${lng.toFixed(4)}`, 'success');
+          
+          useGpsBtn.disabled = false;
+          useGpsBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span>Detect My GPS</span>
+          `;
+        },
+        (error) => {
+          console.warn('Geolocation error:', error);
+          let errorMsg = 'GPS location permission denied or unavailable.';
+          if (error.code === error.PERMISSION_DENIED) {
+            errorMsg = 'Location permission denied. You can manually click or drag the map pin to select your location.';
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            errorMsg = 'GPS position unavailable. Please manually select a spot on the map.';
+          } else if (error.code === error.TIMEOUT) {
+            errorMsg = 'Location request timed out. Please select a spot manually on the map.';
+          }
+          showToast(errorMsg, 'warning');
+          
+          useGpsBtn.disabled = false;
+          useGpsBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span>Detect My GPS</span>
+          `;
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      );
+    });
+  }
 
   // File Upload Elements
   const imageUploadZone = document.getElementById('imageUploadZone');
@@ -324,30 +398,51 @@ export function initResources(showToast) {
     }
   });
 
-  // Listen for Live Firestore/Mock resource snapshots
+  // Listen for Live Supabase/Firestore/Mock resource snapshots
   let unsubscribeSnapshots = null;
 
-  document.addEventListener('auth-changed', (e) => {
-    // Clear and re-subscribe to resource changes
+  let unsubscribeUsers = null;
+
+  function subscribeToUsers() {
+    if (unsubscribeUsers) {
+      unsubscribeUsers();
+      unsubscribeUsers = null;
+    }
+    try {
+      unsubscribeUsers = dbService.onUsersChanged((users) => {
+        updateCommunityNeighboursUI(users);
+      });
+    } catch (err) {
+      console.error('[Neighbours] Failed to subscribe to users:', err);
+    }
+  }
+
+  function subscribeToResources() {
     if (unsubscribeSnapshots) {
       unsubscribeSnapshots();
       unsubscribeSnapshots = null;
     }
-
-    const user = e.detail;
-    if (user && user.approved === true) {
-      // Subscribe to Firestore updates
+    try {
       unsubscribeSnapshots = dbService.onResourcesChanged((resources) => {
-        allResources = resources;
-        populateLocationFilters(resources);
+        console.log('[Resources] Loaded', resources ? resources.length : 0, 'resources');
+        allResources = resources || [];
+        populateLocationFilters(allResources);
         renderResources();
         renderDashboardPanels();
       });
-    } else {
-      allResources = [];
-      renderResources();
-      renderDashboardPanels();
+    } catch (err) {
+      console.error('[Resources] Failed to subscribe to resources:', err);
     }
+  }
+
+  // Subscribe immediately on init so resources & user counts load on first page load
+  subscribeToResources();
+  subscribeToUsers();
+
+  document.addEventListener('auth-changed', (e) => {
+    const user = e.detail;
+    subscribeToResources();
+    subscribeToUsers();
   });
 }
 
@@ -463,9 +558,26 @@ export function renderResources() {
       `;
       return;
     }
-    // Filter matching location of current user
-    const userLoc = (user.location || '').toLowerCase();
-    filtered = filtered.filter(r => (r.location || '').toLowerCase().includes(userLoc) || userLoc.includes((r.location || '').toLowerCase()));
+    
+    // Geographic distance matching
+    const baseLat = userCurrentCoordinates ? userCurrentCoordinates.lat : 45.5152;
+    const baseLng = userCurrentCoordinates ? userCurrentCoordinates.lng : -122.6784;
+    const userLoc = (user.location || '').toLowerCase().trim();
+
+    filtered = filtered.map(r => {
+      const dist = (r.latitude !== undefined && r.longitude !== undefined && r.latitude !== null && r.longitude !== null)
+        ? calculateDistance(baseLat, baseLng, r.latitude, r.longitude)
+        : Infinity;
+      return { ...r, _computedDistance: dist };
+    });
+
+    filtered = filtered.filter(r => {
+      if (r._computedDistance !== Infinity && r._computedDistance <= 50) return true;
+      const rLoc = (r.location || '').toLowerCase().trim();
+      return rLoc.includes(userLoc) || userLoc.includes(rLoc);
+    });
+
+    filtered.sort((a, b) => (a._computedDistance || Infinity) - (b._computedDistance || Infinity));
   }
 
   // 5. Search filtering matching title and description
@@ -490,6 +602,9 @@ export function renderResources() {
     return;
   }
 
+  const baseLat = userCurrentCoordinates ? userCurrentCoordinates.lat : 45.5152;
+  const baseLng = userCurrentCoordinates ? userCurrentCoordinates.lng : -122.6784;
+
   // Render cards
   filtered.forEach(resource => {
     const card = document.createElement('div');
@@ -497,6 +612,11 @@ export function renderResources() {
     
     const isSaved = user && user.savedResources && user.savedResources.includes(resource.resourceId);
     
+    const itemDist = (resource.latitude !== undefined && resource.longitude !== undefined && resource.latitude !== null && resource.longitude !== null)
+      ? calculateDistance(baseLat, baseLng, resource.latitude, resource.longitude)
+      : null;
+    const distText = (itemDist !== null && itemDist !== Infinity) ? formatDistance(itemDist) : '';
+
     card.innerHTML = `
       <div class="card-img-wrapper">
         <img class="card-img" src="${resource.imageUrl || getDefaultBanner(resource.category)}" alt="${resource.title}" loading="lazy">
@@ -519,7 +639,7 @@ export function renderResources() {
         <div class="card-footer">
           <div class="card-footer-item">
             <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span>${resource.location}</span>
+            <span>${resource.location}${distText ? ` &bull; <strong style="color: var(--primary);">${distText}</strong>` : ''}</span>
           </div>
           <div class="card-footer-item">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -683,6 +803,16 @@ function openDetailModal(resource) {
     day: 'numeric'
   });
 
+  const baseLat = userCurrentCoordinates ? userCurrentCoordinates.lat : 45.5152;
+  const baseLng = userCurrentCoordinates ? userCurrentCoordinates.lng : -122.6784;
+  const itemDist = (resource.latitude !== undefined && resource.longitude !== undefined && resource.latitude !== null && resource.longitude !== null)
+    ? calculateDistance(baseLat, baseLng, resource.latitude, resource.longitude)
+    : null;
+  const distText = (itemDist !== null && itemDist !== Infinity) ? formatDistance(itemDist) : '';
+  const latLngStr = (resource.latitude !== undefined && resource.longitude !== undefined && resource.latitude !== null && resource.longitude !== null)
+    ? `[${Number(resource.latitude).toFixed(4)}, ${Number(resource.longitude).toFixed(4)}]`
+    : '';
+
   // Render main body
   detailBody.innerHTML = `
     <div class="detail-grid">
@@ -706,8 +836,8 @@ function openDetailModal(resource) {
             <span class="meta-value">${resource.quantity}</span>
           </div>
           <div class="detail-meta-item">
-            <span class="meta-label">Location</span>
-            <span class="meta-value">${resource.location}</span>
+            <span class="meta-label">Pick-up Location</span>
+            <span class="meta-value">${resource.location}${distText ? ` (${distText})` : ''}<br><small style="color: var(--text-muted); font-size: 0.75rem;">GPS: ${latLngStr || 'Location Pin Set'}</small></span>
           </div>
           <div class="detail-meta-item">
             <span class="meta-label">Posted Date</span>
@@ -1229,6 +1359,32 @@ function setLoading(button, isLoading, text) {
   }
 }
 
+export function calculateDistance(lat1, lon1, lat2, lon2) {
+  if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) return Infinity;
+  const l1 = Number(lat1);
+  const n1 = Number(lon1);
+  const l2 = Number(lat2);
+  const n2 = Number(lon2);
+  if (isNaN(l1) || isNaN(n1) || isNaN(l2) || isNaN(n2)) return Infinity;
+
+  const R = 6371; // Earth radius in km
+  const dLat = (l2 - l1) * (Math.PI / 180);
+  const dLon = (n2 - n1) * (Math.PI / 180);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(l1 * (Math.PI / 180)) * Math.cos(l2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in kilometers
+}
+
+export function formatDistance(km) {
+  if (km === Infinity || isNaN(km)) return '';
+  if (km < 1) {
+    return `${Math.round(km * 1000)}m away`;
+  }
+  return `${km.toFixed(1)}km away`;
+}
+
 function formatTimeAgo(dateString) {
   const date = new Date(dateString);
   const now = new Date();
@@ -1307,4 +1463,31 @@ function base64ToFile(base64Data, filename) {
     u8arr[n] = bstr.charCodeAt(n);
   }
   return new File([u8arr], filename, { type: mime });
+}
+
+export function updateCommunityNeighboursUI(users) {
+  const countEl = document.getElementById('communityNeighboursCount');
+  const subtextEl = document.getElementById('communityNeighboursSubtext');
+  const adminActiveUsersEl = document.getElementById('statActiveUsers');
+  
+  if (!users) users = [];
+  
+  // Approved & active users
+  const approvedUsers = users.filter(u => u.approved !== false && u.status !== 'rejected');
+  const totalApproved = approvedUsers.length;
+  
+  if (adminActiveUsersEl) {
+    adminActiveUsersEl.textContent = totalApproved;
+  }
+  
+  if (!countEl) return;
+  
+  const currentUser = getLoggedInUser();
+  
+  countEl.textContent = totalApproved;
+  if (subtextEl) {
+    subtextEl.textContent = (currentUser && currentUser.location) 
+      ? `In ${currentUser.location}` 
+      : 'In Your Community';
+  }
 }

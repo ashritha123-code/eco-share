@@ -66,7 +66,7 @@ function changeUserRole(adminUser, targetUserId, newRole, users) {
 
 // ── Sample Data ───────────────────────────────────────────────────────────────
 const MOCK_USERS = [
-  { uid: 'admin_1', email: 'admin@ecoshare.com', displayName: 'Admin', role: 'admin', status: 'approved' },
+  { uid: 'admin_1', email: 'ashrithap2200.sse@saveetha.com', displayName: 'Ashritha Admin', role: 'admin', status: 'approved' },
   { uid: 'user_1', email: 'alice@example.com', displayName: 'Alice', role: 'resident', status: 'approved' },
   { uid: 'user_2', email: 'bob@example.com', displayName: 'Bob', role: 'resident', status: 'pending' },
   { uid: 'user_3', email: 'charlie@example.com', displayName: 'Charlie', role: 'resident', status: 'pending' },
