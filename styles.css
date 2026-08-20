@@ -65,6 +65,9 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  touch-action: manipulation;
 }
 
 body {
@@ -508,7 +511,7 @@ body {
   background-color: var(--bg-app);
   color: var(--text-main);
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 1rem;
   transition: all var(--transition-fast);
 }
 
@@ -2292,15 +2295,188 @@ dialog.modal-overlay,
   }
 }
 
-/* Spin animation for spinner */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+/* ==========================================
+   IMPACT MEDALS & ACHIEVEMENT BADGES
+   ========================================== */
+.impact-medal {
+  font-size: 1.5rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.impact-medal.unlocked {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--bg-card) 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+  animation: pulse-glow 2s infinite alternate;
+}
+
+.impact-medal.locked {
+  filter: grayscale(1) opacity(0.45);
+}
+
+.impact-medal:hover {
+  transform: scale(1.15) translateY(-2px);
+  filter: none;
+  opacity: 1;
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  100% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+}
+
+/* ==========================================
+   COMMUNITY EVENT CARDS
+   ========================================== */
+.event-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.event-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.event-card-header {
+  position: relative;
+  height: 140px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-medium) 100%);
+  padding: 1.25rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.event-card-type {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-card-date {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #a7f3d0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.event-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-grow: 1;
+}
+
+.event-card-title {
+  font-family: var(--font-headings);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.event-card-location {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.event-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.event-card-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-app);
+}
+
+.event-attendees {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-rsvp {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.btn-rsvp.attending {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+/* ==========================================
+   MOBILE AUTO-ZOOM & GESTURE PREVENTION (Native App Experience)
+   ========================================== */
+/* Prevent mobile browsers (iOS Safari & Android WebViews) from auto-zooming
+   when focusing input elements, textareas, or selects (requires font-size >= 16px). */
+@media screen and (max-width: 768px) {
+  input,
+  select,
+  textarea,
+  .input-field,
+  .search-input,
+  .filter-select,
+  #chatInputMessage,
+  #aiChatInput {
+    font-size: 16px !important;
   }
 }
+
+/* Prevent double-tap zoom & pinch-zoom gestures across interactive elements */
+html, body, button, input, select, textarea, a {
+  touch-action: manipulation;
+}
+
+
 
 
 

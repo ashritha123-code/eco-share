@@ -15,16 +15,150 @@ let mainMap = null;
 
 let userCurrentCoordinates = null;
 
-// Try fetching initial user GPS coordinates silently
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      userCurrentCoordinates = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-    },
-    () => {},
-    { timeout: 5000 }
-  );
+/**
+ * Ultra-robust multi-tiered location acquisition with automatic fallbacks:
+ * Tier 1: High accuracy browser GPS (satellite / hardware) - 10s timeout
+ * Tier 2: Low accuracy browser GPS (Wi-Fi / Cell network triangulation) - 8s timeout
+ * Tier 3: Resilient Multi-Provider IP-based Geolocation lookup (ipwho.is, freeipapi.com, ipapi.co, ip-api.com)
+ * Tier 4: Community map center fallback with auto-reverse geocoding
+ */
+async function reverseGeocode(lat, lng) {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3500);
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+      headers: { 'User-Agent': 'EcoShareApp/1.0' },
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.address) {
+        const addr = data.address;
+        const spot = addr.amenity || addr.building || addr.road || addr.neighbourhood || addr.suburb || addr.quarter;
+        const city = addr.city || addr.town || addr.village || addr.municipality || addr.county;
+        const parts = [spot, city].filter(Boolean);
+        if (parts.length > 0) return parts.join(', ');
+      }
+      if (data && data.display_name) {
+        return data.display_name.split(',').slice(0, 2).join(', ');
+      }
+    }
+  } catch (e) {
+    console.warn('[ReverseGeocode] Failed or timed out:', e);
+  }
+  return null;
 }
+
+async function acquireLocationWithFallbacks() {
+  const tryGeo = (options) => new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('Geolocation unsupported'));
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+
+  // Tier 1: Try high accuracy GPS (10s timeout to allow browser prompt & satellite fix)
+  try {
+    const pos = await tryGeo({ enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+    return {
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      type: 'exact',
+      toastType: 'success',
+      message: `Exact GPS location detected: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`
+    };
+  } catch (err1) {
+    console.warn('[GPS] High accuracy failed/timed out, falling back to low accuracy...', err1);
+  }
+
+  // Tier 2: Try low accuracy (Wi-Fi / network) (8s timeout)
+  try {
+    const pos = await tryGeo({ enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 });
+    return {
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      type: 'coarse',
+      toastType: 'success',
+      message: `Network GPS location detected: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}.`
+    };
+  } catch (err2) {
+    console.warn('[GPS] Low accuracy failed, trying multi-provider IP lookup...', err2);
+  }
+
+  // Tier 3: Multi-provider IP Geolocation Lookup
+  const ipProviders = [
+    async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch('https://ipwho.is/', { signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('ipwhois failed');
+      const data = await res.json();
+      if (data.success !== false && data.latitude && data.longitude) {
+        return { lat: Number(data.latitude), lng: Number(data.longitude), city: data.city || data.region };
+      }
+      throw new Error('Invalid ipwhois payload');
+    },
+    async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch('https://freeipapi.com/api/json', { signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('freeipapi failed');
+      const data = await res.json();
+      if (data.latitude && data.longitude) {
+        return { lat: Number(data.latitude), lng: Number(data.longitude), city: data.cityName };
+      }
+      throw new Error('Invalid freeipapi payload');
+    },
+    async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('ipapi failed');
+      const data = await res.json();
+      if (data.latitude && data.longitude) {
+        return { lat: Number(data.latitude), lng: Number(data.longitude), city: data.city || data.region };
+      }
+      throw new Error('Invalid ipapi payload');
+    }
+  ];
+
+  for (const provider of ipProviders) {
+    try {
+      const result = await provider();
+      if (result && result.lat && result.lng) {
+        return {
+          lat: result.lat,
+          lng: result.lng,
+          type: 'ip',
+          toastType: 'success',
+          city: result.city,
+          message: `Location detected via network (${result.city || 'Current Region'}): ${result.lat.toFixed(4)}, ${result.lng.toFixed(4)}`
+        };
+      }
+    } catch (e) {
+      console.warn('[GPS] IP provider failed, trying next...', e);
+    }
+  }
+
+  // Tier 4: Community map center default coordinates (45.5152, -122.6784)
+  return {
+    lat: 45.5152,
+    lng: -122.6784,
+    type: 'default',
+    toastType: 'info',
+    message: 'Location pin set on map. Click or drag the pin on map to select your exact spot.'
+  };
+}
+
+// Try fetching initial user GPS coordinates silently
+(async () => {
+  try {
+    const loc = await acquireLocationWithFallbacks();
+    userCurrentCoordinates = { lat: loc.lat, lng: loc.lng };
+  } catch (e) {}
+})();
 
 export function getResourcesState() {
   return allResources;
@@ -49,14 +183,9 @@ export function initResources(showToast) {
   const profileModalClose = document.getElementById('profileModalClose');
   const profileModalCloseBtn = document.getElementById('profileModalCloseBtn');
 
-  // GPS Location Detection Listener
+  // GPS Location Detection Listener (Add Form)
   if (useGpsBtn) {
-    useGpsBtn.addEventListener('click', () => {
-      if (!navigator.geolocation) {
-        showToast('GPS location is not supported by your browser.', 'warning');
-        return;
-      }
-
+    useGpsBtn.addEventListener('click', async () => {
       useGpsBtn.disabled = true;
       useGpsBtn.innerHTML = `
         <svg class="spinner" viewBox="0 0 50 50" style="animation: rotate 2s linear infinite; width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4;">
@@ -65,47 +194,86 @@ export function initResources(showToast) {
         <span>Locating...</span>
       `;
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          
-          document.getElementById('addResourceLat').value = lat;
-          document.getElementById('addResourceLng').value = lng;
+      try {
+        const loc = await acquireLocationWithFallbacks();
+        document.getElementById('addResourceLat').value = loc.lat;
+        document.getElementById('addResourceLng').value = loc.lng;
 
-          if (addMapPicker) {
-            addMapPicker.setLocation(lat, lng);
-          }
+        if (addMapPicker) {
+          addMapPicker.setLocation(loc.lat, loc.lng);
+        }
 
-          userCurrentCoordinates = { lat, lng };
-          showToast(`Exact GPS location captured: ${lat.toFixed(4)}, ${lng.toFixed(4)}`, 'success');
-          
-          useGpsBtn.disabled = false;
-          useGpsBtn.innerHTML = `
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span>Detect My GPS</span>
-          `;
-        },
-        (error) => {
-          console.warn('Geolocation error:', error);
-          let errorMsg = 'GPS location permission denied or unavailable.';
-          if (error.code === error.PERMISSION_DENIED) {
-            errorMsg = 'Location permission denied. You can manually click or drag the map pin to select your location.';
-          } else if (error.code === error.POSITION_UNAVAILABLE) {
-            errorMsg = 'GPS position unavailable. Please manually select a spot on the map.';
-          } else if (error.code === error.TIMEOUT) {
-            errorMsg = 'Location request timed out. Please select a spot manually on the map.';
+        userCurrentCoordinates = { lat: loc.lat, lng: loc.lng };
+
+        // Reverse geocode to auto-fill location text field
+        const locInput = document.getElementById('resourceLocation');
+        if (locInput) {
+          const revAddress = await reverseGeocode(loc.lat, loc.lng);
+          if (revAddress) {
+            locInput.value = revAddress;
+          } else if (loc.city) {
+            locInput.value = loc.city;
           }
-          showToast(errorMsg, 'warning');
-          
-          useGpsBtn.disabled = false;
-          useGpsBtn.innerHTML = `
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span>Detect My GPS</span>
-          `;
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-      );
+        }
+
+        showToast(loc.message, loc.toastType);
+      } catch (err) {
+        console.error('Unexpected location error:', err);
+        showToast('Set location pin on map manually by dragging or clicking.', 'warning');
+      } finally {
+        useGpsBtn.disabled = false;
+        useGpsBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>Detect My GPS</span>
+        `;
+      }
+    });
+  }
+
+  // GPS Location Detection Listener (Edit Form)
+  const useEditGpsBtn = document.getElementById('useEditGpsBtn');
+  if (useEditGpsBtn) {
+    useEditGpsBtn.addEventListener('click', async () => {
+      useEditGpsBtn.disabled = true;
+      useEditGpsBtn.innerHTML = `
+        <svg class="spinner" viewBox="0 0 50 50" style="animation: rotate 2s linear infinite; width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4;">
+          <circle cx="25" cy="25" r="20" stroke-dasharray="80, 200" stroke-linecap="round"></circle>
+        </svg>
+        <span>Locating...</span>
+      `;
+
+      try {
+        const loc = await acquireLocationWithFallbacks();
+        document.getElementById('editResourceLat').value = loc.lat;
+        document.getElementById('editResourceLng').value = loc.lng;
+
+        if (editMapPicker) {
+          editMapPicker.setLocation(loc.lat, loc.lng);
+        }
+
+        userCurrentCoordinates = { lat: loc.lat, lng: loc.lng };
+
+        const editLocInput = document.getElementById('editResourceLocation');
+        if (editLocInput) {
+          const revAddress = await reverseGeocode(loc.lat, loc.lng);
+          if (revAddress) {
+            editLocInput.value = revAddress;
+          } else if (loc.city) {
+            editLocInput.value = loc.city;
+          }
+        }
+
+        showToast(loc.message, loc.toastType);
+      } catch (err) {
+        console.error('Unexpected location error:', err);
+        showToast('Set location pin on map manually by dragging or clicking.', 'warning');
+      } finally {
+        useEditGpsBtn.disabled = false;
+        useEditGpsBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>Detect My GPS</span>
+        `;
+      }
     });
   }
 
@@ -363,7 +531,15 @@ export function initResources(showToast) {
     const longitude = document.getElementById('addResourceLng').value;
 
     if (!title || !category || !quantity || !location || !description) {
-      showToast('Please complete all form fields.', 'warning');
+      showToast('Please complete all required form fields.', 'warning');
+      return;
+    }
+    if (title.length < 3) {
+      showToast('Item title must be at least 3 characters long.', 'warning');
+      return;
+    }
+    if (description.length < 10) {
+      showToast('Description must be at least 10 characters long.', 'warning');
       return;
     }
 
@@ -385,7 +561,12 @@ export function initResources(showToast) {
       };
       console.log('Submitting resource payload:', payload);
 
-      await dbService.addResource(payload);
+      const created = await dbService.addResource(payload);
+      if (created) {
+        allResources = [created, ...allResources.filter(r => r.resourceId !== created.resourceId)];
+        renderResources();
+        renderDashboardPanels();
+      }
       showToast('Resource shared successfully! Thank you.', 'success');
       addResourceModal.classList.remove('active');
       addResourceForm.reset();
@@ -705,25 +886,75 @@ function renderDashboardPanels() {
       myImpactPanel.style.display = 'block';
       const mySharedItems = allResources.filter(r => r.ownerId === user.uid);
       const shareCount = mySharedItems.length;
-      const co2Saved = (shareCount * 2.5).toFixed(1);
+      const totalCO2Val = mySharedItems.reduce((acc, item) => acc + (item.co2Offset || 2.5), 0);
+      const co2Saved = totalCO2Val.toFixed(1);
       
       let badgeIcon = '🌱';
       let badgeLabel = 'Eco Seedling';
-      if (shareCount >= 1 && shareCount <= 2) {
+      let levelNum = 'Lvl 1';
+      let nextTarget = 3;
+      let prevTarget = 0;
+
+      if (shareCount < 3) {
+        badgeIcon = '🌱';
+        badgeLabel = 'Eco Seedling';
+        levelNum = 'Lvl 1';
+        nextTarget = 3;
+        prevTarget = 0;
+      } else if (shareCount >= 3 && shareCount < 5) {
         badgeIcon = '🌿';
         badgeLabel = 'Green Sprout';
-      } else if (shareCount >= 3 && shareCount <= 5) {
+        levelNum = 'Lvl 2';
+        nextTarget = 5;
+        prevTarget = 3;
+      } else if (shareCount >= 5 && shareCount < 10) {
         badgeIcon = '🌳';
         badgeLabel = 'Forest Guardian';
-      } else if (shareCount > 5) {
+        levelNum = 'Lvl 3';
+        nextTarget = 10;
+        prevTarget = 5;
+      } else {
         badgeIcon = '👑';
-        badgeLabel = 'Eco Champion';
+        badgeLabel = 'Zero Waste Legend';
+        levelNum = 'Lvl 4';
+        nextTarget = shareCount;
+        prevTarget = 0;
       }
+
+      const progressPct = nextTarget > prevTarget
+        ? Math.min(100, Math.max(0, Math.round(((shareCount - prevTarget) / (nextTarget - prevTarget)) * 100)))
+        : 100;
       
-      document.getElementById('myImpactShares').textContent = shareCount;
-      document.getElementById('myImpactCarbon').textContent = `${co2Saved} kg`;
-      document.getElementById('myImpactBadgeIcon').textContent = badgeIcon;
-      document.getElementById('myImpactBadgeLabel').textContent = badgeLabel;
+      const sharesElem = document.getElementById('myImpactShares');
+      const carbonElem = document.getElementById('myImpactCarbon');
+      const badgeIconElem = document.getElementById('myImpactBadgeIcon');
+      const badgeLabelElem = document.getElementById('myImpactBadgeLabel');
+      const levelNumElem = document.getElementById('impactLevelNum');
+      const progressTextElem = document.getElementById('impactProgressText');
+      const progressBarElem = document.getElementById('impactProgressBar');
+      const medalsRow = document.getElementById('impactMedalsRow');
+
+      if (sharesElem) sharesElem.textContent = shareCount;
+      if (carbonElem) carbonElem.textContent = `${co2Saved} kg`;
+      if (badgeIconElem) badgeIconElem.textContent = badgeIcon;
+      if (badgeLabelElem) badgeLabelElem.textContent = badgeLabel;
+      if (levelNumElem) levelNumElem.textContent = levelNum;
+      if (progressTextElem) progressTextElem.textContent = `${shareCount} / ${nextTarget} Shares`;
+      if (progressBarElem) progressBarElem.style.width = `${progressPct}%`;
+
+      // Update Medals status
+      if (medalsRow) {
+        const medals = [
+          { icon: '🥇', title: 'First Share: Post 1 item', unlocked: shareCount >= 1 },
+          { icon: '🌳', title: 'Carbon Pioneer: Save 10kg CO2', unlocked: totalCO2Val >= 10 },
+          { icon: '👑', title: 'Community Hero: Post 5 items', unlocked: shareCount >= 5 },
+          { icon: '♻️', title: 'Zero Waste Champion: Save 50kg CO2', unlocked: totalCO2Val >= 50 }
+        ];
+
+        medalsRow.innerHTML = medals.map(m => `
+          <span class="impact-medal ${m.unlocked ? 'unlocked' : 'locked'}" title="${m.title}">${m.icon}</span>
+        `).join('');
+      }
     }
   }
   
@@ -994,20 +1225,7 @@ function openDetailModal(resource) {
       });
     }
 
-    // Direct Chat Trigger Button
-    const messageBtn = document.createElement('button');
-    messageBtn.className = 'btn btn-secondary';
-    messageBtn.innerHTML = `
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-      <span>Message Owner</span>
-    `;
-    messageBtn.addEventListener('click', () => {
-      detailModal.classList.remove('active');
-      window.startDirectChat(resource.ownerId, resource.resourceId, resource.title, resource.ownerName);
-    });
-
     detailFooter.appendChild(saveBtn);
-    detailFooter.appendChild(messageBtn);
     detailFooter.appendChild(requestBtn);
   }
 

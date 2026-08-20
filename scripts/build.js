@@ -58,4 +58,12 @@ if (!copyFileIfExists(path.join(root, 'firebase-config.json'), path.join(wwwDir,
   copyFileIfExists(path.join(root, 'firebase-config.json.template'), path.join(wwwDir, 'firebase-config.json'));
 }
 
-console.log('\n✅ Build complete! Output: www/');
+// Step 4: Sync to Android assets directory if android project exists
+const androidAssetsPublic = path.join(root, 'android', 'app', 'src', 'main', 'assets', 'public');
+if (fs.existsSync(path.join(root, 'android'))) {
+  copyDirRecursive(wwwDir, androidAssetsPublic);
+  console.log('  Synced assets to Android Studio assets: android/app/src/main/assets/public/');
+}
+
+console.log('\n✅ Build complete! Output: www/ & android assets synced');
+

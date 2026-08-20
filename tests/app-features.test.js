@@ -257,4 +257,9 @@ describe('CO2 Offset Calculations', () => {
     expect(formatCO2(1500)).toBe('1.5 tonnes');
     expect(formatCO2(2000)).toBe('2.0 tonnes');
   });
+
+  test('formats 0 kg CO2 correctly', () => {
+    expect(formatCO2(0)).toBe('0.0 kg');
+  });
 });
+

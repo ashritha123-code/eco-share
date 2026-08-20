@@ -30,3 +30,6 @@ src/env-config.js
 Thumbs.db
 .DS_Store
 test-api.ps1
+*.apk
+scratch/
+

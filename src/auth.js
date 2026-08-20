@@ -32,16 +32,12 @@ export function initAuth(showToast) {
   function checkEmailForAdmin(val) {
     if (!val) return false;
     const email = val.toLowerCase().trim();
-    return email.includes('admin') || email === 'ashrithap2200.sse@saveetha.com';
+    return email.includes('admin') || email === 'ashrithap2200@gmail.com' || email === 'ashrithap2200.sse@saveetha.com';
   }
 
   if (loginEmail) {
     loginEmail.addEventListener('input', (e) => {
       e.target.value = e.target.value.replace(/\s+/g, '');
-      if (loginConfigContainer) {
-        const is_admin = checkEmailForAdmin(e.target.value);
-        loginConfigContainer.style.display = is_admin ? 'block' : 'none';
-      }
     });
   }
   if (registerEmail) {
@@ -63,10 +59,6 @@ export function initAuth(showToast) {
     loginForm.classList.add('active');
     if (otpForm) otpForm.classList.remove('active');
     registerForm.classList.remove('active');
-    if (loginConfigContainer && loginEmail) {
-      const is_admin = checkEmailForAdmin(loginEmail.value);
-      loginConfigContainer.style.display = is_admin ? 'block' : 'none';
-    }
   });
 
   if (tabOtp) {
@@ -109,7 +101,7 @@ export function initAuth(showToast) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      showInlineError(loginForm, submitBtn, 'Please enter a valid email address (e.g. ashrithap2200.sse@saveetha.com).');
+      showInlineError(loginForm, submitBtn, 'Please enter a valid email address (e.g. ashrithap2200@gmail.com).');
       return;
     }
 
@@ -249,24 +241,8 @@ export function initAuth(showToast) {
 
   // Listen for Authentication State Changes
   authService.onAuthStateChanged((user) => {
-    if (user) {
-      const cachedSessionId = localStorage.getItem('EcoCircle_session_id');
-      const authInProgress = localStorage.getItem('EcoCircle_auth_in_progress') === 'true';
-
-      if (user.activeSessionId && !authInProgress) {
-        if (!cachedSessionId) {
-          localStorage.setItem('EcoCircle_session_id', user.activeSessionId);
-        } else if (cachedSessionId !== user.activeSessionId) {
-          console.warn('Session mismatch detected. Logging out...');
-          localStorage.removeItem('EcoCircle_session_id');
-          authService.logout().then(() => {
-            showToast('You have been logged out because this account logged in from another location.', 'warning');
-          }).catch(err => {
-            console.error('Forced logout failed:', err);
-          });
-          return;
-        }
-      }
+    if (user && user.activeSessionId) {
+      localStorage.setItem('EcoCircle_session_id', user.activeSessionId);
     } else {
       localStorage.removeItem('EcoCircle_session_id');
     }
@@ -296,19 +272,6 @@ export function initAuth(showToast) {
             navAdminItem.style.display = 'none';
             if (mobileNavAdmin) mobileNavAdmin.style.display = 'none';
             if (window.location.hash === '#admin') {
-              window.location.hash = '#dashboard';
-            }
-          }
-        }
-        
-        if (navSettingsItem) {
-          if (user.role === 'admin') {
-            navSettingsItem.style.display = 'block';
-            if (mobileNavSettings) mobileNavSettings.style.display = 'flex';
-          } else {
-            navSettingsItem.style.display = 'none';
-            if (mobileNavSettings) mobileNavSettings.style.display = 'none';
-            if (window.location.hash === '#settings') {
               window.location.hash = '#dashboard';
             }
           }
@@ -403,11 +366,6 @@ export function initAuth(showToast) {
       if (navAdminItem) navAdminItem.style.display = 'none';
       const mobileNavAdmin = document.getElementById('mobileNavAdmin');
       if (mobileNavAdmin) mobileNavAdmin.style.display = 'none';
-      
-      const navSettingsItem = document.getElementById('navSettingsItem');
-      const mobileNavSettings = document.getElementById('mobileNavSettings');
-      if (navSettingsItem) navSettingsItem.style.display = 'none';
-      if (mobileNavSettings) mobileNavSettings.style.display = 'none';
 
       // Show login screen — clear any inline display:none that was set during login
       authContainer.style.removeProperty('display');
@@ -667,7 +625,12 @@ export async function renderAdminPanel() {
 function renderUserRequestsList(users, pendingUsersGrid) {
   const currentUid = currentUser ? currentUser.uid : null;
   // Exclude admin accounts and show ONLY pending user registration requests (exclude approved and rejected)
-  const listableUsers = (users || []).filter(u => u && u.uid !== currentUid && u.role !== 'admin' && !u.approved && u.status !== 'rejected');
+  const listableUsers = (users || []).filter(u => {
+    if (!u || u.uid === currentUid || u.role === 'admin') return false;
+    const isApproved = u.approved === true || u.approved === 'true' || u.approved === 1 || u.approved === '1';
+    const isRejected = u.status === 'rejected';
+    return !isApproved && !isRejected;
+  });
 
   if (listableUsers.length === 0) {
     pendingUsersGrid.innerHTML = `
@@ -762,18 +725,22 @@ function renderUserRequestsList(users, pendingUsersGrid) {
 function updateAnalyticsDashboard(users, resources) {
   // Populate Active Users Directory Tables (Name & Email Columns)
   const activeUsersTableBody = document.getElementById('activeUsersTableBody');
-  const analyticsActiveUsersBody = document.getElementById('analyticsActiveUsersBody');
-  const approvedUsers = (users || []).filter(u => u.approved !== false && u.status !== 'rejected');
+  const approvedUsers = (users || []).filter(u => {
+    if (!u) return false;
+    if (u.status === 'rejected' || u.status === 'pending') return false;
+    const isApproved = u.approved === true || u.approved === 'true' || u.approved === 1 || u.approved === '1';
+    return isApproved || u.role === 'admin' || u.status === 'approved';
+  });
 
-  const generateRowsHtml = () => {
-    if (approvedUsers.length === 0) {
+  const renderActiveUserRows = (userList) => {
+    if (!userList || userList.length === 0) {
       return `
         <tr>
-          <td colspan="5" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No active users found.</td>
+          <td colspan="5" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No matching active users found.</td>
         </tr>
       `;
     }
-    return approvedUsers.map(u => `
+    return userList.map(u => `
       <tr style="border-bottom: 1px solid var(--border-color); font-size: 0.9rem;">
         <td style="padding: 0.85rem 1rem; font-weight: 700; color: var(--text-main);">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -798,30 +765,47 @@ function updateAnalyticsDashboard(users, resources) {
     `).join('');
   };
 
-  const rowsHtml = generateRowsHtml();
-  if (activeUsersTableBody) activeUsersTableBody.innerHTML = rowsHtml;
-  if (analyticsActiveUsersBody) analyticsActiveUsersBody.innerHTML = rowsHtml;
-
-  // Bind role selector changes for admin promotion
-  document.querySelectorAll('.admin-role-select').forEach(select => {
-    select.addEventListener('change', async (e) => {
-      const targetUid = e.target.getAttribute('data-uid');
-      const targetName = e.target.getAttribute('data-name');
-      const newRole = e.target.value;
-      try {
-        const { dbService } = await import('./firebase-config.js');
-        await dbService.updateUserApproval(targetUid, true, 'approved', newRole);
-        window.showToastNotification(`Role updated: '${targetName}' is now '${newRole}'.`, 'success');
-        const freshUsers = await dbService.getAllUsers();
-        const { updateCommunityNeighboursUI } = await import('./resources.js');
-        updateCommunityNeighboursUI(freshUsers);
-        await renderAdminPanel();
-      } catch (err) {
-        console.error(err);
-        window.showToastNotification('Failed to update role: ' + err.message, 'error');
-      }
+  const bindRoleSelectListeners = () => {
+    document.querySelectorAll('.admin-role-select').forEach(select => {
+      select.onchange = async (e) => {
+        const targetUid = e.target.getAttribute('data-uid');
+        const targetName = e.target.getAttribute('data-name');
+        const newRole = e.target.value;
+        try {
+          const { dbService } = await import('./firebase-config.js');
+          await dbService.updateUserApproval(targetUid, true, 'approved', newRole);
+          window.showToastNotification(`Role updated: '${targetName}' is now '${newRole}'.`, 'success');
+          const freshUsers = await dbService.getAllUsers();
+          const { updateCommunityNeighboursUI } = await import('./resources.js');
+          updateCommunityNeighboursUI(freshUsers);
+          await renderAdminPanel();
+        } catch (err) {
+          console.error(err);
+          window.showToastNotification('Failed to update role: ' + err.message, 'error');
+        }
+      };
     });
-  });
+  };
+
+  if (analyticsActiveUsersBody) analyticsActiveUsersBody.innerHTML = renderActiveUserRows(approvedUsers);
+  if (activeUsersTableBody) activeUsersTableBody.innerHTML = renderActiveUserRows(approvedUsers);
+  bindRoleSelectListeners();
+
+  const searchInput = document.getElementById('activeUserSearchInput');
+  if (searchInput) {
+    searchInput.oninput = (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = approvedUsers.filter(u => 
+        (u.displayName && u.displayName.toLowerCase().includes(q)) || 
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.location && u.location.toLowerCase().includes(q))
+      );
+      if (activeUsersTableBody) {
+        activeUsersTableBody.innerHTML = renderActiveUserRows(filtered);
+        bindRoleSelectListeners();
+      }
+    };
+  }
 
   // 1. KPI cards values
   const totalItemsEl = document.getElementById('statTotalItems');

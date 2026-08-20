@@ -1,4 +1,4 @@
-﻿// Chat module controller for EcoCircle
+// Chat module controller for EcoCircle
 import { dbService, authService } from './firebase-config.js';
 import { getLoggedInUser } from './auth.js';
 
@@ -57,7 +57,7 @@ export function initChats(showToast) {
     
     resetChatWorkspace();
 
-    if (user && user.approved === true) {
+    if (user && user.approved !== false && user.status !== 'rejected') {
       subscribeToUserChats(user);
     }
   });

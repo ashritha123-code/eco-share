@@ -39,7 +39,7 @@
       document.body.appendChild(div);
     };
   </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>EcoCircle - Community Resource Sharing & Sustainability Platform</title>
   <meta name="description" content="Share unused resources, reduce waste, and promote sustainable living with your neighbors. Build a greener community together using EcoCircle.">
   
@@ -94,12 +94,16 @@
                 <span>Eco Assistant</span>
               </a>
             </li>
-            <li class="nav-item" id="navSettingsItem" style="display: none;">
-              <a href="#settings" id="navSettings" class="nav-link">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                <span>Database Settings</span>
+            <li class="nav-item">
+              <a href="#events" id="navEvents" class="nav-link">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Swap Meets & Events</span>
               </a>
-            </li>
             <li class="nav-item" id="navAdminItem" style="display: none;">
               <a href="#admin" id="navAdmin" class="nav-link">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
@@ -160,13 +164,13 @@
         </svg>
         <span>Eco AI</span>
       </a>
+      <a href="#events" id="mobileNavEvents" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <span>Events</span>
+      </a>
       <a href="#" id="mobileNavShare" class="mobile-nav-item">
         <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
         <span>Share</span>
-      </a>
-      <a href="#settings" id="mobileNavSettings" class="mobile-nav-item" style="display: none;">
-        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        <span>Connect</span>
       </a>
       <a href="#admin" id="mobileNavAdmin" class="mobile-nav-item" style="display:none;">
         <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -290,25 +294,54 @@
             </section>
 
             <section class="sidebar-panel" id="myImpactPanel" style="display: none;" aria-labelledby="myImpactHeading">
-              <h2 id="myImpactHeading" class="section-title">My Impact</h2>
-              <div class="my-impact-card" style="background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-card) 100%); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.75rem;">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div id="myImpactBadgeIcon" style="font-size: 2rem;">🌱</div>
-                  <div>
-                    <div id="myImpactBadgeLabel" style="font-weight: 700; font-size: 0.95rem; color: var(--primary);">Eco Seedling</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">Sustainability Level</div>
+              <h2 id="myImpactHeading" class="section-title">My Impact & Medals</h2>
+              <div class="my-impact-card" style="background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-card) 100%); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+                
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 0.85rem;">
+                    <div id="myImpactBadgeIcon" style="font-size: 2.2rem; background: var(--bg-card); width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); border: 2px solid var(--primary-medium);">🌱</div>
+                    <div>
+                      <div id="myImpactBadgeLabel" style="font-weight: 800; font-size: 1.05rem; color: var(--primary); font-family: var(--font-headings);">Eco Seedling</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Sustainability Rank</div>
+                    </div>
+                  </div>
+                  <span id="impactLevelNum" style="background: var(--primary); color: white; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 800;">Lvl 1</span>
+                </div>
+
+                <!-- Level Progress Bar -->
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.35rem;">
+                    <span>Next Rank Progress</span>
+                    <span id="impactProgressText">0 / 3 Shares</span>
+                  </div>
+                  <div style="width: 100%; height: 8px; background-color: var(--border-color); border-radius: 100px; overflow: hidden;">
+                    <div id="impactProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent) 0%, var(--primary) 100%); border-radius: 100px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                   </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; text-align: center; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+
+                <!-- CO2 and Shares Stat Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; text-align: center; border-top: 1px solid var(--border-color); padding-top: 0.85rem;">
                   <div>
-                    <div id="myImpactShares" style="font-size: 1.2rem; font-weight: 800; color: var(--text-main);">0</div>
+                    <div id="myImpactShares" style="font-size: 1.3rem; font-weight: 800; color: var(--text-main);">0</div>
                     <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Items Shared</div>
                   </div>
                   <div>
-                    <div id="myImpactCarbon" style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">0.0 kg</div>
+                    <div id="myImpactCarbon" style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">0.0 kg</div>
                     <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">CO2 Saved</div>
                   </div>
                 </div>
+
+                <!-- Achievement Medals List -->
+                <div style="border-top: 1px dashed var(--border-color); padding-top: 0.75rem;">
+                  <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Unlocked Medals</div>
+                  <div id="impactMedalsRow" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="impact-medal locked" title="First Share: Post 1 item">🥇</span>
+                    <span class="impact-medal locked" title="Carbon Pioneer: Save 10kg CO2">🌳</span>
+                    <span class="impact-medal locked" title="Community Hero: Post 5 items">👑</span>
+                    <span class="impact-medal locked" title="Zero Waste Champion: Save 50kg CO2">♻️</span>
+                  </div>
+                </div>
+
               </div>
             </section>
 
@@ -487,7 +520,41 @@
 
         </div>
       </section>
-      
+
+      <!-- Community Events & Swap Meets Section -->
+      <section id="events" class="content-section" aria-labelledby="eventsHeading">
+        <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+          <div class="dashboard-main">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <div>
+                <h2 id="eventsHeading" class="section-title" style="font-size: 1.75rem;">Community Events & Swap Meets 📅</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Gather with neighbors for local clothes swaps, e-waste recycling drives, and repair cafes.</p>
+              </div>
+              <button id="hostEventBtn" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Host an Event</span>
+              </button>
+            </div>
+
+            <!-- Events Category Filters -->
+            <div class="categories-container" style="margin-bottom: 1.5rem;">
+              <div class="categories-scroll" id="eventsFilterScroll" role="tablist" aria-label="Event Categories">
+                <button class="category-chip active" data-event-type="All">All Events</button>
+                <button class="category-chip" data-event-type="Swap Meet">Clothes & Goods Swap</button>
+                <button class="category-chip" data-event-type="Repair Cafe">DIY Repair Cafe</button>
+                <button class="category-chip" data-event-type="Recycling Drive">E-Waste & Recycling Drive</button>
+                <button class="category-chip" data-event-type="Workshop">Composting & Organic Workshop</button>
+              </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="resources-grid" id="eventsGrid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+              <!-- Hydrated dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Admin Panel Section -->
       <section id="admin" class="content-section" aria-labelledby="adminHeading">
         <div class="dashboard-grid" style="grid-template-columns: 1fr;">
@@ -626,11 +693,19 @@
 
             <!-- Tab 2: Active Users List Content -->
             <div id="adminActiveUsersContent" class="admin-tab-content" style="display: none;">
-              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1.5rem;">
-                Directory of active and approved community members in EcoCircle.
-              </p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                  <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-main);">Active Users Directory 👥</h3>
+                  <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.25rem 0 0 0;">
+                    Directory of active and approved community members in EcoCircle.
+                  </p>
+                </div>
+                <div class="search-input-container" style="max-width: 320px; width: 100%;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="activeUserSearchInput" class="search-input" placeholder="Search active users by name or email..." aria-label="Search active users" style="padding: 0.5rem 0.85rem 0.5rem 2.25rem; font-size: 0.85rem;">
+                </div>
+              </div>
               <div class="analytics-card">
-                <h3 class="analytics-card-title" style="margin-bottom: 1rem;">Active Users Directory</h3>
                 <div class="leaderboard-table-wrapper" style="overflow-x: auto;">
                   <table class="leaderboard-table" style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
@@ -765,14 +840,6 @@
           <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Sign Up</button>
         </form>
 
-      </div>
-
-      <!-- Database Settings Trigger for Logged out users -->
-      <div id="loginConfigContainer" style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--border-color); display: none;">
-        <a href="#settings" id="mobileNavSettings" class="mobile-nav-item" style="display: none;">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        <span>Database Settings</span>
-        </a>
       </div>
 
     </div>
@@ -954,11 +1021,17 @@
 
           <!-- Edit Map Location Picker -->
           <div class="form-group">
-            <label>Pick-up Location on Map</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <label style="margin-bottom: 0;">Pick-up Location on Map</label>
+              <button type="button" id="useEditGpsBtn" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem; border-radius: 6px; display: flex; align-items: center; gap: 0.25rem; color: var(--primary);">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Detect My GPS</span>
+              </button>
+            </div>
             <div id="editMapPicker" style="height: 180px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 0.5rem; z-index: 10;"></div>
             <input type="hidden" id="editResourceLat">
             <input type="hidden" id="editResourceLng">
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.25rem;">Click on the map to drop a pin at the pick-up spot.</p>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.25rem;">Click the map or tap Detect My GPS to capture exact location coordinates.</p>
           </div>
 
           <!-- Edit Image Upload -->
@@ -1043,127 +1116,65 @@
     </div>
   </dialog>
 
-  <!-- Modal: Config Settings (Firebase Management) -->
-  <dialog id="configModal" class="modal-overlay" aria-labelledby="configModalHeading">
-    <div class="modal-content" style="max-width: 550px;">
+
+
+  <!-- Modal: Host Community Event -->
+  <dialog id="addEventModal" class="modal-overlay" aria-labelledby="addEventModalHeading">
+    <div class="modal-content" style="max-width: 580px;">
       <header class="modal-header">
-        <h3 id="configModalHeading">Database Configuration</h3>
-        <button id="configModalClose" class="modal-close" aria-label="Close modal">
+        <h3 id="addEventModalHeading">Host a Community Eco Event 📅</h3>
+        <button id="cancelAddEventBtn" class="modal-close" aria-label="Close modal">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </header>
-      <form id="configForm">
+      <form id="addEventForm">
         <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
           
-          <div style="display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-app); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-            <div style="font-weight: 600; font-size: 0.95rem;">Active Backend:</div>
-            <div id="currentProviderBadge" class="config-badge mock">Mock Database</div>
-          </div>
-          
-          <p id="firebaseStatusText" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.5rem;">
-            Running in mock database mode (LocalStorage). Data stays locally in your browser. Connect to a Cloud database below.
-          </p>
-
-          <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 0.5rem 0;">
-
           <div class="form-group">
-            <label for="configProviderSelect">Database Provider</label>
-            <select id="configProviderSelect" class="filter-select" style="width: 100%; padding: 0.9rem 1rem;">
-              <option value="mysql" selected>MySQL (Local XAMPP)</option>
-              <option value="firebase">Firebase (Google Cloud)</option>
-              <option value="supabase">Supabase (PostgreSQL Cloud)</option>
-            </select>
-          </div>
-
-          <!-- Firebase Fields Wrapper -->
-          <div id="firebaseConfigFields" style="display: none; flex-direction: column; gap: 1.25rem;">
-            <div class="form-group">
-              <label for="apiKey">API Key</label>
-              <input type="text" id="apiKey" class="input-field" style="padding-left: 1rem;" placeholder="AIzaSy...">
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="projectId">Project ID</label>
-                <input type="text" id="projectId" class="input-field" style="padding-left: 1rem;" placeholder="EcoCircle-app-123">
-              </div>
-              <div class="form-group">
-                <label for="authDomain">Auth Domain</label>
-                <input type="text" id="authDomain" class="input-field" style="padding-left: 1rem;" placeholder="EcoCircle-app-123.firebaseapp.com">
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="storageBucket">Storage Bucket</label>
-                <input type="text" id="storageBucket" class="input-field" style="padding-left: 1rem;" placeholder="EcoCircle-app-123.appspot.com">
-              </div>
-              <div class="form-group">
-                <label for="messagingSenderId">Messaging Sender ID</label>
-                <input type="text" id="messagingSenderId" class="input-field" style="padding-left: 1rem;" placeholder="1234567890">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="appId">App ID</label>
-              <input type="text" id="appId" class="input-field" style="padding-left: 1rem;" placeholder="1:1234567890:web:abc123xyz">
-            </div>
-          </div>
-
-          <!-- Supabase Fields Wrapper -->
-          <div id="supabaseConfigFields" style="display: flex; flex-direction: column; gap: 1.25rem;">
-            <div class="form-group">
-              <label for="supabaseUrl">Supabase API URL</label>
-              <input type="url" id="supabaseUrl" class="input-field" style="padding-left: 1rem;" placeholder="https://xxxxxx.supabase.co">
-            </div>
-            <div class="form-group">
-              <label for="supabaseAnonKey">Supabase Anon Key</label>
-              <input type="text" id="supabaseAnonKey" class="input-field" style="padding-left: 1rem;" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-            </div>
-          </div>
-
-          <!-- MySQL Fields Wrapper -->
-          <div id="mysqlConfigFields" style="display: none; flex-direction: column; gap: 1.25rem;">
-            <div class="form-group">
-              <label for="mysqlServerUrl">MySQL Express Server URL (Mobile/Capacitor)</label>
-              <input type="url" id="mysqlServerUrl" class="input-field" style="padding-left: 1rem;" placeholder="e.g. http://10.0.2.2:3000 or http://192.168.1.100:3000">
-              <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-                Only needed when running on mobile. For browsers, leave empty or use default.
-              </p>
-            </div>
-          </div>
-
-          <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 0.5rem 0;">
-          
-          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <h4 style="font-family: var(--font-headings); font-weight: 700; font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem;">
-              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" style="color: var(--accent);"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-              Gemini AI Integration
-            </h4>
-            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
-              Paste a Gemini API key to enable live AI-powered descriptions, CO2 offset estimation, and the sustainability chatbot. Get a free key at <a href="https://aistudio.google.com/" target="_blank" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Google AI Studio</a>.
-            </p>
-          </div>
-
-          <div class="form-group">
-            <label for="geminiApiKeyInput">Gemini API Key</label>
+            <label for="eventTitle">Event Title</label>
             <div class="input-container">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text-muted);"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.778-7.778zM12 2v4m10 4h-4M5.64 5.64l2.82 2.82M18.36 5.64l-2.82 2.82"/></svg>
-              <input type="password" id="geminiApiKeyInput" class="input-field" style="padding-left: 2.75rem;" placeholder="Enter Gemini API Key (Optional)">
+              <input type="text" id="eventTitle" class="input-field" style="padding-left: 1rem;" required placeholder="e.g. Weekend Neighborhood Clothes Swap">
             </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventType">Event Type</label>
+              <select id="eventType" class="filter-select" style="width: 100%; padding: 0.9rem 1rem;" required>
+                <option value="Swap Meet">Clothes & Goods Swap</option>
+                <option value="Repair Cafe">DIY Repair Cafe</option>
+                <option value="Recycling Drive">E-Waste & Recycling Drive</option>
+                <option value="Workshop">Composting & Organic Workshop</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="eventDate">Date & Time</label>
+              <div class="input-container">
+                <input type="datetime-local" id="eventDate" class="input-field" style="padding-left: 1rem;" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="eventLocation">Location / Meeting Point</label>
+            <div class="input-container">
+              <input type="text" id="eventLocation" class="input-field" style="padding-left: 1rem;" required placeholder="e.g. Community Park Pavilion / 4th Ave">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="eventDescription">Event Details & Guidelines</label>
+            <textarea id="eventDescription" class="input-field" style="padding: 0.85rem 1rem; min-height: 90px; resize: vertical;" required placeholder="Describe what items to bring, schedule, or guidelines..."></textarea>
           </div>
 
         </div>
-        <footer class="modal-footer" style="gap: 1rem;">
-          <button type="button" id="disconnectCloudBtn" class="btn btn-danger" style="margin-right: auto; display: none;">Disconnect Cloud</button>
-          <button type="button" id="cancelConfigBtn" class="btn btn-secondary">Cancel</button>
-          <button type="submit" class="btn btn-accent">Connect Cloud</button>
+        <footer class="modal-footer">
+          <button type="submit" class="btn btn-primary">Publish Event</button>
         </footer>
       </form>
     </div>
   </dialog>
-
-
 
   <!-- Environment config (sets window.__ENV__ with Supabase/Firebase credentials) -->
   <script src="src/env-config.js"></script>

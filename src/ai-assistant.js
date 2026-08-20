@@ -1,4 +1,5 @@
 import { AIService } from './ai-service.js';
+import { getLoggedInUser } from './auth.js';
 
 export function initAIAssistant(showToast) {
   // Select DOM Elements
@@ -28,10 +29,15 @@ export function initAIAssistant(showToast) {
   }
   updateAIStatusUI();
 
-  // --- Chat History Persistence ---
-  const CHAT_HISTORY_KEY = 'EcoCircle_chat_history';
+  // --- Per-User Scoped Chat History Persistence ---
+  function getChatHistoryKey() {
+    const user = getLoggedInUser();
+    const userId = user ? (user.uid || user.email || 'anonymous') : 'guest';
+    return `EcoCircle_chat_history_${userId}`;
+  }
 
   function saveChatHistory() {
+    const key = getChatHistoryKey();
     const messages = [];
     const chatRows = Array.from(aiChatMessages.querySelectorAll('.chat-msg'));
     
@@ -54,15 +60,41 @@ export function initAIAssistant(showToast) {
         messages.push({ sender: isUser ? 'user' : 'partner', html: body.innerHTML });
       }
     });
-    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
+    localStorage.setItem(key, JSON.stringify(messages));
+  }
+
+  function renderWelcomeMessage() {
+    if (!aiChatMessages) return;
+    aiChatMessages.innerHTML = `
+      <div class="chat-msg chat-msg-partner" style="display: flex; gap: 0.75rem; align-items: flex-start; max-width: 85%;">
+        <div class="chat-msg-avatar" style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0;">AI</div>
+        <div class="chat-msg-body" style="background-color: var(--primary-light); color: var(--text-main); padding: 0.9rem 1.25rem; border-radius: 0 16px 16px 16px; font-size: 0.9rem; line-height: 1.5; box-shadow: var(--shadow-sm);">
+          Hi there! I am your personal EcoCircle AI Assistant. 🌟 <br><br>
+          Ask me anything about:
+          <ul style="margin-left: 1.25rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem;">
+            <li>Recycling rules and preparation</li>
+            <li>Composting techniques for beginners</li>
+            <li>Upcycling household objects</li>
+            <li>Estimating Carbon Footprint (CO2) savings</li>
+          </ul>
+        </div>
+      </div>
+    `;
   }
 
   function loadChatHistory() {
     try {
-      const saved = localStorage.getItem(CHAT_HISTORY_KEY);
-      if (!saved) return false;
+      const key = getChatHistoryKey();
+      const saved = localStorage.getItem(key);
+      if (!saved) {
+        renderWelcomeMessage();
+        return false;
+      }
       const messages = JSON.parse(saved);
-      if (!messages || messages.length === 0) return false;
+      if (!messages || !Array.isArray(messages) || messages.length === 0) {
+        renderWelcomeMessage();
+        return false;
+      }
       aiChatMessages.innerHTML = '';
       messages.forEach(({ sender, html }) => {
         const isUser = sender === 'user';
@@ -90,12 +122,29 @@ export function initAIAssistant(showToast) {
       return true;
     } catch(e) {
       console.warn('Could not load chat history:', e);
+      renderWelcomeMessage();
       return false;
     }
   }
 
   // Load saved chat history on start
   loadChatHistory();
+
+  // Reload chat history automatically when user logs in/out or switches accounts
+  document.addEventListener('auth-changed', () => {
+    loadChatHistory();
+  });
+
+  // Clear Chat Button
+  if (aiClearChatBtn) {
+    aiClearChatBtn.addEventListener('click', () => {
+      if (confirm('Clear your private AI Assistant conversation?')) {
+        const key = getChatHistoryKey();
+        localStorage.removeItem(key);
+        renderWelcomeMessage();
+      }
+    });
+  }
 
 
   // Save key on DB config save

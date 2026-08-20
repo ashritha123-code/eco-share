@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.webkit.GeolocationPermissions;
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.Manifest;
+import android.content.pm.PackageManager;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -24,6 +26,9 @@ public class MainActivity extends Activity {
     private WebView mWebView;
     private ValueCallback<Uri[]> mUploadMessage;
     private final static int FILECHOOSER_RESULTCODE = 1;
+    private final static int LOCATION_PERMISSION_CODE = 100;
+    private GeolocationPermissions.Callback mGeoCallback;
+    private String mGeoOrigin;
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
@@ -42,6 +47,8 @@ public class MainActivity extends Activity {
         webSettings.setAllowFileAccessFromFileURLs(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setGeolocationEnabled(true);
+
+        requestLocationPermissions();
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -76,7 +83,6 @@ public class MainActivity extends Activity {
                             assetPath = "public/index.html";
                         }
                         
-                        // Map standard extensions to MIME types
                         String mimeType = "text/html";
                         if (assetPath.endsWith(".js")) mimeType = "application/javascript";
                         else if (assetPath.endsWith(".css")) mimeType = "text/css";
@@ -108,7 +114,20 @@ public class MainActivity extends Activity {
             // Support Leaflet Map geolocation prompting
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                callback.invoke(origin, true, false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        mGeoCallback = callback;
+                        mGeoOrigin = origin;
+                        requestPermissions(new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        }, LOCATION_PERMISSION_CODE);
+                    } else {
+                        callback.invoke(origin, true, false);
+                    }
+                } else {
+                    callback.invoke(origin, true, false);
+                }
             }
 
             // Support photo upload dialog
@@ -132,6 +151,31 @@ public class MainActivity extends Activity {
         mWebView.loadUrl("https://localhost/index.html");
     }
 
+    private void requestLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                }, LOCATION_PERMISSION_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_CODE) {
+            boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            if (mGeoCallback != null && mGeoOrigin != null) {
+                mGeoCallback.invoke(mGeoOrigin, granted, false);
+                mGeoCallback = null;
+                mGeoOrigin = null;
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILECHOOSER_RESULTCODE) {
@@ -152,4 +196,5 @@ public class MainActivity extends Activity {
         }
     }
 }
+
 

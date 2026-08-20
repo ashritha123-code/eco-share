@@ -3,3 +3,6 @@ webdriver-manager
 openpyxl
 pytest
 requests
+Appium-Python-Client
+pandas
+

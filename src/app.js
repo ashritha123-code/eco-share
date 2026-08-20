@@ -2,6 +2,7 @@ import { initAuth } from './auth.js';
 import { initResources, renderResources } from './resources.js';
 import { initChats } from './chats.js';
 import { initAIAssistant } from './ai-assistant.js';
+import { initEvents } from './events.js';
 import { 
   tryInitializeFirebase, 
   tryInitializeSupabase,
@@ -12,15 +13,13 @@ import {
   onProviderChanged 
 } from './firebase-config.js';
 
-// Clear any cached auto-login session so user lands on Sign In form
-if (!localStorage.getItem('EcoCircle_force_login_v3')) {
-  localStorage.removeItem('EcoCircle_session');
-  Object.keys(localStorage).forEach(key => {
-    if (key.startsWith('EcoCircle_profile_')) {
-      localStorage.removeItem(key);
-    }
-  });
-  localStorage.setItem('EcoCircle_force_login_v3', 'true');
+// Clear any stale cached sessions and force live Supabase cloud sync across Web and Mobile
+if (!localStorage.getItem('EcoCircle_force_sync_v5')) {
+  localStorage.removeItem('EcoCircle_users_cache');
+  localStorage.removeItem('EcoCircle_community_events');
+  localStorage.removeItem('EcoCircle_active_provider_type');
+  localStorage.setItem('EcoCircle_active_provider_type', 'supabase');
+  localStorage.setItem('EcoCircle_force_sync_v5', 'true');
 }
 
 // Global Toast System
@@ -71,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initResources(showToast);
   initChats(showToast);
   initAIAssistant(showToast);
+  initEvents(showToast);
 
   // 2. Client Side Routing (Sidebar & Mobile bottom nav triggers)
   const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-item');
@@ -83,13 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     navLinks.forEach(link => link.classList.remove('active'));
     sections.forEach(sec => sec.classList.remove('active'));
 
-    // Special behavior for settings config overlay
+    // Redirect legacy settings route to dashboard
     if (targetId === 'settings') {
-      const configModal = document.getElementById('configModal');
-      configModal.classList.add('active');
-      const modalBody = configModal.querySelector('.modal-body');
-      if (modalBody) modalBody.scrollTop = 0;
-      // Set hash back to previous or dashboard to avoid route lock
       window.location.hash = '#dashboard';
       return;
     }
@@ -118,218 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial Route Load
   handleRoute(window.location.hash);
 
-  // 3. Cloud Connection Manager (Modal and status)
-  const configModal = document.getElementById('configModal');
-  const configForm = document.getElementById('configForm');
-  const configModalClose = document.getElementById('configModalClose');
-  const disconnectCloudBtn = document.getElementById('disconnectCloudBtn');
-  const currentProviderBadge = document.getElementById('currentProviderBadge');
-  const firebaseStatusText = document.getElementById('firebaseStatusText');
-  const cancelConfigBtn = document.getElementById('cancelConfigBtn');
-
-  const configProviderSelect = document.getElementById('configProviderSelect');
-  const firebaseConfigFields = document.getElementById('firebaseConfigFields');
-  const supabaseConfigFields = document.getElementById('supabaseConfigFields');
-  const mysqlConfigFields = document.getElementById('mysqlConfigFields');
-
-  // Load existing configurations in inputs if present
-  const savedFirebase = localStorage.getItem('EcoCircle_firebase_config');
-  if (savedFirebase) {
-    try {
-      const cfg = JSON.parse(savedFirebase);
-      document.getElementById('apiKey').value = cfg.apiKey || '';
-      document.getElementById('authDomain').value = cfg.authDomain || '';
-      document.getElementById('projectId').value = cfg.projectId || '';
-      document.getElementById('storageBucket').value = cfg.storageBucket || '';
-      document.getElementById('messagingSenderId').value = cfg.messagingSenderId || '';
-      document.getElementById('appId').value = cfg.appId || '';
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  const savedSupabase = localStorage.getItem('EcoCircle_supabase_config');
-  if (savedSupabase) {
-    try {
-      const cfg = JSON.parse(savedSupabase);
-      document.getElementById('supabaseUrl').value = cfg.supabaseUrl || '';
-      document.getElementById('supabaseAnonKey').value = cfg.supabaseAnonKey || '';
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  const savedMysqlUrl = localStorage.getItem('EcoCircle_mysql_server_url') || '';
-  if (document.getElementById('mysqlServerUrl')) {
-    document.getElementById('mysqlServerUrl').value = savedMysqlUrl;
-  }
-
-  const savedActiveProvider = localStorage.getItem('EcoCircle_active_provider_type') || 'mock';
-  if (configProviderSelect) {
-    configProviderSelect.value = savedActiveProvider === 'mock' ? 'supabase' : savedActiveProvider;
-    updateFieldsVisibility(configProviderSelect.value);
-  }
-
-  if (configProviderSelect) {
-    configProviderSelect.addEventListener('change', (e) => {
-      updateFieldsVisibility(e.target.value);
-    });
-  }
-
-  function updateFieldsVisibility(provider) {
-    if (provider === 'firebase') {
-      firebaseConfigFields.style.display = 'flex';
-      supabaseConfigFields.style.display = 'none';
-      if (mysqlConfigFields) mysqlConfigFields.style.display = 'none';
-    } else if (provider === 'mysql') {
-      firebaseConfigFields.style.display = 'none';
-      supabaseConfigFields.style.display = 'none';
-      if (mysqlConfigFields) mysqlConfigFields.style.display = 'flex';
-    } else {
-      firebaseConfigFields.style.display = 'none';
-      supabaseConfigFields.style.display = 'flex';
-      if (mysqlConfigFields) mysqlConfigFields.style.display = 'none';
-    }
-  }
-
-  // Bind Open/Close settings triggers
-  configModalClose.addEventListener('click', () => configModal.classList.remove('active'));
-  cancelConfigBtn.addEventListener('click', () => configModal.classList.remove('active'));
-  
-  const authConfigOpenBtn = document.getElementById('authConfigOpenBtn');
-  if (authConfigOpenBtn) {
-    authConfigOpenBtn.addEventListener('click', () => {
-      configModal.classList.add('active');
-      const modalBody = configModal.querySelector('.modal-body');
-      if (modalBody) modalBody.scrollTop = 0;
-    });
-  }
-
-  window.addEventListener('click', (e) => {
-    if (e.target === configModal) {
-      configModal.classList.remove('active');
-    }
-  });
-
-  // Listen for database changes
+  // 3. Database Provider Listener
   onProviderChanged((name, providerType) => {
-    updateProviderUI(name, providerType);
-    // Refresh resources to fetch from new active provider
+    // Refresh resources to fetch from active provider
     renderResources();
-  });
-
-  // Initialize UI state
-  updateProviderUI(getActiveProviderName(), getActiveProviderType());
-
-  function updateProviderUI(name, providerType) {
-    if (currentProviderBadge) {
-      currentProviderBadge.textContent = name;
-      currentProviderBadge.className = `config-badge ${providerType}`;
-    }
-    if (firebaseStatusText) {
-      if (providerType === 'firebase') {
-        firebaseStatusText.textContent = 'Connected to your Live Google Firebase project. Authentications, assets and items are synchronized with Firestore/Storage.';
-      } else if (providerType === 'supabase') {
-        firebaseStatusText.textContent = 'Connected to your Live Supabase project. Authentications, assets and items are synchronized with PostgreSQL/Supabase Storage.';
-      } else if (providerType === 'mysql') {
-        firebaseStatusText.textContent = 'Connected to your Local XAMPP MySQL database. Authentications, assets, resources and messages are stored in MySQL.';
-      } else {
-        firebaseStatusText.textContent = 'Running in mock database mode (LocalStorage). Data stays locally in your browser. Connect to a database below.';
-      }
-    }
-    if (disconnectCloudBtn) {
-      disconnectCloudBtn.style.display = providerType !== 'mock' ? 'inline-block' : 'none';
-    }
-  }
-
-  // Connect Cloud Submission
-  configForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const submitBtn = configForm.querySelector('button[type="submit"]');
-    const provider = configProviderSelect ? configProviderSelect.value : 'supabase';
-
-    if (provider === 'firebase') {
-      const config = {
-        apiKey: document.getElementById('apiKey').value.trim(),
-        authDomain: document.getElementById('authDomain').value.trim(),
-        projectId: document.getElementById('projectId').value.trim(),
-        storageBucket: document.getElementById('storageBucket').value.trim(),
-        messagingSenderId: document.getElementById('messagingSenderId').value.trim(),
-        appId: document.getElementById('appId').value.trim()
-      };
-
-      if (!config.apiKey || !config.projectId) {
-        showToast('API Key and Project ID are required to connect Firebase.', 'warning');
-        return;
-      }
-
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Connecting...';
-        showToast('Connecting to Firebase and importing SDK...', 'info');
-        await tryInitializeFirebase(config);
-        showToast('Connected to Cloud Firebase successfully!', 'success');
-        configModal.classList.remove('active');
-      } catch (err) {
-        console.error(err);
-        showToast('Connection failed: ' + (err.message || 'Check credentials'), 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Connect Cloud';
-      }
-    } else if (provider === 'mysql') {
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Connecting...';
-        showToast('Connecting to local MySQL database...', 'info');
-
-        const mysqlUrl = document.getElementById('mysqlServerUrl') ? document.getElementById('mysqlServerUrl').value.trim() : '';
-        localStorage.setItem('EcoCircle_mysql_server_url', mysqlUrl);
-
-        await tryInitializeMysql();
-        showToast('Connected to local MySQL successfully!', 'success');
-        configModal.classList.remove('active');
-      } catch (err) {
-        console.error(err);
-        showToast('Connection failed: ' + (err.message || 'Check connection'), 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Connect Database';
-      }
-    } else {
-      // Supabase
-      const url = document.getElementById('supabaseUrl').value.trim();
-      const anonKey = document.getElementById('supabaseAnonKey').value.trim();
-
-      if (!url || !anonKey) {
-        showToast('Supabase API URL and Anon Key are required to connect.', 'warning');
-        return;
-      }
-
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Connecting...';
-        showToast('Connecting to Supabase and importing SDK...', 'info');
-        await tryInitializeSupabase(url, anonKey);
-        showToast('Connected to Cloud Supabase successfully!', 'success');
-        configModal.classList.remove('active');
-      } catch (err) {
-        console.error(err);
-        showToast('Connection failed: ' + (err.message || 'Check credentials'), 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Connect Cloud';
-      }
-    }
-  });
-
-  // Disconnect / Revert back to Mock
-  disconnectCloudBtn.addEventListener('click', () => {
-    if (confirm('Revert back to Mock database mode? Data will load locally from now on.')) {
-      removeCloudConfig();
-      showToast('Disconnected from Cloud. Reverted to Local storage DB.', 'info');
-      configModal.classList.remove('active');
-    }
   });
 
   // 4. Dark Theme Switcher

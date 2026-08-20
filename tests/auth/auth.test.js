@@ -35,7 +35,7 @@ function validateLocation(location) {
 function isAdminEmail(email) {
   if (!email) return false;
   const normalized = email.toLowerCase().trim();
-  return normalized === 'ashrithap2200.sse@saveetha.com';
+  return normalized === 'ashrithap2200@gmail.com' || normalized === 'ashrithap2200.sse@saveetha.com';
 }
 
 function assignRole(email) {

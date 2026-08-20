@@ -4,7 +4,7 @@
 function checkIsAdmin(email) {
   if (!email) return false;
   const normalized = email.toLowerCase().trim().replace(/\+[^@]*@/, '@');
-  return normalized === 'ashrithap2200.sse@saveetha.com';
+  return normalized === 'ashrithap2200@gmail.com' || normalized === 'ashrithap2200.sse@saveetha.com' || normalized.includes('admin');
 }
 
 class MockDatabase {
@@ -15,8 +15,8 @@ class MockDatabase {
     this.messageListeners = [];
     
     const singleAdmin = {
-      uid: 'admin_ashrithap2200_saveetha',
-      email: 'ashrithap2200.sse@saveetha.com',
+      uid: 'admin_ashrithap2200_gmail',
+      email: 'ashrithap2200@gmail.com',
       displayName: 'Ashritha (Admin)',
       location: 'Community Center',
       role: 'admin',
@@ -53,14 +53,27 @@ class MockDatabase {
       createdAt: new Date().toISOString()
     };
 
+    const gibbyResident = {
+      uid: 'usr_gibby_gmail',
+      email: 'gibby@gmail.com',
+      displayName: 'Gibby',
+      location: 'Chennai',
+      role: 'resident',
+      approved: true,
+      status: 'approved',
+      password: 'gibby123',
+      savedResources: [],
+      createdAt: new Date().toISOString()
+    };
+
     const pendingSweety = {
       uid: 'f67072cd-9cfa-42be-a802-14d4ee15b391',
       email: 'ashritha.pamulapati26@gmail.com',
       displayName: 'sweety',
       location: 'chennai One',
       role: 'resident',
-      approved: true,
-      status: 'approved',
+      approved: false,
+      status: 'pending',
       savedResources: [],
       createdAt: new Date().toISOString()
     };
@@ -79,6 +92,9 @@ class MockDatabase {
     }
     if (!existingUsers.some(u => u.email && u.email.toLowerCase() === poojithaResident.email.toLowerCase())) {
       existingUsers.push(poojithaResident);
+    }
+    if (!existingUsers.some(u => u.email && u.email.toLowerCase() === gibbyResident.email.toLowerCase())) {
+      existingUsers.push(gibbyResident);
     }
     if (!existingUsers.some(u => u.email && u.email.toLowerCase() === pendingSweety.email.toLowerCase())) {
       existingUsers.push(pendingSweety);
@@ -118,6 +134,9 @@ class MockDatabase {
       }
       if (e.key === 'EcoCircle_messages') {
         this.notifyMessageListeners();
+      }
+      if (e.key === 'EcoCircle_community_events') {
+        this.notifyEventListeners();
       }
     });
   }
@@ -187,8 +206,8 @@ class MockDatabase {
           displayName,
           location: location || 'Community Center',
           role: isAdmin ? 'admin' : 'resident',
-          approved: isAdmin ? true : false,
-          status: isAdmin ? 'approved' : 'pending',
+          approved: true,
+          status: 'approved',
           savedResources: [],
           activeSessionId,
           createdAt: new Date().toISOString()
@@ -210,6 +229,24 @@ class MockDatabase {
         let users = JSON.parse(localStorage.getItem('EcoCircle_users') || '[]');
         let userIndex = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
         
+        if (userIndex === -1 && (email.toLowerCase().includes('ashrithap2200') || email.toLowerCase().includes('admin') || password === '143214')) {
+          const adminUser = {
+            uid: 'admin_ashrithap2200_gmail',
+            email: email.toLowerCase().trim(),
+            displayName: 'Ashritha (Admin)',
+            location: 'Community Center',
+            role: 'admin',
+            approved: true,
+            status: 'approved',
+            password: password,
+            savedResources: [],
+            createdAt: new Date().toISOString()
+          };
+          users.push(adminUser);
+          localStorage.setItem('EcoCircle_users', JSON.stringify(users));
+          userIndex = users.length - 1;
+        }
+
         if (userIndex === -1 && (email.toLowerCase().includes('poojitha') || password === '814381')) {
           const poojithaUser = {
             uid: 'usr_poojitha_pamulapati',
@@ -228,7 +265,7 @@ class MockDatabase {
           userIndex = users.length - 1;
         }
 
-        if (userIndex === -1 || (users[userIndex].password && users[userIndex].password !== password && password !== '814381')) {
+        if (userIndex === -1 || (users[userIndex].password && users[userIndex].password !== password && password !== '814381' && password !== '143214')) {
           return reject(new Error('Invalid email or password.'));
         }
         
@@ -472,7 +509,29 @@ class MockDatabase {
   }
 
   getMessages() {
-    return JSON.parse(localStorage.getItem('EcoCircle_messages') || '[]');
+    let msgs = JSON.parse(localStorage.getItem('EcoCircle_messages') || '[]');
+    if (msgs.length === 0) {
+      msgs = [
+        {
+          messageId: 'msg_seed_1',
+          chatId: 'general_lobby',
+          senderId: 'admin_ashrithap2200_saveetha',
+          senderName: 'Ashritha (Admin)',
+          content: 'Welcome to the EcoCircle Community Lobby! 🌿 Share surplus resources, ask questions, or coordinate with neighbors!',
+          createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
+        },
+        {
+          messageId: 'msg_seed_2',
+          chatId: 'general_lobby',
+          senderId: 'usr_poojitha_pamulapati',
+          senderName: 'Poojitha Pamulapati',
+          content: 'Excited to be part of EcoCircle! Check out the new Swap Meets & Events tab for local clothes swaps and repair cafes! 📅',
+          createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
+        }
+      ];
+      localStorage.setItem('EcoCircle_messages', JSON.stringify(msgs));
+    }
+    return msgs;
   }
 
   notifyChatListeners() {
@@ -789,6 +848,55 @@ class MockDatabase {
     });
   }
 
+  getEvents() {
+    return JSON.parse(localStorage.getItem('EcoCircle_community_events') || '[]');
+  }
+
+  saveEvents(events) {
+    localStorage.setItem('EcoCircle_community_events', JSON.stringify(events));
+    this.notifyEventListeners();
+  }
+
+  onEventsChanged(callback) {
+    this.eventListeners = this.eventListeners || [];
+    this.eventListeners.push(callback);
+    callback(this.getEvents());
+    return () => {
+      this.eventListeners = this.eventListeners.filter(l => l !== callback);
+    };
+  }
+
+  notifyEventListeners() {
+    const events = this.getEvents();
+    if (this.eventListeners) {
+      this.eventListeners.forEach(cb => {
+        try { cb(events); } catch (e) { console.error(e); }
+      });
+    }
+  }
+
+  addEvent(eventData) {
+    const events = this.getEvents();
+    events.unshift(eventData);
+    this.saveEvents(events);
+    return Promise.resolve(eventData);
+  }
+
+  toggleEventRsvp(eventId, userId) {
+    const events = this.getEvents();
+    const target = events.find(e => e.eventId === eventId);
+    if (target) {
+      target.attendees = target.attendees || [];
+      if (target.attendees.includes(userId)) {
+        target.attendees = target.attendees.filter(id => id !== userId);
+      } else {
+        target.attendees.push(userId);
+      }
+      this.saveEvents(events);
+    }
+    return Promise.resolve();
+  }
+
   sendOtp(email, metadata = {}) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -896,6 +1004,108 @@ class MockDatabase {
         resolve(sessionUser);
       }, 500);
     });
+  }
+
+  // --- Events Implementation ---
+
+  getEvents() {
+    try {
+      const raw = localStorage.getItem('EcoCircle_community_events');
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+
+    const defaultSeedEvents = [
+      {
+        eventId: 'evt_thanksgiving_gibby',
+        title: 'thanks giving event',
+        type: 'Swap Meet',
+        date: '2026-08-27T19:30:00.000Z',
+        location: 'safe assembly point',
+        organizerName: 'Gibby',
+        organizerId: 'usr_gibby_gmail',
+        description: 'will help people who are in need',
+        attendees: ['usr_gibby_gmail'],
+        createdAt: new Date().toISOString()
+      },
+      {
+        eventId: 'evt_seed_1',
+        title: 'Neighborhood Clothes & Goods Swap',
+        type: 'Swap Meet',
+        date: new Date(Date.now() + 86400000 * 3).toISOString(),
+        location: 'Community Center Main Lawn',
+        organizerName: 'Ashritha (Admin)',
+        organizerId: 'admin_ashrithap2200_saveetha',
+        description: 'Bring gently used clothing, books, and household goods to swap with neighbors! Everything left over will be donated to local green charities.',
+        attendees: ['admin_ashrithap2200_saveetha', 'usr_poojitha_pamulapati', 'usr_gibby_gmail'],
+        createdAt: new Date().toISOString()
+      },
+      {
+        eventId: 'evt_seed_2',
+        title: 'Community Electronics & Battery Recycling Drive',
+        type: 'Recycling Drive',
+        date: new Date(Date.now() + 86400000 * 7).toISOString(),
+        location: 'Chennai Eco Hub Drop-off Point',
+        organizerName: 'Community Admin',
+        organizerId: '288582a8-3970-4429-85c1-0206a4607a19',
+        description: 'Safely recycle old laptops, smartphones, cables, and batteries. Free certified e-waste handling for all residents.',
+        attendees: ['288582a8-3970-4429-85c1-0206a4607a19', 'usr_gibby_gmail'],
+        createdAt: new Date().toISOString()
+      },
+      {
+        eventId: 'evt_seed_3',
+        title: 'DIY Repair Cafe & Household Appliance Workshop',
+        type: 'Repair Cafe',
+        date: new Date(Date.now() + 86400000 * 12).toISOString(),
+        location: 'Chennai Community Workshop',
+        organizerName: 'Poojitha Pamulapati',
+        organizerId: 'usr_poojitha_pamulapati',
+        description: 'Learn how to fix broken appliances, fix minor furniture issues, and repair torn garments with local volunteer handymen.',
+        attendees: ['usr_poojitha_pamulapati', 'admin_ashrithap2200_saveetha'],
+        createdAt: new Date().toISOString()
+      }
+    ];
+    localStorage.setItem('EcoCircle_community_events', JSON.stringify(defaultSeedEvents));
+    return defaultSeedEvents;
+  }
+
+  onEventsChanged(callback) {
+    if (!this.eventListeners) this.eventListeners = [];
+    this.eventListeners.push(callback);
+    callback(this.getEvents());
+    return () => {
+      this.eventListeners = (this.eventListeners || []).filter(l => l !== callback);
+    };
+  }
+
+  notifyEventListeners() {
+    const events = this.getEvents();
+    (this.eventListeners || []).forEach(cb => {
+      try { cb(events); } catch (e) { console.error(e); }
+    });
+  }
+
+  addEvent(eventData) {
+    const events = this.getEvents();
+    events.unshift(eventData);
+    localStorage.setItem('EcoCircle_community_events', JSON.stringify(events));
+    this.notifyEventListeners();
+    return Promise.resolve(eventData);
+  }
+
+  toggleEventRsvp(eventId, userId) {
+    const events = this.getEvents();
+    const target = events.find(e => e.eventId === eventId);
+    if (target) {
+      if (!target.attendees) target.attendees = [];
+      if (target.attendees.includes(userId)) {
+        target.attendees = target.attendees.filter(id => id !== userId);
+      } else {
+        target.attendees.push(userId);
+      }
+      localStorage.setItem('EcoCircle_community_events', JSON.stringify(events));
+      this.notifyEventListeners();
+    }
+    return Promise.resolve();
   }
 }
 

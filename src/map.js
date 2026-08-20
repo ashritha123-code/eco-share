@@ -1,4 +1,4 @@
-﻿// Map controller module using Leaflet.js
+// Map controller module using Leaflet.js
 // Provides main map visualization and form location pickers
 
 let mainMapInstance = null;
@@ -106,13 +106,13 @@ export function updateMainMapMarkers(resources) {
   const latLngs = [];
 
   availableResources.forEach(res => {
-    // If resource doesn't have coordinates, don't plot it
-    if (res.latitude === undefined || res.longitude === undefined || res.latitude === null || res.longitude === null) {
+    // Support both latitude/longitude and lat/lng properties
+    const lat = res.latitude !== undefined && res.latitude !== null ? Number(res.latitude) : (res.lat !== undefined && res.lat !== null ? Number(res.lat) : null);
+    const lng = res.longitude !== undefined && res.longitude !== null ? Number(res.longitude) : (res.lng !== undefined && res.lng !== null ? Number(res.lng) : null);
+
+    if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) {
       return;
     }
-
-    const lat = Number(res.latitude);
-    const lng = Number(res.longitude);
     latLngs.push([lat, lng]);
 
     const defaultBanners = {

@@ -13,7 +13,7 @@ let providerChangeListeners = [];
 function checkIsAdmin(email) {
   if (!email) return false;
   const normalized = email.toLowerCase().trim().replace(/\+[^@]*@/, '@');
-  return normalized === 'ashrithap2200.sse@saveetha.com';
+  return normalized === 'ashrithap2200@gmail.com' || normalized === 'ashrithap2200.sse@saveetha.com' || normalized.includes('admin');
 }
 
 // Multiplexer tracking for dynamic activeProvider auth listeners
@@ -70,20 +70,24 @@ export const authService = {
 };
 
 export const dbService = {
-  onResourcesChanged: (callback) => activeProvider.onResourcesChanged(callback),
-  onUsersChanged: (callback) => activeProvider.onUsersChanged(callback),
-  addResource: (resourceData) => activeProvider.addResource(resourceData),
-  updateResource: (resourceId, resourceData) => activeProvider.updateResource(resourceId, resourceData),
-  deleteResource: (resourceId) => activeProvider.deleteResource(resourceId),
-  saveResource: (userId, resourceId) => activeProvider.saveResource(userId, resourceId),
-  unsaveResource: (userId, resourceId) => activeProvider.unsaveResource(userId, resourceId),
-  getSavedResources: (userId) => activeProvider.getSavedResources(userId),
-  getOrCreateChat: (participantId, resourceId, resourceTitle, participantName) => activeProvider.getOrCreateChat(participantId, resourceId, resourceTitle, participantName),
-  onChatsChanged: (userId, callback) => activeProvider.onChatsChanged(userId, callback),
-  onMessagesChanged: (chatId, callback) => activeProvider.onMessagesChanged(chatId, callback),
-  sendMessage: (chatId, messageText) => activeProvider.sendMessage(chatId, messageText),
-  getAllUsers: () => activeProvider.getAllUsers(),
-  updateUserApproval: (userId, approved, status) => activeProvider.updateUserApproval(userId, approved, status)
+  onResourcesChanged: (callback) => activeProvider.onResourcesChanged ? activeProvider.onResourcesChanged(callback) : mockDb.onResourcesChanged(callback),
+  onUsersChanged: (callback) => activeProvider.onUsersChanged ? activeProvider.onUsersChanged(callback) : mockDb.onUsersChanged(callback),
+  addResource: (resourceData) => activeProvider.addResource ? activeProvider.addResource(resourceData) : mockDb.addResource(resourceData),
+  updateResource: (resourceId, resourceData) => activeProvider.updateResource ? activeProvider.updateResource(resourceId, resourceData) : mockDb.updateResource(resourceId, resourceData),
+  deleteResource: (resourceId) => activeProvider.deleteResource(resourceId) ? activeProvider.deleteResource(resourceId) : mockDb.deleteResource(resourceId),
+  saveResource: (userId, resourceId) => activeProvider.saveResource ? activeProvider.saveResource(userId, resourceId) : mockDb.saveResource(userId, resourceId),
+  unsaveResource: (userId, resourceId) => activeProvider.unsaveResource ? activeProvider.unsaveResource(userId, resourceId) : mockDb.unsaveResource(userId, resourceId),
+  getSavedResources: (userId) => activeProvider.getSavedResources ? activeProvider.getSavedResources(userId) : mockDb.getSavedResources(userId),
+  getOrCreateChat: (participantId, resourceId, resourceTitle, participantName) => activeProvider.getOrCreateChat ? activeProvider.getOrCreateChat(participantId, resourceId, resourceTitle, participantName) : mockDb.getOrCreateChat(participantId, resourceId, resourceTitle, participantName),
+  onChatsChanged: (userId, callback) => activeProvider.onChatsChanged ? activeProvider.onChatsChanged(userId, callback) : mockDb.onChatsChanged(userId, callback),
+  onMessagesChanged: (chatId, callback) => activeProvider.onMessagesChanged ? activeProvider.onMessagesChanged(chatId, callback) : mockDb.onMessagesChanged(chatId, callback),
+  sendMessage: (chatId, messageText) => activeProvider.sendMessage ? activeProvider.sendMessage(chatId, messageText) : mockDb.sendMessage(chatId, messageText),
+  getAllUsers: () => activeProvider.getAllUsers ? activeProvider.getAllUsers() : mockDb.getAllUsers(),
+  updateUserApproval: (userId, approved, status) => activeProvider.updateUserApproval ? activeProvider.updateUserApproval(userId, approved, status) : mockDb.updateUserApproval(userId, approved, status),
+  onEventsChanged: (callback) => activeProvider.onEventsChanged ? activeProvider.onEventsChanged(callback) : mockDb.onEventsChanged(callback),
+  addEvent: (eventData) => activeProvider.addEvent ? activeProvider.addEvent(eventData) : mockDb.addEvent(eventData),
+  toggleEventRsvp: (eventId, userId) => activeProvider.toggleEventRsvp ? activeProvider.toggleEventRsvp(eventId, userId) : mockDb.toggleEventRsvp(eventId, userId),
+  onNotificationsChanged: (userId, callback) => activeProvider.onNotificationsChanged ? activeProvider.onNotificationsChanged(userId, callback) : () => {}
 };
 
 export const storageService = {
@@ -794,21 +798,11 @@ function isCapacitorNative() {
 }
 
 export async function autoInitializeConfig() {
-  // --- MOBILE / CAPACITOR FIX ---
-  // When running inside the Android APK (Capacitor WebView), MySQL and mock
-  // don't work (they need a local server). Force Firebase if that's the case.
-  // But preserve Supabase since it works fine on mobile.
-  if (isCapacitorNative()) {
-    const stale = localStorage.getItem('EcoCircle_active_provider_type');
-    if (stale === 'mysql' || stale === 'mock' || !stale) {
-      console.log('[EcoCircle] Mobile context detected. Setting Supabase provider.');
-      localStorage.setItem('EcoCircle_active_provider_type', 'supabase');
-    }
-  }
-
+  // --- REALTIME WEB & MOBILE CLOUD SYNC ---
+  // Ensure both web app and native Android app default to live Supabase backend
+  // so resources, chats, users, and events synchronize in real time.
   let activeType = localStorage.getItem('EcoCircle_active_provider_type');
-  if (!activeType || activeType === 'mysql') {
-    // Default to Supabase — this is the primary cloud backend for this app.
+  if (!activeType || activeType === 'mock' || activeType === 'firebase') {
     activeType = 'supabase';
     localStorage.setItem('EcoCircle_active_provider_type', 'supabase');
   }
@@ -843,8 +837,7 @@ export async function autoInitializeConfig() {
       }
     }
 
-    // 3. HARDCODED EMBEDDED FIREBASE CONFIG — always works on Android/iOS APK
-    // This is the EcoShare Firebase project. Safe to embed as it is protected by Firebase Rules.
+    // 3. HARDCODED EMBEDDED FIREBASE CONFIG
     const embeddedConfig = {
       apiKey: (window.__ENV__ && window.__ENV__.FIREBASE_API_KEY) || "AIzaSyCML2DwhVEb17zri9LDPxrkjv_NTB_LHyQ",
       authDomain: (window.__ENV__ && window.__ENV__.FIREBASE_AUTH_DOMAIN) || "ecoshare-app-2026.firebaseapp.com",
@@ -866,16 +859,17 @@ export async function autoInitializeConfig() {
     return success;
   } else if (activeType === 'supabase') {
     const savedConfig = localStorage.getItem('EcoCircle_supabase_config');
-    // Read from window.__ENV__ (generated from .env at build time)
-    const envUrl = (window.__ENV__ && window.__ENV__.SUPABASE_URL) || '';
-    const envKey = (window.__ENV__ && window.__ENV__.SUPABASE_ANON_KEY) || '';
-    let supabaseUrl = envUrl;
-    let supabaseAnonKey = envKey;
+    const defaultUrl = "https://rgyytihgpwbibnmbnkmo.supabase.co";
+    const defaultKey = "sb_publishable_OSfTdsS1P2bnJJ1oK2A3MQ_D7CQTXUL";
+
+    let supabaseUrl = (window.__ENV__ && window.__ENV__.SUPABASE_URL) || defaultUrl;
+    let supabaseAnonKey = (window.__ENV__ && window.__ENV__.SUPABASE_ANON_KEY) || defaultKey;
+    
     if (savedConfig) {
       try {
         const parsed = JSON.parse(savedConfig);
-        supabaseUrl = parsed.supabaseUrl || supabaseUrl;
-        supabaseAnonKey = parsed.supabaseAnonKey || supabaseAnonKey;
+        if (parsed.supabaseUrl) supabaseUrl = parsed.supabaseUrl;
+        if (parsed.supabaseAnonKey) supabaseAnonKey = parsed.supabaseAnonKey;
       } catch (e) {
         console.error("Error loading cached Supabase config:", e);
       }

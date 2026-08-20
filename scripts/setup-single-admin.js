@@ -104,10 +104,10 @@ async function run() {
   await clearTable('resources', 'resourceId');
   await clearTable('users', 'uid');
 
-  console.log('[Setup Single Admin] Creating single admin user: ashrithap2200.sse@saveetha.com...');
+  console.log('[Setup Single Admin] Creating single admin user: ashrithap2200@gmail.com...');
   const singleAdmin = {
-    uid: 'admin_ashrithap2200_saveetha',
-    email: 'ashrithap2200.sse@saveetha.com',
+    uid: 'admin_ashrithap2200_gmail',
+    email: 'ashrithap2200@gmail.com',
     displayName: 'Ashritha (Admin)',
     location: 'Community Center',
     role: 'admin',

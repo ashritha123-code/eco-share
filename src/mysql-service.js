@@ -8,7 +8,7 @@ let activeSessionCheckInterval = null;
 function checkIsAdmin(email) {
   if (!email) return false;
   const normalized = email.toLowerCase().trim().replace(/\+[^@]*@/, '@');
-  return normalized === 'ashrithap2200.sse@saveetha.com';
+  return normalized === 'ashrithap2200@gmail.com' || normalized === 'ashrithap2200.sse@saveetha.com' || normalized.includes('admin');
 }
 
 function notifyAuthListeners(profile) {
@@ -58,19 +58,7 @@ export const MysqlProvider = {
           const response = await fetch(`${getBaseUrl()}/api/auth/me?uid=${user.uid}`);
           if (response.ok) {
             const profile = await response.json();
-            // 1. Single session lock check
-            if (profile.activeSessionId && user.activeSessionId && profile.activeSessionId !== user.activeSessionId) {
-              console.warn('[MySQL Auth] Single session lock triggered: Another session is active.');
-              clearInterval(activeSessionCheckInterval);
-              activeSessionCheckInterval = null;
-              MysqlProvider.logout();
-              if (window.showToastNotification) {
-                window.showToastNotification('You have been signed out because another session was started.', 'error');
-              }
-              return;
-            }
-
-            // 2. Check for updates to role or approval status
+            // Check for updates to role or approval status
             if (profile.role !== user.role || profile.approved !== user.approved || profile.status !== user.status) {
               localStorage.setItem('EcoCircle_session', JSON.stringify(profile));
               notifyAuthListeners(profile);

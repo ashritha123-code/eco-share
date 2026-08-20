@@ -6,8 +6,8 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = 'https://rgyytihgpwbibnmbnkmo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_OSfTdsS1P2bnJJ1oK2A3MQ_D7CQTXUL';
 
-const ADMIN_EMAIL = 'ashrithap2200.sse@saveetha.com';
-const ADMIN_PASSWORD = 'Password123';
+const ADMIN_EMAIL = 'ashrithap2200@gmail.com';
+const ADMIN_PASSWORD = '143214';
 const ADMIN_NAME = 'Ashritha Admin';
 const ADMIN_LOCATION = 'Saveetha, Chennai';
 
