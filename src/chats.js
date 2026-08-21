@@ -137,23 +137,33 @@ function subscribeToUserChats(user) {
   });
 }
 
-function renderChatList(chats, user) {
+async function renderChatList(chats, user) {
   const container = document.getElementById('chatsContainer');
   if (!container) return;
 
   container.innerHTML = '';
 
-  if (chats.length === 0) {
-    container.innerHTML = `
-      <p style="color: var(--text-muted); font-size: 0.9rem; padding: 2rem; text-align: center;">No active chats.</p>
-    `;
-    return;
+  // Ensure General Lobby is always included in the list
+  let displayChats = [...(chats || [])];
+  const hasLobby = displayChats.some(c => c.chatId === 'general_lobby');
+  if (!hasLobby) {
+    displayChats.unshift({
+      chatId: 'general_lobby',
+      resourceId: 'general',
+      resourceTitle: 'Community Lobby',
+      lastMessage: 'Welcome to the Community Lobby!',
+      lastMessageAt: new Date().toISOString(),
+      isLobby: true,
+      participants: [],
+      participantNames: {}
+    });
   }
 
-  chats.forEach(chat => {
+  // Render active chat rooms (Lobby + Private chats)
+  displayChats.forEach(chat => {
     const isLobby = chat.chatId === 'general_lobby';
-    const otherUid = isLobby ? null : chat.participants.find(id => id !== user.uid);
-    const partnerName = isLobby ? 'Community Lobby' : (chat.participantNames[otherUid] || 'Resident');
+    const otherUid = isLobby ? null : (chat.participants || []).find(id => id !== user.uid);
+    const partnerName = isLobby ? 'Community Lobby' : ((chat.participantNames && chat.participantNames[otherUid]) || 'Resident');
     
     const item = document.createElement('div');
     item.className = `chat-user-item ${chat.chatId === activeChatId ? 'active' : ''} ${isLobby ? 'chat-lobby-item' : ''}`;
@@ -161,7 +171,7 @@ function renderChatList(chats, user) {
     
     const dateString = formatTime(chat.lastMessageAt);
     
-    // Premium Design: Avatars for list items
+    // Avatars for list items
     const avatarHtml = isLobby 
       ? `<div class="chat-lobby-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12.375 1.5a.75.75 0 0 0-1.125 0L1.5 10.875a.75.75 0 1 0 1.05 1.07L4.5 10.07V19.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V10.07l1.95 1.875a.75.75 0 1 0 1.05-1.07L12.375 1.5Zm4.875 18H6.75V9.007L12 3.966l5.25 5.04V19.5Z"/><path d="M12 11.25a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg></div>`
       : `<div class="chat-user-avatar">${partnerName.charAt(0).toUpperCase()}</div>`;
@@ -178,7 +188,7 @@ function renderChatList(chats, user) {
           </span>
           <span class="chat-user-time">${dateString}</span>
         </div>
-        <div class="chat-user-last-msg">${chat.lastMessage}</div>
+        <div class="chat-user-last-msg">${chat.lastMessage || 'Click to open conversation'}</div>
       </div>
     `;
 
@@ -188,6 +198,50 @@ function renderChatList(chats, user) {
 
     container.appendChild(item);
   });
+
+  // Append Community Residents Direct Messaging section
+  try {
+    const allUsers = await dbService.getAllUsers();
+    const otherMembers = (allUsers || []).filter(u => u && u.uid !== user.uid && u.approved === true);
+    
+    if (otherMembers.length > 0) {
+      const divider = document.createElement('div');
+      divider.style.cssText = 'padding: 1.25rem 1rem 0.5rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 1rem;';
+      divider.textContent = 'Community Residents';
+      container.appendChild(divider);
+
+      otherMembers.forEach(member => {
+        const memberItem = document.createElement('div');
+        memberItem.className = 'chat-user-item';
+        memberItem.style.cssText = 'display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius-md); cursor: pointer; transition: background 0.2s;';
+        
+        const roleLabel = member.role === 'admin' ? 'Admin 👑' : 'Resident';
+        
+        memberItem.innerHTML = `
+          <div class="chat-user-avatar" style="background: var(--primary-glow); color: var(--primary); font-weight: 700;">
+            ${(member.displayName || 'U').charAt(0).toUpperCase()}
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              ${member.displayName}
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">
+              ${roleLabel} • ${member.location || 'Community'}
+            </div>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">Chat 💬</span>
+        `;
+
+        memberItem.addEventListener('click', async () => {
+          await startChatWithUser(member.uid, 'direct_' + member.uid, `Direct Message to ${member.displayName}`, member.displayName);
+        });
+
+        container.appendChild(memberItem);
+      });
+    }
+  } catch (err) {
+    console.warn('[renderChatList] Directory fetch warning:', err);
+  }
 }
 
 function selectChat(chat, partnerName, user) {
