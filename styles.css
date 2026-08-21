@@ -2512,23 +2512,32 @@ body:has(#pendingApprovalContainer:not([style*="display: none"])) #mobileBottomN
   pointer-events: none !important;
 }
 
-.auth-container {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  z-index: 999999 !important;
-  background-color: var(--bg-card);
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+/* Eradicate all scrollbars and top bar artifacts on auth view */
+.auth-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+#authContainer {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  z-index: 2147483647 !important;
+  background-color: var(--bg-app) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1.5rem !important;
+  margin: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 .auth-card {
@@ -2538,20 +2547,13 @@ body:has(#pendingApprovalContainer:not([style*="display: none"])) #mobileBottomN
 }
 
 @media (max-width: 768px) {
-  .auth-container {
+  #authContainer {
     padding: 0 !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
     background-color: var(--bg-card) !important;
     align-items: flex-start !important;
   }
 
-  .auth-card {
+  #authContainer .auth-card {
     max-width: 100% !important;
     width: 100% !important;
     min-height: 100vh !important;
@@ -2562,9 +2564,11 @@ body:has(#pendingApprovalContainer:not([style*="display: none"])) #mobileBottomN
     margin: 0 !important;
   }
 
-  .auth-hero {
-    padding-top: calc(2.5rem + env(safe-area-inset-top)) !important;
+  #authContainer .auth-hero {
+    padding-top: calc(3rem + env(safe-area-inset-top)) !important;
+    padding-bottom: 2.5rem !important;
     border-radius: 0 !important;
+    width: 100% !important;
   }
 }
 
