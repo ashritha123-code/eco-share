@@ -218,18 +218,18 @@ async function renderChatList(chats, user) {
         const roleLabel = member.role === 'admin' ? 'Admin 👑' : 'Resident';
         
         memberItem.innerHTML = `
-          <div class="chat-user-avatar" style="background: var(--primary-glow); color: var(--primary); font-weight: 700;">
-            ${(member.displayName || 'U').charAt(0).toUpperCase()}
-          </div>
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              ${member.displayName}
-            </div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">
-              ${roleLabel} • ${member.location || 'Community'}
+          <div class="chat-avatar-container">
+            <div class="chat-user-avatar" style="background: var(--primary-glow); color: var(--primary); font-weight: 700;">
+              ${(member.displayName || 'U').charAt(0).toUpperCase()}
             </div>
           </div>
-          <span style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">Chat 💬</span>
+          <div class="chat-user-info-col">
+            <div class="chat-user-title-row">
+              <span class="chat-user-name">${member.displayName}</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 0.2rem 0.5rem; border-radius: 12px; white-space: nowrap;">${roleLabel}</span>
+            </div>
+            <div class="chat-user-last-msg">${member.location || 'Community'}</div>
+          </div>
         `;
 
         memberItem.addEventListener('click', async () => {
