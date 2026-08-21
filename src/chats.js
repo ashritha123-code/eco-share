@@ -36,6 +36,14 @@ export function initChats(showToast) {
     });
   }
 
+  // Handle Mobile Back Button in Chat View
+  const mobileBackBtn = document.getElementById('mobileBackToChatsBtn');
+  if (mobileBackBtn) {
+    mobileBackBtn.addEventListener('click', () => {
+      resetChatWorkspace();
+    });
+  }
+
   // Listen for Authentication state changes to subscribe to chats
   document.addEventListener('auth-changed', (e) => {
     const user = e.detail;
@@ -248,6 +256,10 @@ function selectChat(chat, partnerName, user) {
   activeChatId = chat.chatId;
   activeChat = chat;
 
+  // Toggle mobile thread layout state
+  const chatLayout = document.querySelector('.chat-layout');
+  if (chatLayout) chatLayout.classList.add('thread-open');
+
   // Highlight selected chat item in sidebar list
   document.querySelectorAll('.chat-user-item').forEach(el => el.classList.remove('active'));
   const activeEl = document.querySelector(`.chat-user-item[data-chat-id="${chat.chatId}"]`);
@@ -256,9 +268,10 @@ function selectChat(chat, partnerName, user) {
   }
 
   // Reveal workspace
-  document.getElementById('chatThreadPlaceholder').style.display = 'none';
+  const placeholder = document.getElementById('chatThreadPlaceholder');
   const workspace = document.getElementById('chatThreadWorkspace');
-  workspace.style.display = 'flex';
+  if (placeholder) placeholder.style.display = 'none';
+  if (workspace) workspace.style.display = 'flex';
   
   document.getElementById('chatPartnerName').textContent = partnerName;
   document.getElementById('chatResourceContext').textContent = chat.chatId === 'general_lobby' ? 'Global Chat' : `Re: ${chat.resourceTitle}`;
@@ -307,6 +320,10 @@ function renderMessages(messages, user) {
 }
 
 function resetChatWorkspace() {
+  const chatLayout = document.querySelector('.chat-layout');
+  if (chatLayout) chatLayout.classList.remove('thread-open');
+  activeChatId = null;
+
   const placeholder = document.getElementById('chatThreadPlaceholder');
   const workspace = document.getElementById('chatThreadWorkspace');
   if (placeholder) placeholder.style.display = 'flex';

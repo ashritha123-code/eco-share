@@ -2242,10 +2242,49 @@ dialog.modal-overlay,
   #mainMap, #mapViewContainer { height: 300px !important; }
   .modal-overlay .modal { width: 95vw; max-height: 90vh; overflow-y: auto; padding: 1.5rem; }
   .filters-row { flex-wrap: wrap; gap: 0.5rem; }
-  .chat-layout { flex-direction: column; height: auto; }
-  .chat-sidebar { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid var(--border-color); }
-  .chat-window { height: 400px; }
+  .chat-layout {
+    flex-direction: column !important;
+    height: calc(100vh - 145px) !important;
+    height: calc(100dvh - 145px) !important;
+    border-radius: var(--radius-md) !important;
+    overflow: hidden !important;
+  }
+
+  .chat-list-panel {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+  }
+
+  .chat-thread-panel {
+    width: 100% !important;
+    height: 100% !important;
+    display: none !important;
+  }
+
+  .chat-layout.thread-open .chat-list-panel {
+    display: none !important;
+  }
+
+  .chat-layout.thread-open .chat-thread-panel {
+    display: flex !important;
+  }
+
+  .mobile-back-chats-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+  }
   .auth-card { width: 100%; max-width: 100%; padding: 2rem 1.5rem; }
+}
+
+@media (min-width: 769px) {
+  .mobile-back-chats-btn {
+    display: none !important;
+  }
 }
 
 @media (max-width: 400px) {
