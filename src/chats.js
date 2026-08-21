@@ -260,7 +260,7 @@ function resetChatWorkspace() {
 }
 
 // Global action trigger to begin chatting from resource detail screen
-export async function startChatWithUser(ownerId, resourceId, resourceTitle, ownerName) {
+export async function startChatWithUser(ownerId, resourceId, resourceTitle, ownerName, initialMessageText = null) {
   const currentUser = getLoggedInUser();
   if (!currentUser) {
     if (showToastCallback) showToastCallback('Please register or log in to message residents.', 'warning');
@@ -278,6 +278,15 @@ export async function startChatWithUser(ownerId, resourceId, resourceTitle, owne
       activeChatId = chat.chatId;
       activeChat = chat;
       
+      // If an initial request message was passed, send it directly to the resource owner
+      if (initialMessageText) {
+        try {
+          await dbService.sendMessage(chat.chatId, initialMessageText);
+        } catch (msgErr) {
+          console.warn('[startChatWithUser] Initial message send warning:', msgErr);
+        }
+      }
+
       // Navigate to messages tab
       window.location.hash = '#messages';
       

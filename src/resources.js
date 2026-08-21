@@ -1196,6 +1196,24 @@ function openDetailModal(resource) {
       }
     });
 
+    // Contact Sender Button
+    const contactBtn = document.createElement('button');
+    contactBtn.className = 'btn btn-secondary';
+    contactBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <span>Contact Sender</span>
+    `;
+    contactBtn.addEventListener('click', () => {
+      if (!user) {
+        toastFunc('Please log in to message resource senders.', 'warning');
+        return;
+      }
+      detailModal.classList.remove('active');
+      if (window.startDirectChat) {
+        window.startDirectChat(resource.ownerId, resource.resourceId, resource.title, resource.ownerName);
+      }
+    });
+
     const requestBtn = document.createElement('button');
     requestBtn.className = 'btn btn-primary';
     requestBtn.textContent = 'Request Resource';
@@ -1214,10 +1232,14 @@ function openDetailModal(resource) {
         try {
           // Update status to Pending
           await dbService.updateResource(resource.resourceId, { status: 'Pending' });
-          toastFunc('Resource requested! Status updated to Pending. The owner has been notified.', 'success');
-          // Re-fetch and update modal
-          const fresh = getResourcesState().find(r => r.resourceId === resource.resourceId);
-          openDetailModal(fresh || { ...resource, status: 'Pending' });
+          toastFunc('Resource requested! Opening direct chat with resource sender...', 'success');
+          
+          detailModal.classList.remove('active');
+          
+          const requestMsg = `Hello ${resource.ownerName}, I would like to request your shared resource "${resource.title}". Is it available for pickup?`;
+          if (window.startDirectChat) {
+            await window.startDirectChat(resource.ownerId, resource.resourceId, resource.title, resource.ownerName, requestMsg);
+          }
         } catch (err) {
           console.error(err);
           toastFunc('Failed to send request.', 'error');
@@ -1226,6 +1248,7 @@ function openDetailModal(resource) {
     }
 
     detailFooter.appendChild(saveBtn);
+    detailFooter.appendChild(contactBtn);
     detailFooter.appendChild(requestBtn);
   }
 
