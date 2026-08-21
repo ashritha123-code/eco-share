@@ -2487,6 +2487,55 @@ html, body, button, input, select, textarea, a {
   touch-action: manipulation;
 }
 
+/* ==========================================
+   CRITICAL OVERRIDE: Fullscreen Unauthenticated Welcome View
+   Eradicates top bars, blue marks, symbols, & navigation overlays when logged out
+   ========================================== */
+body:has(.auth-container.active) #mobileTopBar,
+body:has(.auth-container.active) #mobileBottomNav,
+body:has(#pendingApprovalContainer:not([style*="display: none"])) #mobileTopBar,
+body:has(#pendingApprovalContainer:not([style*="display: none"])) #mobileBottomNav,
+.auth-container.active ~ #mobileTopBar,
+.auth-container.active ~ #mobileBottomNav,
+#authContainer.active ~ #mobileTopBar,
+#authContainer.active ~ #mobileBottomNav {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+.auth-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999 !important;
+  background-color: var(--bg-app);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.auth-card {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  margin: auto;
+}
+
 
 
 

@@ -281,6 +281,12 @@ export function initAuth(showToast) {
         authContainer.classList.remove('active');
         sidebarUserWidget.style.display = 'flex';
         
+        // Restore mobile top and bottom bars for approved logged in user
+        const mobileTopBar = document.getElementById('mobileTopBar');
+        const mobileBottomNav = document.getElementById('mobileBottomNav');
+        if (mobileTopBar) mobileTopBar.style.removeProperty('display');
+        if (mobileBottomNav) mobileBottomNav.style.removeProperty('display');
+
         // Setup profile view
         userNameEl.textContent = user.displayName;
         const roleLabel = user.role === 'admin' ? 'Community Admin' : 'Resident';
@@ -302,6 +308,11 @@ export function initAuth(showToast) {
         if (navAdminItem) navAdminItem.style.display = 'none';
         const mobileNavAdmin = document.getElementById('mobileNavAdmin');
         if (mobileNavAdmin) mobileNavAdmin.style.display = 'none';
+
+        const mobileTopBar = document.getElementById('mobileTopBar');
+        const mobileBottomNav = document.getElementById('mobileBottomNav');
+        if (mobileTopBar) mobileTopBar.style.setProperty('display', 'none', 'important');
+        if (mobileBottomNav) mobileBottomNav.style.setProperty('display', 'none', 'important');
 
         if (pendingApprovalContainer) {
           pendingApprovalContainer.style.display = 'flex';
@@ -366,6 +377,11 @@ export function initAuth(showToast) {
       if (navAdminItem) navAdminItem.style.display = 'none';
       const mobileNavAdmin = document.getElementById('mobileNavAdmin');
       if (mobileNavAdmin) mobileNavAdmin.style.display = 'none';
+
+      const mobileTopBar = document.getElementById('mobileTopBar');
+      const mobileBottomNav = document.getElementById('mobileBottomNav');
+      if (mobileTopBar) mobileTopBar.style.setProperty('display', 'none', 'important');
+      if (mobileBottomNav) mobileBottomNav.style.setProperty('display', 'none', 'important');
 
       // Show login screen — clear any inline display:none that was set during login
       authContainer.style.removeProperty('display');
