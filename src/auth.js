@@ -516,7 +516,7 @@ export async function renderAdminPanel() {
     [adminTabAnalytics, adminTabActiveUsers, adminTabRequests].forEach(tab => {
       if (tab) {
         tab.classList.remove('active');
-        tab.style.borderBottom = '2px solid transparent';
+        tab.setAttribute('aria-selected', 'false');
       }
     });
     [adminAnalyticsContent, adminActiveUsersContent, adminRequestsContent].forEach(content => {
@@ -529,7 +529,7 @@ export async function renderAdminPanel() {
     if (currentAdminTab === 'activeUsers') {
       if (adminTabActiveUsers) {
         adminTabActiveUsers.classList.add('active');
-        adminTabActiveUsers.style.borderBottom = '2px solid var(--primary)';
+        adminTabActiveUsers.setAttribute('aria-selected', 'true');
       }
       if (adminActiveUsersContent) {
         adminActiveUsersContent.classList.add('active');
@@ -538,7 +538,7 @@ export async function renderAdminPanel() {
     } else if (currentAdminTab === 'requests') {
       if (adminTabRequests) {
         adminTabRequests.classList.add('active');
-        adminTabRequests.style.borderBottom = '2px solid var(--primary)';
+        adminTabRequests.setAttribute('aria-selected', 'true');
       }
       if (adminRequestsContent) {
         adminRequestsContent.classList.add('active');
@@ -548,7 +548,7 @@ export async function renderAdminPanel() {
       currentAdminTab = 'analytics';
       if (adminTabAnalytics) {
         adminTabAnalytics.classList.add('active');
-        adminTabAnalytics.style.borderBottom = '2px solid var(--primary)';
+        adminTabAnalytics.setAttribute('aria-selected', 'true');
       }
       if (adminAnalyticsContent) {
         adminAnalyticsContent.classList.add('active');

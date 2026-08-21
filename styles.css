@@ -697,6 +697,38 @@ body:has(#pendingApprovalContainer:not([style*="display: none"])) .mobile-bottom
   box-shadow: 0 4px 12px var(--primary-glow);
 }
 
+/* Dedicated High-Contrast Admin Pill Tabs */
+.admin-tab-chip {
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-main) !important;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-tab-chip:hover {
+  border-color: var(--primary-medium);
+  background-color: var(--primary-light);
+  color: var(--primary) !important;
+}
+
+.admin-tab-chip.active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-medium) 100%) !important;
+  color: #ffffff !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 4px 14px var(--primary-glow) !important;
+  font-weight: 700 !important;
+}
+
 /* Resource Card Grid */
 .resources-grid {
   display: grid;
