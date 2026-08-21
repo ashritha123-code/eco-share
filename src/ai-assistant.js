@@ -167,32 +167,12 @@ export function initAIAssistant(showToast) {
     });
   }
 
-  // Update AI live banner indicator
+  // Update AI live status UI
   function updateAIStatusUI() {
-    if (AIService.isLive()) {
-      if (aiApiKeyAlert) {
-        aiApiKeyAlert.style.display = 'none';
-      }
-      const titleLabel = document.getElementById('aiHeadingTitle');
-      if (titleLabel) {
-        titleLabel.innerHTML = 'EcoCircle AI Assistant <span style="background-color: var(--accent); color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; margin-left: 0.5rem; font-weight: 700; text-transform: uppercase;">Live</span>';
-      }
-    } else {
-      if (aiApiKeyAlert) {
-        aiApiKeyAlert.style.display = 'block';
-      }
-      const titleLabel = document.getElementById('aiHeadingTitle');
-      if (titleLabel) {
-        titleLabel.innerHTML = 'EcoCircle AI Assistant <span style="background-color: var(--status-pending); color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; margin-left: 0.5rem; font-weight: 700; text-transform: uppercase;">Offline Sim</span>';
-      }
+    const titleLabel = document.getElementById('aiHeadingTitle');
+    if (titleLabel) {
+      titleLabel.innerHTML = 'EcoCircle AI Assistant';
     }
-  }
-
-  // AI config button promo
-  if (aiConfigOpenBtn && configModal) {
-    aiConfigOpenBtn.addEventListener('click', () => {
-      configModal.classList.add('active');
-    });
   }
 
   // Clear Chat Button

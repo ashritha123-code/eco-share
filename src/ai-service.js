@@ -209,9 +209,7 @@ Composting is a simple way to recycle organic waste and feed your garden. Here i
 2. **Layer Green & Brown**: 
    * **Greens (nitrogen)**: Fruit skins, vegetable peels, coffee grounds.
    * **Browns (carbon)**: Dry leaves, cardboard scraps, sawdust. Aim for a 1:2 ratio of greens to browns.
-3. **Turn and Moisten**: Aerate with a shovel weekly and ensure it remains damp (like a wrung-out sponge). In 2–3 months, you'll have rich compost soil!
-
-*Simulated response. Add a Gemini API key for dynamic queries!*`;
+3. **Turn and Moisten**: Aerate with a shovel weekly and ensure it remains damp (like a wrung-out sponge). In 2–3 months, you'll have rich compost soil!`;
     }
 
     if (p.includes('recycle')) {
@@ -221,9 +219,7 @@ Correct recycling reduces contamination in the municipal waste stream:
 * **Plastic**: Generally, rigid plastics labeled #1 (PETE) and #2 (HDPE) are accepted everywhere. **Wash thoroughly** before recycling. Leave caps on.
 * **Paper & Cardboard**: Ensure cardboard is flattened. Paper with grease (like pizza boxes) goes to **compost**, not recycling!
 * **Glass & Metals**: Wash tin cans and glass jars. Labels can usually stay on.
-* **Avoid**: Plastic bags, food residue, garden hoses, and batteries (which need special e-waste dropping).
-
-*Simulated response. Add a Gemini API key for dynamic queries!*`;
+* **Avoid**: Plastic bags, food residue, garden hoses, and batteries (which need special e-waste dropping).`;
     }
 
     if (p.includes('lawnmower') || p.includes('offset') || p.includes('carbon')) {
@@ -233,9 +229,7 @@ Sharing tools like lawnmowers has a huge environmental impact:
 * **Production offset**: Manufacturing an electric/gas lawnmower produces roughly **150 kg of CO2 equivalents**.
 * **Shared Use impact**: Sharing 1 lawnmower with 5 neighbors prevents the purchase of 4 additional mowers.
 * **Net Offset**: This saves **600 kg of CO2 emissions** from manufacturing, raw material shipping, and electronic waste!
-* **Annual offset**: Sharing is equivalent to planting **30 mature trees**!
-
-*Simulated response. Add a Gemini API key for dynamic queries!*`;
+* **Annual offset**: Sharing is equivalent to planting **30 mature trees**!`;
     }
 
     if (p.includes('upcycl') || p.includes('cardboard') || p.includes('jar')) {
@@ -245,14 +239,10 @@ Give waste items a second life:
 1. **Cardboard organizers**: Cut shoe boxes and wrap them in leftover wrapping paper or old fabric. Use them to organize desk supplies, socks, or drawers.
 2. **Glass jar planters**: Clean pasta sauce glass jars, fill them with pebbles for drainage, soil, and add herb clippings (like basil or mint).
 3. **Cardboard seedling pots**: Cut egg cartons or toilet paper rolls, fill with soil, plant seeds. They can be planted directly into the ground later!
-4. **Plastic bottle lanterns**: Cut plastic water bottles in half, paint them, insert battery-powered LED tea lights for string lighting.
-
-*Simulated response. Add a Gemini API key for dynamic queries!*`;
+4. **Plastic bottle lanterns**: Cut plastic water bottles in half, paint them, insert battery-powered LED tea lights for string lighting.`;
     }
 
-    return `✨ **Sustainability Tip**: Did you know that over 30% of household waste is compostable food scraps? Sharing surplus food and tools locally through EcoCircle is one of the most effective ways to lower your neighborhood's carbon footprint!
-
-*This is a simulated AI message. Paste a Gemini API Key under settings to talk directly with the Gemini model!*`;
+    return `✨ **Sustainability Tip**: Did you know that over 30% of household waste is compostable food scraps? Sharing surplus food and tools locally through EcoCircle is one of the most effective ways to lower your neighborhood's carbon footprint!`;
   },
 
   /**
