@@ -281,12 +281,6 @@ export function initAuth(showToast) {
         authContainer.classList.remove('active');
         sidebarUserWidget.style.display = 'flex';
         
-        // Restore mobile top and bottom bars for approved logged in user
-        const mobileTopBar = document.getElementById('mobileTopBar');
-        const mobileBottomNav = document.getElementById('mobileBottomNav');
-        if (mobileTopBar) mobileTopBar.style.removeProperty('display');
-        if (mobileBottomNav) mobileBottomNav.style.removeProperty('display');
-
         // Setup profile view
         userNameEl.textContent = user.displayName;
         const roleLabel = user.role === 'admin' ? 'Community Admin' : 'Resident';
@@ -308,11 +302,6 @@ export function initAuth(showToast) {
         if (navAdminItem) navAdminItem.style.display = 'none';
         const mobileNavAdmin = document.getElementById('mobileNavAdmin');
         if (mobileNavAdmin) mobileNavAdmin.style.display = 'none';
-
-        const mobileTopBar = document.getElementById('mobileTopBar');
-        const mobileBottomNav = document.getElementById('mobileBottomNav');
-        if (mobileTopBar) mobileTopBar.style.setProperty('display', 'none', 'important');
-        if (mobileBottomNav) mobileBottomNav.style.setProperty('display', 'none', 'important');
 
         if (pendingApprovalContainer) {
           pendingApprovalContainer.style.display = 'flex';
@@ -377,11 +366,6 @@ export function initAuth(showToast) {
       if (navAdminItem) navAdminItem.style.display = 'none';
       const mobileNavAdmin = document.getElementById('mobileNavAdmin');
       if (mobileNavAdmin) mobileNavAdmin.style.display = 'none';
-
-      const mobileTopBar = document.getElementById('mobileTopBar');
-      const mobileBottomNav = document.getElementById('mobileBottomNav');
-      if (mobileTopBar) mobileTopBar.style.setProperty('display', 'none', 'important');
-      if (mobileBottomNav) mobileBottomNav.style.setProperty('display', 'none', 'important');
 
       // Show login screen — clear any inline display:none that was set during login
       authContainer.style.removeProperty('display');
@@ -516,7 +500,7 @@ export async function renderAdminPanel() {
     [adminTabAnalytics, adminTabActiveUsers, adminTabRequests].forEach(tab => {
       if (tab) {
         tab.classList.remove('active');
-        tab.setAttribute('aria-selected', 'false');
+        tab.style.borderBottom = '2px solid transparent';
       }
     });
     [adminAnalyticsContent, adminActiveUsersContent, adminRequestsContent].forEach(content => {
@@ -529,7 +513,7 @@ export async function renderAdminPanel() {
     if (currentAdminTab === 'activeUsers') {
       if (adminTabActiveUsers) {
         adminTabActiveUsers.classList.add('active');
-        adminTabActiveUsers.setAttribute('aria-selected', 'true');
+        adminTabActiveUsers.style.borderBottom = '2px solid var(--primary)';
       }
       if (adminActiveUsersContent) {
         adminActiveUsersContent.classList.add('active');
@@ -538,7 +522,7 @@ export async function renderAdminPanel() {
     } else if (currentAdminTab === 'requests') {
       if (adminTabRequests) {
         adminTabRequests.classList.add('active');
-        adminTabRequests.setAttribute('aria-selected', 'true');
+        adminTabRequests.style.borderBottom = '2px solid var(--primary)';
       }
       if (adminRequestsContent) {
         adminRequestsContent.classList.add('active');
@@ -548,7 +532,7 @@ export async function renderAdminPanel() {
       currentAdminTab = 'analytics';
       if (adminTabAnalytics) {
         adminTabAnalytics.classList.add('active');
-        adminTabAnalytics.setAttribute('aria-selected', 'true');
+        adminTabAnalytics.style.borderBottom = '2px solid var(--primary)';
       }
       if (adminAnalyticsContent) {
         adminAnalyticsContent.classList.add('active');

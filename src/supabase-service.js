@@ -841,32 +841,26 @@ export const SupabaseProvider = {
     const user = SupabaseProvider.getCurrentUser();
     if (!user) return null;
 
-    const generatedChatId = `chat_${[user.uid, participantId].sort().join('_')}_${(resourceId || 'direct').replace(/[^a-zA-Z0-9_]/g, '_')}`;
-
     // Find if chat exists
     const { data: chats, error } = await supabaseClient
       .from('chats')
       .select('*')
-      .or(`chatId.eq.${generatedChatId},resourceId.eq.${resourceId}`);
+      .eq('resourceId', resourceId);
 
-    if (!error && chats && chats.length > 0) {
-      const existing = chats.find(c => {
-        const parts = c.participants || [];
-        return c.chatId === generatedChatId || (parts.includes(user.uid) && parts.includes(participantId));
-      });
+    if (!error && chats) {
+      const existing = chats.find(c => c.participants.includes(user.uid) && c.participants.includes(participantId));
       if (existing) return existing;
     }
 
-    // Create new with chatId guaranteed non-null
+    // Create new
     const newChat = {
-      chatId: generatedChatId,
       participants: [user.uid, participantId],
       participantNames: {
-        [user.uid]: user.displayName || 'Resident',
+        [user.uid]: user.displayName,
         [participantId]: participantName || 'Resource Owner'
       },
-      resourceId: resourceId || 'direct',
-      resourceTitle: resourceTitle || 'Direct Conversation',
+      resourceId,
+      resourceTitle,
       lastMessage: 'Conversation started',
       lastMessageAt: new Date().toISOString()
     };
@@ -877,17 +871,7 @@ export const SupabaseProvider = {
       .select()
       .single();
 
-    if (insertErr) {
-      // Fallback: If conflict or already created, fetch by chatId
-      const { data: existingChat } = await supabaseClient
-        .from('chats')
-        .select('*')
-        .eq('chatId', generatedChatId)
-        .maybeSingle();
-      if (existingChat) return existingChat;
-      throw insertErr;
-    }
-
+    if (insertErr) throw insertErr;
     return data;
   },
 

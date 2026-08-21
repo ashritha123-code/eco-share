@@ -1214,94 +1214,19 @@ function openDetailModal(resource) {
         try {
           // Update status to Pending
           await dbService.updateResource(resource.resourceId, { status: 'Pending' });
-          
-          // Send request message directly under this resource!
-          const requestMsg = `Hello ${resource.ownerName}, I would like to request your shared resource "${resource.title}". Is it available for pickup?`;
-          await dbService.sendMessage(resource.resourceId, requestMsg);
-
-          toastFunc('Resource requested! Request message posted under this resource.', 'success');
-          
-          requestBtn.disabled = true;
-          requestBtn.textContent = 'Pending';
-          requestBtn.style.opacity = '0.5';
+          toastFunc('Resource requested! Status updated to Pending. The owner has been notified.', 'success');
+          // Re-fetch and update modal
+          const fresh = getResourcesState().find(r => r.resourceId === resource.resourceId);
+          openDetailModal(fresh || { ...resource, status: 'Pending' });
         } catch (err) {
           console.error(err);
-          toastFunc('Failed to send request: ' + (err.message || err), 'error');
+          toastFunc('Failed to send request.', 'error');
         }
       });
     }
 
     detailFooter.appendChild(saveBtn);
     detailFooter.appendChild(requestBtn);
-  }
-
-  // --- Resource Discussion & Request Messages directly under the resource ---
-  const existingCommentsSection = detailBody.querySelector('.resource-comments-section');
-  if (existingCommentsSection) existingCommentsSection.remove();
-
-  const commentsSection = document.createElement('div');
-  commentsSection.className = 'resource-comments-section';
-  commentsSection.style.cssText = 'margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color);';
-  commentsSection.innerHTML = `
-    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-      Resource Discussion & Requests
-    </h4>
-    <div id="resourceCommentsList" style="display: flex; flex-direction: column; gap: 0.65rem; max-height: 220px; overflow-y: auto; margin-bottom: 1rem; padding: 0.65rem; background: var(--bg-app); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-      <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 1rem;">Loading discussion...</p>
-    </div>
-    <form id="resourceCommentForm" style="display: flex; gap: 0.5rem;">
-      <input type="text" id="resourceCommentInput" class="input-field" placeholder="Ask a question or comment under this resource..." style="flex: 1; font-size: 0.85rem; padding: 0.6rem 0.85rem;" required autocomplete="off">
-      <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1rem; font-size: 0.85rem; white-space: nowrap;">Send 💬</button>
-    </form>
-  `;
-  detailBody.appendChild(commentsSection);
-
-  // Subscribe to real-time messages for this resource
-  const unsubscribeResourceMsgs = dbService.onMessagesChanged(resource.resourceId, (messages) => {
-    const list = commentsSection.querySelector('#resourceCommentsList');
-    if (!list) return;
-    list.innerHTML = '';
-    if (!messages || messages.length === 0) {
-      list.innerHTML = `<p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 1rem;">No request messages yet under this resource. Click <strong>Request Resource</strong> to send a request!</p>`;
-      return;
-    }
-    messages.forEach(msg => {
-      const msgItem = document.createElement('div');
-      msgItem.style.cssText = 'background: var(--bg-card); padding: 0.65rem 0.85rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.85rem;';
-      const timeStr = msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-      msgItem.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-          <strong style="color: var(--primary); font-size: 0.8rem; font-weight: 700;">${msg.senderName || 'Resident'}</strong>
-          <span style="font-size: 0.7rem; color: var(--text-muted);">${timeStr}</span>
-        </div>
-        <div style="color: var(--text-main); line-height: 1.4;">${msg.content}</div>
-      `;
-      list.appendChild(msgItem);
-    });
-    list.scrollTop = list.scrollHeight;
-  });
-
-  // Handle Comment Form Submit
-  const commentForm = commentsSection.querySelector('#resourceCommentForm');
-  if (commentForm) {
-    commentForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const input = commentForm.querySelector('#resourceCommentInput');
-      const text = input ? input.value.trim() : '';
-      if (!text) return;
-      if (!user) {
-        toastFunc('Please log in to send a message under this resource.', 'warning');
-        return;
-      }
-      try {
-        await dbService.sendMessage(resource.resourceId, text);
-        if (input) input.value = '';
-      } catch (err) {
-        console.error(err);
-        toastFunc('Failed to post message: ' + err.message, 'error');
-      }
-    });
   }
 
   detailModal.classList.add('active');
